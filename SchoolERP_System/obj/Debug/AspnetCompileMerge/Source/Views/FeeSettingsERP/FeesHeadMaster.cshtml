@@ -1,0 +1,319 @@
+﻿
+@{
+    ViewBag.Title = "Fees Head Master";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Fees Head Master</span>
+                <button class="btn btn-default pull-right openModal m-t-10">Add Fees Head Master</button>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                            <thead>
+                                <tr>
+                                    <th>Fee Head</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdId" value="0" />
+<div class="modal fade" id="Modal" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update Fees Head Master:</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Shared/Modal_SuccessError.cshtml")
+
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">Fees Head:<span style="color:red;">*</span></label>
+                    <input type="text" class="form-control" id="txtFeeHead">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">Total Installment:<span style="color:red;">*</span></label>
+                    <input type="text" class="form-control Numeric" id="txtFeeInstallment">
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" class="form-check-input" id="chk_Mandatory">
+                    <label class="form-check-label" for="exampleCheck1">Mandatory at Admission</label>
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">No. of Installment at the Time of Admission:<span style="color:red;">*</span></label>
+                    <input type="text" class="form-control Numeric" disabled id="txtFeeInstallmentAtAdmission">
+                </div>
+
+                <div class="form-group">
+                    <label class="radio-inline"><input type="radio" name="optradio" value="Bus">Is Bus-Fees</label>
+                    <label class="radio-inline"><input type="radio" name="optradio" value="Admission">Is Admission-Fees</label>
+                    <label class="radio-inline"><input type="radio" name="optradio" value="Session">Is Session-Fees</label>
+                    <span style="color:red;">*</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section body_scripts{
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fn_Bindtbl("0", "Select");
+
+        });
+        $('#chk_Mandatory').click(function () {
+            if (!$(this).is(':checked')) {
+                $("#txtFeeInstallmentAtAdmission").attr("disabled", "disabled");
+                $("#txtFeeInstallmentAtAdmission").val('');
+            } else {
+                $("#txtFeeInstallmentAtAdmission").removeAttr("disabled");
+            }
+        });
+        $(document).on("click", ".openModal", function () {
+            HideSuccErrDiv();
+            ModalHideSuccErrDiv();
+            fn_resetform();
+            $("#Modal").modal();
+        });
+
+        $(document).on("click", ".Iconeditclass", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdId").val(_Id);
+            fn_Bindtbl(_Id, "SelectByID");
+        });
+
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id);
+            }
+        });
+
+        $(document).on("click", "#btnSave", function () {
+            ModalHideSuccErrDiv();
+            HideSuccErrDiv();
+            var _Id = $.trim($("#hdId").val());
+            var _txtFeeHead = $.trim($('#txtFeeHead').val());
+            var _txtFeeInstallment = $.trim($('#txtFeeInstallment').val());
+            var chk_Mandatory = false;
+            var _txtFeeInstallmentAtAdmission = $.trim($('#txtFeeInstallmentAtAdmission').val());
+            var chk_Bus = false;
+            var chk_Admission = false;
+            var chk_Session = false;
+
+            if (_txtFeeHead == "") {
+                ModalPopupError("Please enter Fee Head.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtFeeInstallment == "") {
+                ModalPopupError("Please enter Fee Installment.", "Error", "M_errorBlock");
+                return false;
+            }
+            if ($('#chk_Mandatory').is(':checked') && _txtFeeInstallmentAtAdmission == "") {
+                ModalPopupError("Please enter No. of Installment at the Time of Admission.", "Error", "M_errorBlock");
+                return false;
+
+            }
+            if ($('#chk_Mandatory').is(':checked'))
+                chk_Mandatory = true;
+
+            var check = false;
+            $("input:radio").each(function () {
+                var name = $(this).attr("name");
+                if ($("input:radio[name=" + name + "]:checked").length == 0) {
+                    check = true;
+                }
+            });
+
+            if (check) {
+                ModalPopupError("Please select one option.", "Error", "M_errorBlock");
+                return false;
+            } else {
+                var radioValue = $("input[name='optradio']:checked").val();
+                if (radioValue == "Bus")
+                    chk_Bus = true;
+                if (radioValue == "Admission")
+                    chk_Admission = true;
+                if (radioValue == "Session")
+                    chk_Session = true;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveFeesHeadMaster", "FeeSettingsERP")',
+                data: JSON.stringify({
+                    Id: _Id, FeeHeadName: _txtFeeHead, Total_of_Installment: _txtFeeInstallment, At_Admission: chk_Mandatory,
+                    Installment_TOA: _txtFeeInstallmentAtAdmission, Is_Bus_Fees: chk_Bus, Is_Admission_Fees: chk_Admission, Is_Session_Fees: chk_Session
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data Inserted successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data updated successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else {
+                        alert("Error. " + response);
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewFeesHeadMaster", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "Select") {
+                        $('#tblMapping tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.FeeHeadName + '</td>';
+                            row += '<td><i class="fa fa-edit Iconeditclass" data-ID="' + val.FeeHeadID + '"></i><i class="fa fa-trash-o Icondelclass" data-ID="' + val.FeeHeadID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblMapping tbody').append(row);
+
+                        });
+                        $('#tblMapping').dataTable();
+                    }
+
+                    if (Type == "SelectByID") {
+                        $('#btnSave').text("Update");
+                        $('#txtFeeHead').val(data[0].FeeHeadName);
+                        $('#txtFeeInstallment').val(data[0].Total_of_Installment);
+
+                        if (data[0].At_Admission == 'True') {
+                            $('#txtFeeInstallmentAtAdmission').val(data[0].Installment_TOA);
+                            $("#txtFeeInstallmentAtAdmission").removeAttr("disabled");
+                            $('#chk_Mandatory').prop("checked", true);
+                        }
+                        else {
+                            $('#txtFeeInstallmentAtAdmission').val('');
+                            $("#txtFeeInstallmentAtAdmission").attr("disabled", "disabled");
+                            $('#chk_Mandatory').prop("checked", false);
+                        }
+
+                        if (data[0].Is_Bus_Fees == 'True')
+                            RadionButtonSelectedValueSet('optradio', 'Bus');
+                        if (data[0].Is_Admission_Fees == 'True')
+                            RadionButtonSelectedValueSet('optradio', 'Admission');
+                        if (data[0].Is_Session_Fees == 'True')
+                            RadionButtonSelectedValueSet('optradio', 'Session');
+                        $("#Modal").modal();
+                        HideSuccErrDiv();
+                        ModalHideSuccErrDiv();
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+        function RadionButtonSelectedValueSet(name, SelectdValue) {
+            $('input[name="' + name + '"][value="' + SelectdValue + '"]').prop('checked', true);
+        }
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteFeesHeadMaster", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data deleted successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+
+        function fn_resetform() {
+            $("#hdnId").val('0');
+            $('#txtFeeHead').val('');
+            $("#txtFeeInstallment").val('');
+            $("#txtFeeInstallmentAtAdmission").val('');
+            $("#txtFeeInstallmentAtAdmission").attr("disabled", "disabled");
+            $('#chk_Mandatory').prop("checked", false);
+            $('input:radio[name=optradio]').each(function () { $(this).prop('checked', false); });
+            $('#btnSave').text("Save");
+        }
+    </script>
+}
+
+
+
+

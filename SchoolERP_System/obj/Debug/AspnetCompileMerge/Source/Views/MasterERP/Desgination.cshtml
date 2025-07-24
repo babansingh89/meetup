@@ -1,0 +1,227 @@
+﻿
+@{
+    ViewBag.Title = "Desgination";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Desgination</span>
+                <button class="btn btn-default pull-right openModal m-t-10">Add Desgination</button>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblclass">
+                            <thead>
+                                <tr>
+                                    <th>Desgination</th>
+                                    <th>Desgination Code</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdnId" value="0" />
+<div class="modal fade" id="classeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update Desgination:</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Shared/Modal_SuccessError.cshtml")
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">Desgination:<span style="color:red;">*</span></label>
+                    <input type="text" class="form-control" id="txtDesName">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">Desgination Code:<span style="color:red;">*</span></label>
+                    <input type="text" class="form-control" id="txtDesCode" maxlength="100">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fn_Bindclasstbl("0", "Select");
+        });
+
+        $(document).on("click", ".openModal", function () {
+            HideSuccErrDiv();
+            ModalHideSuccErrDiv();
+            fn_resetform();
+            $("#classeModal").modal();
+        });
+
+        $(document).on("click", ".Iconeditclass", function () {
+            var _ClassId = $(this).attr('data-DesID');
+            $("#hdnId").val(_ClassId);
+            fn_Bindclasstbl(_ClassId, "SelectByID");
+        });
+
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _DesID = $(this).attr('data-DesID');
+                fn_delClass(_DesID);
+            }
+        });
+
+        $(document).on("click", "#btnSave", function () {
+            ModalHideSuccErrDiv();
+            var _DesID = $.trim($("#hdnId").val());
+            var _DesName = $.trim($("#txtDesName").val());
+            var _DesCode = $.trim($("#txtDesCode").val());
+            if (_DesName == "") {
+                ModalPopupError("Please enter Desgination.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_DesCode == "") {
+                ModalPopupError("Please enter Desgination Code.", "Error", "M_errorBlock");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveDesginationMaster", "MasterERP")',
+                data: JSON.stringify({ DesID: _DesID, DesName: _DesName, DesCode: _DesCode }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Class Inserted successfully.", "Success", "M_errorBlock");
+                        fn_Bindclasstbl("0", "Select");
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Class updated successfully.", "Success", "M_errorBlock");
+                        fn_Bindclasstbl("0", "Select");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+        function fn_Bindclasstbl(_ClassId, Type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewDesginationMaster", "MasterERP")',
+                data: JSON.stringify({ DesID: _ClassId, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "Select") {
+                        $('#tblclass tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.DesName + '</td>';
+                            row += '<td>' + val.DesCode + '</td>';
+                            row += '<td><i class="fa fa-edit Iconeditclass" data-DesID="' + val.DesID + '"></i><i class="fa fa-trash-o Icondelclass" data-DesID="' + val.DesID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblclass tbody').append(row);
+                        });
+                        $('#tblclass').dataTable();
+                    }
+
+                    if (Type == "SelectByID") {
+                        $('#btnSave').text("Update");
+                        $("#txtDesName").val(data[0].DesName);
+                        $("#txtDesCode").val(data[0].DesCode);
+                        $("#classeModal").modal();
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_delClass(DesID) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteDesginationMaster", "MasterERP")',
+                data: JSON.stringify({ DesID: DesID}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindclasstbl("0", "Select");
+                        FormSuccessError("Class deleted successfully.","Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+
+        function fn_resetform() {
+            $("#hdnId").val('0');
+            $("#txtDesName").val('');
+            $("#txtDesCode").val('');
+            $('#btnSave').text("Save");
+        }
+    </script>
+}
+

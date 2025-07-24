@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "Expenses Report";
+    //Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Expenses Report</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>From Date:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtfrom">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>To Date:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtTo">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @{
+                                        string AppID = Convert.ToString(HttpContext.Current.Session["AppID"]).ToString();
+                                    }
+                                    <button class="btn btn-primary pull-left" style="margin-top: 20px;" id="btnSave" AppId="@AppID">Generate</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+
+            hideAlert();
+            fn_resetform();
+        });
+
+
+
+        function fn_resetform() {
+
+            $('#txtfrom').val('');
+            $('#txtTo').val('');
+        }
+
+        $(document).on("click", "#btnSave", function () {
+            var _ddl1 = $('#txtfrom').val();
+            var _ddl2 = $('#txtTo').val();
+
+            if (_ddl1 == '') {
+                FormSuccessError1("Please enter from date.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl2 == '') {
+                FormSuccessError1("Please enter To date.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (new Date(_ddl1) > new Date(_ddl2)) {
+                FormSuccessError1("Please select a different End Date.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            @*$.ajax({
+                type: "POST",
+                url: '@Url.Action("PrintExpenses", "Expenses")',
+                data: JSON.stringify({ From: _ddl1, To: _ddl2 }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (data == "Error") {
+                        alert("Error! Try again later.");
+                    }
+                    else {
+                        window.open(data);
+                        //previewPdfDocument(data);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    //alert("Error! Try again later.");
+                    window.location.href = "/Error";
+                }
+            });*@
+            var AppID = $("#btnSave").attr('AppId'); 
+            Print(AppID);
+        });
+
+        function Print(AppID) {
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "ExpenseEntryReport.rpt",
+                FileName: "ExpenseEntry_Report",
+                AppID: AppID
+            });
+
+            detail.push({
+                From: $('#txtfrom').val(),
+                To: $('#txtTo').val(),
+                AppID: AppID
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+    </script>
+}
+
+
+
+

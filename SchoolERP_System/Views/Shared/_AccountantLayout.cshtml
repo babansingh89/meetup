@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title</title>
+    <!-- CSS -->
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/bootstrap.min.css" />
+    <link type='text/css' rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'>
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/font.css" />
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/font-awesome.css">
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/style.css" />
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/style-responsive.css" />
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/morris.css" />
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/css/monthly.css">
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/Plugins/datatables/css/datatables.min.css" />
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/Plugins/datatables/css/datatables.bootstrap.css" />
+    <link type='text/css' rel="stylesheet" href="~/Content/assets/Plugins/Confirmation/jquery-confirm.css" />
+    <link href="~/Content/Select2/select2-bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Select2/select2.min.css" rel="stylesheet" />
+    <!-- Datepicker -->
+    <link href="~/Content/vendor/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
+    @*<script src="~/Content/Common/JS/timepicki.js"></script>*@
+    @*<link href="~/Content/Common/Css/style.css" rel="stylesheet" />*@
+    @*<link href="~/Content/Common/Css/timepicki.css" rel="stylesheet" />*@
+    <style>
+        .display-none {
+            display: none;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .m-b-10 {
+            margin-bottom: 10px;
+        }
+
+        .m-t-10 {
+            margin-top: 10px;
+        }
+
+        .modal-header {
+            background: rgb(240, 188, 180);
+        }
+
+        i.fa {
+            color: black;
+            font-size: 16px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <section id="container">
+        <!--header start-->
+        <header class="header fixed-top clearfix">
+            <div class="brand">
+                <a href="~/Dashboard/Accountant" style="font-size:22px!important;" class="logo">Meetup School</a>
+                <div class="sidebar-toggle-box">
+                    <div class="fa fa-bars"></div>
+                </div>
+            </div>
+            <div class="top-nav clearfix">
+
+                <ul id="sch" class="nav pull-left top-menu" style="margin-left: 30px;margin-top: 8px;font-size: large;font-weight:600;">
+                    Welcome to  @Session["SchNameDashboard"]
+                </ul>
+                <ul class="nav pull-right top-menu">
+
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <img alt="" src="/Content/assets/images/2.png">
+                            <span class="username">Accountant</span>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu extended logout">
+                            @*<li><a href="~/ErrorERP/CommingSoon"><i class="fa fa-suitcase"></i>Profile</a></li>*@
+                            <li><a href="@Url.Action("AccountantProfile", "Profile")"><i class="fa fa-suitcase"></i>Profile</a></li>
+                            <li><a href="@Url.Action("Support", "School")"><i class="fa fa-cog"></i>Support</a></li>
+                            <li><a href="~/Account/Logout"><i class="fa fa-key"></i> Log Out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <!--sidebar start-->
+        <aside>
+            <div id="sidebar" class="nav-collapse">
+                <!-- sidebar menu start-->
+                <div class="leftside-navigation">
+                    <ul class="sidebar-menu" id="nav-accordion">
+                        <li>
+                            <a class="active" href="~/Dashboard/Accountant">
+                                <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-university fa-fw"></i>
+                                <span>Academic</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="@Url.Action("ViewStudent", "MasterERP")">View Student</a></li>
+                                <li><a href="@Url.Action("ViewStaff", "MasterERP")">View Staff</a></li>
+                                <li><a href="@Url.Action("ViewHoliday", "MasterERP")">Events</a></li>
+                            </ul>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-money fa-fw"></i>
+                                <span>Fees Transaction</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="@Url.Action("StudentFeesCollectionList", "Transaction")">Student Fee Collection</a></li>
+                                <li><a href="@Url.Action("DefaulterList", "Transaction")">Defaulter List</a></li>
+                            </ul>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-inr fa-fw"></i>
+                                <span>Account</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="@Url.Action("Expenses", "Expenses")">Expenses Master</a></li>
+                                <li><a href="@Url.Action("ExpensesEntry", "Expenses")">Daily Expenses</a></li>
+                                <li><a href="@Url.Action("ExpensesReport", "Expenses")">Expenses Report</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="sub-menu">
+                            <a href="@Url.Action("Logout", "Account")">
+                                <i class="fa fa-sign-out fa-fw"></i>
+                                <span>Logout</span>
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        <section id="main-content">
+            <section class="wrapper">
+                @RenderBody()
+            </section>
+        </section>
+    </section>
+
+    <script type="text/javascript" src="~/Content/assets/js/jquery2.0.3.min.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/bootstrap.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/raphael-min.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/morris.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/jquery.dcjqaccordion.2.7.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/scripts.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/jquery.slimscroll.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/jquery.nicescroll.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="~/Content/assets/js/monthly.js"></script>
+    <script type="text/javascript" src="~/Content/assets/Plugins/datatables/js/datatable.js"></script>
+    <script type="text/javascript" src="~/Content/assets/Plugins/datatables/js/datatables.min.js"></script>
+    <script type="text/javascript" src="~/Content/assets/Plugins/datatables/js/datatables.bootstrap.js"></script>
+    <script type="text/javascript" src="~/Content/assets/Plugins/datatables/js/dataTables.rowsGroup.js"></script>
+    <script type="text/javascript" src="~/Content/assets/Plugins/datatable-highlighter/datatables.mark.js"></script>
+    <script type="text/javascript" src="~/Content/assets/Plugins/Confirmation/jquery-confirm.js"></script>
+    <script type="text/javascript" src="~/Content/Common/JS/ajaxSpiner.js"></script>
+    <script type="text/javascript" src="~/Content/Common/JS/Error.js"></script>
+    <script type="text/javascript" src="~/Content/Common/JS/Utility.js"></script>
+    <script src="~/Content/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script src="~/Content/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        $('.dateFormat').datepicker({
+            language: 'en',
+            format: 'dd-M-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+        //$('.timepicker').timepicker({
+        //    timeFormat: 'h:mm p',
+        //    interval: 30,
+        //    minTime: '6',
+        //    maxTime: '11:00pm',
+        //    defaultTime: '11',
+        //    startTime: '06:00',
+        //    dynamic: false,
+        //    dropdown: true,
+        //    scrollbar: true
+        //});
+        function FormSuccessError1(Message, Status, parrentID, ScrollDiv) {
+            hideAlert();
+            if (Status == "Error") {
+                FormError(Message, Status, parrentID);
+                ErrorDiv.show();
+            }
+            else if (Status == "Success") {
+                FormError(Message, Status, parrentID);
+                SuccessDiv.show();
+            }
+            ScrollToForm(ScrollDiv);
+        }
+        function ScrollToForm(container) {
+            $("html, body").animate({ scrollTop: $('#' + container).offset().top }, "slow");
+        }
+        function ScrollToTop() {
+            $('html, body').animate({ scrollTop: 0 }, "slow");
+        }
+
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+    </script>
+    @RenderSection("body_scripts", required: false)
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+</body>
+</html>

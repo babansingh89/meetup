@@ -1,0 +1,482 @@
+﻿
+@{
+    ViewBag.Title = "Add Question ";
+    Layout = "~/Areas/LearningAdmin/Views/Shared/_AdminLayout.cshtml";
+}
+<input type="hidden" id="hdnId" value="0" />
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Question Master</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Areas/LearningAdmin/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Specialization:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlSpecializationList", (IList<SelectListItem>)ViewBag.SpecializationList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Subject:<span style="color:red;">*</span></label>
+                                <select id="ddlSubjectList" class="form-control"> </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Unit:<span style="color:red;">*</span></label>
+                                <select id="ddlUnitList" class="form-control"> </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Topic:<span style="color:red;">*</span></label>
+                                <select id="ddlTopicList" class="form-control"> </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Level:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlLevelList", (IList<SelectListItem>)ViewBag.LevelList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Type:</label>
+                                <select id="ddlTypeList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="1">Objective</option>
+                                    <option value="2">Paragraph</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Question<span style="color:red;">*</span></label>
+                                <input type="text" id="txtquestion" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Paragraph</label>
+                                <input type="text" id="txtParagraph" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-primary">
+
+                                <table class="table table-striped table-bordered table-hover dt-responsive order-column" width="100%" id="tblstudent">
+                                    <thead>
+                                        <tr style="background-color: beige;">
+
+                                            <td>SlNo</td>
+                                            <td>Option</td>
+                                            <td>Answer</td>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td><input type="text" id="txt1" /></td>
+                                            <td><input type="checkbox" name="checkbox_name" id="chk1"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td><input type="text" id="txt2" /></td>
+                                            <td><input type="checkbox" id="chk2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td><input type="text" id="txt3" /></td>
+
+                                            <td><input type="checkbox" id="chk3"></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td><input type="text" id="txt4" /></td>
+                                            <td><input type="checkbox" id="chk4"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Solutions</label>
+                                <input type="text" id="txtSolutions" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section body_scripts{
+
+    <script src="https://cdn.ckeditor.com/4.13.0/standard-all/ckeditor.js"></script>
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        (function () {
+            var mathElements = ['math', 'maction', 'maligngroup', 'malignmark', 'menclose', 'merror', 'mfenced', 'mfrac', 'mglyph', 'mi', 'mlabeledtr', 'mlongdiv', 'mmultiscripts', 'mn',
+              'mo', 'mover', 'mpadded', 'mphantom', 'mroot', 'mrow', 'ms', 'mscarries', 'mscarry', 'msgroup', 'msline', 'mspace', 'msqrt', 'msrow', 'mstack', 'mstyle', 'msub', 'msup', 'msubsup',
+              'mtable', 'mtd', 'mtext', 'mtr', 'munder', 'munderover', 'semantics', 'annotation', 'annotation-xml'];
+            CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.13.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
+
+            CKEDITOR.replace('txtquestion', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+
+            CKEDITOR.replace('txtParagraph', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+            CKEDITOR.replace('txt1', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+            CKEDITOR.replace('txt2', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+            CKEDITOR.replace('txt3', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+            CKEDITOR.replace('txt4', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+            CKEDITOR.replace('txtSolutions', {
+                extraPlugins: 'ckeditor_wiris', removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser', height: 70, toolbarCanCollapse: true,
+                toolbarStartupExpanded: false, extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+            });
+        }());
+
+        $(document).ready(function () {
+            hideAlert();
+            $("#ddlSpecializationList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlLevelList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSubjectList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlUnitList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlTopicList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlTypeList").select2({
+                placeholder: "Select"
+            });
+            var query_event_id = getParameterByName('_Id');
+            if (query_event_id) {
+                $("#hdnId").val(query_event_id);
+                fn_Bindtbl(query_event_id, "SelectByID");
+            }
+
+        });
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewQuestionList", "Question")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#btnSave').text("Update");
+                  
+                    $('#ddlSpecializationList').select2("val", data[0].QM_SC_ID);
+                    $('#ddlLevelList').select2("val", data[0].QM_Level_ID);
+                    $('#ddlTypeList').select2("val", data[0].QM_Type);
+                    $('#ddlSubjectList').select2("val", data[0].QM_SubjectID);
+                    $('#ddlUnitList').select2("val", data[0].QM_UnitID);
+                    $('#ddlTopicList').select2("val", data[0].QM_TopicID);
+                    $("#ddlSpecializationList").prop("disabled", true);
+                    $("#ddlSubjectList").prop("disabled", true);
+                    $("#ddlUnitList").prop("disabled", true);
+                    $("#ddlTopicList").prop("disabled", true);
+
+                    CKEDITOR.instances.txt1.setData(data[0].QM_Option1);
+                    CKEDITOR.instances.txt2.setData(data[0].QM_Option2);
+                    CKEDITOR.instances.txt3.setData(data[0].QM_Option3);
+                    CKEDITOR.instances.txt4.setData(data[0].QM_Option4);
+                    CKEDITOR.instances.txtSolutions.setData(data[0].QM_Solution);
+                    CKEDITOR.instances.txtquestion.setData(data[0].QM_Question);
+                    CKEDITOR.instances.txtParagraph.setData(data[0].QM_Paragaraph);
+                   
+                    if (data[0].QM_SlNo1.toLowerCase()=='false')
+                        $('#chk1').prop('checked', false);
+                    else
+                        $('#chk1').prop('checked', true);
+
+                    if (data[0].QM_SlNo2.toLowerCase() == 'false')
+                        $('#chk2').prop('checked', false);
+                    else
+                        $('#chk2').prop('checked', true);
+
+                    if (data[0].QM_SlNo3.toLowerCase() == 'false')
+                        $('#chk3').prop('checked', false);
+                    else
+                        $('#chk3').prop('checked', true);
+
+                    if (data[0].QM_SlNo4.toLowerCase() == 'false')
+                        $('#chk4').prop('checked', false);
+                    else
+                        $('#chk4').prop('checked', true);
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        $("#ddlSpecializationList").change(function () {
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Question/BindSubject',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSubjectList").empty().append('<option selected="selected" value="-1">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSubjectList").append($("<option/>").val(this.SM_Id).text(this.SM_SubjectName));
+                        });
+                    }
+                }
+            });
+        });
+
+        $("#ddlSubjectList").change(function () {
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Question/BindUnit',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlUnitList").empty().append('<option selected="selected" value="-1">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlUnitList").append($("<option/>").val(this.UM_Id).text(this.UM_UnitName));
+                        });
+                    }
+                }
+            });
+        });
+
+        $("#ddlUnitList").change(function () {
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Question/BindTopic',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlTopicList").empty().append('<option selected="selected" value="-1">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlTopicList").append($("<option/>").val(this.TM_Id).text(this.TM_Name));
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on("click", "#btnSave", function () {
+            hideAlert();
+            var _Id = $.trim($("#hdnId").val());
+
+            var _ddl1 = $('#ddlSpecializationList').val();
+            var _ddl2 = $('#ddlSubjectList').val();
+            var _ddl3 = $('#ddlUnitList').val();
+            var _ddl4 = $('#ddlTopicList').val();
+            var _ddl5 = $('#ddlLevelList').val();
+            var _ddl6 = $('#ddlTypeList').val();
+
+            var _Question = CKEDITOR.instances.txtquestion.getData();
+            var _Paragaraph = CKEDITOR.instances.txtParagraph.getData();
+            var _Solution = CKEDITOR.instances.txtSolutions.getData();
+
+            var _txt1 = CKEDITOR.instances.txt1.getData();
+            var _txt2 = CKEDITOR.instances.txt2.getData();
+            var _txt3 = CKEDITOR.instances.txt3.getData();
+            var _txt4 = CKEDITOR.instances.txt4.getData();
+
+            var _chk1 = $('input:checkbox[id=chk1]').is(':checked');
+            var _chk2 = $('input:checkbox[id=chk2]').is(':checked');
+            var _chk3 = $('input:checkbox[id=chk3]').is(':checked');
+            var _chk4 = $('input:checkbox[id=chk4]').is(':checked');
+
+            if (_ddl1 == '' || _ddl1 <= 0) {
+                FormSuccessError1("Please select Specialization.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl2 == '' || _ddl2 <= 0) {
+                FormSuccessError1("Please select Subject.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl3 == '' || _ddl3 <= 0) {
+                FormSuccessError1("Please select Unit.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl4 == '' || _ddl4 <= 0) {
+                FormSuccessError1("Please select Topic.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl5 == '' || _ddl5 <= 0) {
+                FormSuccessError1("Please select Level.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl6 == '' || _ddl6 <= 0) {
+                FormSuccessError1("Please select Type.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_Question == '') {
+                FormSuccessError1("Please enter Question.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            if (_txt1 == '' || _txt2 == '' || _txt3 == '' || _txt4 == '') {
+                FormSuccessError1("Please enter Option.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            if (_chk1 == false && _chk2 == false && _chk3 == false && _chk4 == false) {
+                FormSuccessError1("Please select correct option.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveQuestion", "Question")',
+                data: JSON.stringify({
+                    ID: _Id,
+                    Spec_ID: _ddl1, Sub_ID: _ddl2, Unit_ID: _ddl3, Topic_ID: _ddl4, Level_ID: _ddl5, Type_ID: _ddl6,
+                    Question: _Question, Paragaraph: _Paragaraph, Solution: _Solution,
+                    chk1: _chk1, chk2: _chk2, chk3: _chk3, chk4: _chk4,
+                    txt1: _txt1, txt2: _txt2, txt3: _txt3, txt4: _txt4
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        FormSuccessError1("Data Inserted successfully.", "Success","errorBlock", "div_Scroll");
+                        fn_resetform();
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+                        fn_resetform();
+                    }
+                    else {
+                        alert("Error. " + response);
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError1(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+        $(document).on("click", "#btn-clear", function () {
+            fn_resetform();
+        });
+
+        function fn_resetform() {
+            var query_event_id = getParameterByName('_Id');
+            if (query_event_id) {
+              
+                var url = '@Url.Action("QuestionMaster", "Question")';
+                window.location.href = url;
+            }
+            $('#ddlSpecializationList').select2("val", '');
+            $('#ddlLevelList').select2("val", '');
+            $('#ddlSubjectList').select2("val", '');
+            $('#ddlUnitList').select2("val", '');
+            $('#ddlTopicList').select2("val", '');
+            $('#ddlTypeList').select2("val", '');
+
+            CKEDITOR.instances.txt1.setData('');
+            CKEDITOR.instances.txt2.setData('');
+            CKEDITOR.instances.txt3.setData('');
+            CKEDITOR.instances.txt4.setData('');
+            CKEDITOR.instances.txtSolutions.setData('');
+            CKEDITOR.instances.txtquestion.setData('');
+            CKEDITOR.instances.txtParagraph.setData('');
+
+            $('#chk1').prop('checked', false);
+            $('#chk2').prop('checked', false);
+            $('#chk3').prop('checked', false);
+            $('#chk4').prop('checked', false);
+            $("#ddlSpecializationList").prop("disabled", false);
+            $("#ddlSubjectList").prop("disabled", false);
+            $("#ddlUnitList").prop("disabled", false);
+            $("#ddlTopicList").prop("disabled", false);
+        }
+    </script>
+}

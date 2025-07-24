@@ -1,0 +1,201 @@
+﻿@model SchoolERP_System.Areas.LearningAdmin.Models.VQ
+@{
+    ViewBag.Title = "View Question";
+    Layout = "~/Areas/LearningAdmin/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Question</span>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblDL">
+                            <thead>
+                                <tr>
+                                    <th width="15">Specialization</th>
+                                    <th width="15">Subject</th>
+                                    <th width="15">Unit</th>
+                                    <th width="15">Topic</th>
+                                    <th width="15">Level</th>
+                                    <th width="15">Type</th>
+                                    <th>Question</th>
+                                    <th width="15">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdnId" value="0" />
+@section body_scripts{
+    <script src="https://cdn.ckeditor.com/4.13.0/standard-all/ckeditor.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            fn_Bindtbl("0", "Select");
+
+
+        });
+        $(document).on("click", ".Iconedit", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdnId").val(_Id);
+            fn_Bindtbl(_Id, "SelectByID");
+        });
+
+        $(document).on("click", ".Icondel", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id);
+            }
+
+
+        });
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewQuestionList", "Question")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "Select") {
+                        $('#tblDL tbody').empty();
+
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.SC_Name + '</td>';
+                            row += '<td>' + val.SM_SubjectName + '</td>';
+                            row += '<td>' + val.UM_UnitName + '</td>';
+                            row += '<td>' + val.TM_Name + '</td>';
+                            row += '<td>' + val.DL_Name + '</td>';
+                            row += '<td>' + val.QM_Type + '</td>';
+                            row += '<td><textarea disabled class="cls">' + val.QM_Question + '</textarea></td>';
+                            row += '<td><i class="fa fa-edit Iconedit" data-ID="' + val.QM_ID + '"></i><i class="fa fa-trash-o Icondel" data-ID="' + val.QM_ID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblDL tbody').append(row);
+
+                        });
+                        $('#tblDL').dataTable({
+                            "bSort": false
+
+                        });
+
+                        if (CKEDITOR.env.isCompatible) {
+
+                            $('textarea').each(function (index, value) {
+
+                                var $id = 'textarea_' + index;
+
+                                $(this).attr('id', $id);
+                                var mathElements = ['math', 'maction', 'maligngroup', 'malignmark', 'menclose', 'merror', 'mfenced', 'mfrac', 'mglyph', 'mi', 'mlabeledtr', 'mlongdiv', 'mmultiscripts', 'mn',
+              'mo', 'mover', 'mpadded', 'mphantom', 'mroot', 'mrow', 'ms', 'mscarries', 'mscarry', 'msgroup', 'msline', 'mspace', 'msqrt', 'msrow', 'mstack', 'mstyle', 'msub', 'msup', 'msubsup',
+              'mtable', 'mtd', 'mtext', 'mtr', 'munder', 'munderover', 'semantics', 'annotation', 'annotation-xml'];
+                                CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.13.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
+
+
+                                CKEDITOR.replace($id,
+                                    {
+                                        extraPlugins: 'ckeditor_wiris', extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)',
+                                        on:
+                                    {
+                                        instanceReady: function (evt) {
+                                            // Hide the editor top bar.
+
+                                            $('.cke_top').css('display', 'none');
+                                            $('.cke_contents').css('height', '100px');
+                                            $('.cke_bottom').css('display', 'none');
+                                        }
+                                    },
+
+                                        removePlugins: 'resize'
+                                    }
+                                )
+                            });
+
+                        }
+
+
+                    }
+
+                    if (Type == "SelectByID") {
+                        var url = '@Url.Action("QuestionMaster", "Question", new { _Id = "__id__" })';
+                        window.location.href = url.replace('__id__', _Id);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteQuestion", "Question")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data deleted successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+
+
+    </script>
+}
+
+

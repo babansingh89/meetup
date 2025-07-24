@@ -1,0 +1,1427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A588277D-4EDE-4CF2-9326-ED22E4AF84BF}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SchoolERP_System</RootNamespace>
+    <AssemblyName>SchoolERP_System</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.Engine.13.0.4003\lib\net40\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.ClientDoc.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.ClientDoc.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.CommLayer.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CommLayer.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommonControls, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.CommonControls.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CommonControls.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommonObjectModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.CommonObjectModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CommonObjectModel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.Controllers, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.Controllers.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.Controllers.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CubeDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.CubeDefModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CubeDefModel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.DataDefModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.DataDefModel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.DataSetConversion, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.DataSetConversion.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.DataSetConversion.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.ObjectFactory, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.ObjectFactory.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.ObjectFactory.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.Prompting, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.Prompting.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.Prompting.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.ReportDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.ReportDefModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.ReportDefModel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.XmlSerialize, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportAppServer.XmlSerialize.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.XmlSerialize.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.ReportSource.13.0.4003\lib\net40\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.Shared.13.0.4003\lib\net40\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Web, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalReports.Web.13.0.4003\lib\net40\CrystalDecisions.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.0.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.0.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.0.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.0.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.0.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.0.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Cors, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Cors.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Extensions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.FileProviders.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.FileProviders.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.FileProviders.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Net.Http.Headers, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.Headers.2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="NReco.PdfGenerator, Version=1.1.15.0, Culture=neutral, PublicKeyToken=231663d50a41b451, processorArchitecture=MSIL">
+      <HintPath>..\packages\NReco.PdfGenerator.1.1.15\lib\net20\NReco.PdfGenerator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Razorpay, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Razorpay.3.0.0\lib\net45\Razorpay.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SchoolERP_System, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\SchoolERP_System.dll</HintPath>
+    </Reference>
+    <Reference Include="Select.HtmlToPdf, Version=24.1.0.0, Culture=neutral, PublicKeyToken=e0ae9f6e27a97018, processorArchitecture=MSIL">
+      <HintPath>..\packages\Select.HtmlToPdf.24.1.0\lib\net40\Select.HtmlToPdf.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.6.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Cors, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.3.0\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Http, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.3.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Cors, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Cors.5.3.0\lib\net45\System.Web.Http.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.3.0\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\ERPAdmin\Controllers\AdminDashboardController.cs" />
+    <Compile Include="Areas\ERPAdmin\Controllers\ErrorEAController.cs" />
+    <Compile Include="Areas\ERPAdmin\Controllers\LoginERPController.cs" />
+    <Compile Include="Areas\ERPAdmin\Controllers\SchoolMasterController.cs" />
+    <Compile Include="Areas\ERPAdmin\ERPAdminAreaRegistration.cs" />
+    <Compile Include="Areas\ERPAdmin\Helper\ExceptionFilterAttribute.cs" />
+    <Compile Include="Areas\ERPAdmin\Helper\GenLib.cs" />
+    <Compile Include="Areas\ERPAdmin\Helper\SessionAuthorizedAttribute.cs" />
+    <Compile Include="Areas\ERPAdmin\Helper\SQLHelper.cs" />
+    <Compile Include="Areas\ERPAdmin\Helper\Utility.cs" />
+    <Compile Include="Areas\ERPAdmin\Models\MstModels.cs" />
+    <Compile Include="Areas\ERPAdmin\Models\SessionModelClass.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\AdminDashboardController.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\ErrorLAController.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\LiveTestController.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\MappingController.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\MasterController.cs" />
+    <Compile Include="Areas\LearningAdmin\Controllers\QuestionController.cs" />
+    <Compile Include="Areas\LearningAdmin\Helper\ExceptionFilterAttribute.cs" />
+    <Compile Include="Areas\LearningAdmin\Helper\GenLib.cs" />
+    <Compile Include="Areas\LearningAdmin\Helper\SessionAuthorizedAttribute.cs" />
+    <Compile Include="Areas\LearningAdmin\Helper\SQLHelper.cs" />
+    <Compile Include="Areas\LearningAdmin\Helper\Utility.cs" />
+    <Compile Include="Areas\LearningAdmin\LearningAdminAreaRegistration.cs" />
+    <Compile Include="Areas\LearningAdmin\Models\MstModels.cs" />
+    <Compile Include="Areas\LearningAdmin\Models\SessionModelClass.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\DailyAttendanceController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\ErrorERPController.cs" />
+    <Compile Include="Controllers\ExamController.cs" />
+    <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\FeeSettingsERPController.cs" />
+    <Compile Include="Controllers\HRController.cs" />
+    <Compile Include="Controllers\LibraryController.cs" />
+    <Compile Include="Controllers\MasterERPController.cs" />
+    <Compile Include="Controllers\MessagingController.cs" />
+    <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\RoutineController.cs" />
+    <Compile Include="Controllers\SchoolAPIController.cs" />
+    <Compile Include="Controllers\SchoolController.cs" />
+    <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helper\GenLib.cs" />
+    <Compile Include="Helper\HelperClass.cs" />
+    <Compile Include="Helper\SessionAuthorizedAttribute.cs" />
+    <Compile Include="Helper\SQLHelper.cs" />
+    <Compile Include="Helper\SQLHelperAppID.cs" />
+    <Compile Include="Helper\SQLHelperDynamic.cs" />
+    <Compile Include="Helper\SQLHelperMaster.cs" />
+    <Compile Include="Helper\Utility.cs" />
+    <Compile Include="Models\ApiParams.cs" />
+    <Compile Include="Models\IdentityBasicAuthenticationAttribute.cs" />
+    <Compile Include="Models\loggedInUser.cs" />
+    <Compile Include="Models\MasterModels.cs" />
+    <Compile Include="Models\ResponseObj.cs" />
+    <Compile Include="OpenReport\OpenReports.aspx.cs">
+      <DependentUpon>OpenReports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OpenReport\OpenReports.aspx.designer.cs">
+      <DependentUpon>OpenReports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\classreport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>classreport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\DailyAttendance.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DailyAttendance.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ExpenseEntryReport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExpenseEntryReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\FeeCollection.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FeeCollection.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\MarksEntryReport1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MarksEntryReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Routine.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Routine.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StudentAdmintCard.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentAdmintCard.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StudentIDCard1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentIDCard.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StudentPerformanceReport1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentPerformanceReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StudentRegistration.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentRegistration.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\StudentRegistrationList1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StudentRegistrationList.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\ERPAdmin\Content\assets\css\bootstrap.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\font-awesome.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\font.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\jqvmap.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\lightbox.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\minimal.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\monthly.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\morris.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\style-responsive.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\css\style.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\1.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\2.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\3.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\bg.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\close.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g1.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g2.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g3.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g4.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g5.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g6.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g7.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g8.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\g9.jpg" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\mail.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\minimal.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\nav-expand.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\next.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\pass.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\prev.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\images\search-icon.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\bootstrap.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.dcjqaccordion.2.7.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.fileupload.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.nicescroll.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.scrollTo.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.slimscroll.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.vmap.asia.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.vmap.australia.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.vmap.europe.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.vmap.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.vmap.sampledata.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery.vmap.world.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\jquery2.0.3.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\lightbox-plus-jquery.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\monthly.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\morris.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\raphael-min.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\script.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\js\scripts.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\Confirmation\jquery-confirm.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\Confirmation\jquery-confirm.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatable-highlighter\datatables.mark.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\css\datatables.bootstrap.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\css\datatables.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\back_disabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\back_enabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\back_enabled_hover.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\forward_disabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\forward_enabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\forward_enabled_hover.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\sort_asc.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\sort_asc_disabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\sort_both.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\sort_desc.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\sort_desc_disabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\js\datatable.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\js\datatables.bootstrap.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\js\datatables.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\js\dataTables.rowsGroup.js" />
+    <Content Include="Areas\ERPAdmin\Content\Common\Css\nprogress.css" />
+    <Content Include="Areas\ERPAdmin\Content\Common\Css\TreeStyle.css" />
+    <Content Include="Areas\ERPAdmin\Content\Common\JS\ajaxSpiner.js" />
+    <Content Include="Areas\ERPAdmin\Content\Common\JS\dataTableInit.js" />
+    <Content Include="Areas\ERPAdmin\Content\Common\JS\Error.js" />
+    <Content Include="Areas\ERPAdmin\Content\Common\JS\nprogress.js" />
+    <Content Include="Areas\ERPAdmin\Content\Common\JS\Utility.js" />
+    <Content Include="Areas\ERPAdmin\Content\Image\ajax-loader.gif" />
+    <Content Include="Areas\ERPAdmin\Content\Image\ajax-loader1.gif" />
+    <Content Include="Areas\ERPAdmin\Content\Image\ajax-loader2.gif" />
+    <Content Include="Areas\ERPAdmin\Content\Image\ajax-loader3.gif" />
+    <Content Include="Areas\ERPAdmin\Content\Image\ajax-loader4.gif" />
+    <Content Include="Areas\ERPAdmin\Content\Image\ajax-loader5.gif" />
+    <Content Include="Areas\ERPAdmin\Content\Select2\select2-bootstrap.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\Select2\select2.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\Select2\select2.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-datepicker\css\datepicker.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-datepicker\js\bootstrap-datepicker.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-social\bootstrap-social.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\components-md.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-plugins\dataTables.bootstrap.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-plugins\dataTables.bootstrap.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-plugins\dataTables.bootstrap.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-plugins\index.html" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-responsive\dataTables.responsive.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-responsive\dataTables.responsive.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\css\datatables.bootstrap.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\css\datatables.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\favicon.ico" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\sort_asc.png" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\sort_asc_disabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\sort_both.png" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\sort_desc.png" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\sort_desc_disabled.png" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\js\datatable.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\js\datatables.bootstrap.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\js\datatables.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot-tooltip\jquery.flot.tooltip.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot-tooltip\jquery.flot.tooltip.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot-tooltip\jquery.flot.tooltip.source.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\excanvas.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\excanvas.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.colorhelpers.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.canvas.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.categories.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.crosshair.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.errorbars.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.fillbetween.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.image.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.navigate.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.pie.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.resize.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.selection.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.stack.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.symbol.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.threshold.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.flot.time.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\flot\jquery.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\css\font-awesome.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\HELP-US-OUT.txt" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\jquery\jquery.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\jquery\jquery.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\metisMenu\metisMenu.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\metisMenu\metisMenu.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\metisMenu\metisMenu.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\metisMenu\metisMenu.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\morrisjs\morris.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\morrisjs\morris.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\morrisjs\morris.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\raphael\raphael.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\raphael\raphael.min.js" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\select2\select2-bootstrap.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\select2\select2.min.css" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\select2\select2.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\Common\Css\nprogress.css" />
+    <Content Include="Areas\LearningAdmin\Content\Common\Css\TreeStyle.css" />
+    <Content Include="Areas\LearningAdmin\Content\Common\JS\ajaxSpiner.js" />
+    <Content Include="Areas\LearningAdmin\Content\Common\JS\dataTableInit.js" />
+    <Content Include="Areas\LearningAdmin\Content\Common\JS\Error.js" />
+    <Content Include="Areas\LearningAdmin\Content\Common\JS\nprogress.js" />
+    <Content Include="Areas\LearningAdmin\Content\Common\JS\Utility.js" />
+    <Content Include="Areas\LearningAdmin\Content\Select2\select2-bootstrap.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\Select2\select2.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\Select2\select2.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-datepicker\css\datepicker.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-datepicker\js\bootstrap-datepicker.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-daterangepicker\daterangepicker.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-social\bootstrap-social.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\components-md.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-plugins\dataTables.bootstrap.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-plugins\dataTables.bootstrap.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-plugins\dataTables.bootstrap.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-plugins\index.html" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-responsive\dataTables.responsive.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-responsive\dataTables.responsive.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\css\datatables.bootstrap.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\css\datatables.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\favicon.ico" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\sort_asc.png" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\sort_asc_disabled.png" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\sort_both.png" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\sort_desc.png" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\sort_desc_disabled.png" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\js\datatable.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\js\datatables.bootstrap.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\js\datatables.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot-tooltip\jquery.flot.tooltip.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot-tooltip\jquery.flot.tooltip.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot-tooltip\jquery.flot.tooltip.source.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\excanvas.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\excanvas.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.colorhelpers.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.canvas.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.categories.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.crosshair.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.errorbars.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.fillbetween.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.image.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.navigate.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.pie.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.resize.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.selection.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.stack.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.symbol.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.threshold.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.flot.time.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\flot\jquery.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\css\font-awesome.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\HELP-US-OUT.txt" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\jquery\jquery.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\jquery\jquery.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\metisMenu\metisMenu.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\metisMenu\metisMenu.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\metisMenu\metisMenu.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\metisMenu\metisMenu.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\morrisjs\morris.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\morrisjs\morris.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\morrisjs\morris.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\raphael\raphael.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\raphael\raphael.min.js" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\select2\select2-bootstrap.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\select2\select2.min.css" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\select2\select2.min.js" />
+    <Content Include="bin\Antlr3.Runtime.dll" />
+    <Content Include="bin\CrystalDecisions.CrystalReports.Engine.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.ClientDoc.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.CommLayer.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.CommonControls.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.CommonObjectModel.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.Controllers.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.CubeDefModel.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.DataDefModel.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.DataSetConversion.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.ObjectFactory.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.Prompting.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.ReportDefModel.dll" />
+    <Content Include="bin\CrystalDecisions.ReportAppServer.XmlSerialize.dll" />
+    <Content Include="bin\CrystalDecisions.ReportSource.dll" />
+    <Content Include="bin\CrystalDecisions.Shared.dll" />
+    <Content Include="bin\CrystalDecisions.Web.dll" />
+    <Content Include="bin\EntityFramework.dll" />
+    <Content Include="bin\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Microsoft.AI.Agent.Intercept.dll" />
+    <Content Include="bin\Microsoft.AI.DependencyCollector.dll" />
+    <Content Include="bin\Microsoft.AI.PerfCounterCollector.dll" />
+    <Content Include="bin\Microsoft.AI.ServerTelemetryChannel.dll" />
+    <Content Include="bin\Microsoft.AI.Web.dll" />
+    <Content Include="bin\Microsoft.AI.WindowsServer.dll" />
+    <Content Include="bin\Microsoft.ApplicationInsights.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Core.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.EntityFramework.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Owin.dll" />
+    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
+    <Content Include="bin\Microsoft.Owin.dll" />
+    <Content Include="bin\Microsoft.Owin.Host.SystemWeb.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Cookies.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Facebook.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Google.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.MicrosoftAccount.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.OAuth.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Twitter.dll" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="bin\Newtonsoft.Json.dll" />
+    <Content Include="bin\NReco.PdfGenerator.dll" />
+    <Content Include="bin\Owin.dll" />
+    <Content Include="bin\Razorpay.dll" />
+    <Content Include="bin\roslyn\csc.exe" />
+    <Content Include="bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll" />
+    <Content Include="bin\roslyn\System.Collections.Immutable.dll" />
+    <Content Include="bin\roslyn\System.Reflection.Metadata.dll" />
+    <Content Include="bin\roslyn\vbc.exe" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe" />
+    <Content Include="bin\SchoolERP_System.dll" />
+    <Content Include="bin\Select.HtmlToPdf.dll" />
+    <Content Include="bin\System.Net.Http.Formatting.dll" />
+    <Content Include="bin\System.Web.Helpers.dll" />
+    <Content Include="bin\System.Web.Http.dll" />
+    <Content Include="bin\System.Web.Http.WebHost.dll" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Optimization.dll" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
+    <Content Include="bin\WebGrease.dll" />
+    <Content Include="Content\assets\css\bootstrap.min.css" />
+    <Content Include="Content\assets\css\font-awesome.css" />
+    <Content Include="Content\assets\css\font.css" />
+    <Content Include="Content\assets\css\jquerysctipttop.css" />
+    <Content Include="Content\assets\css\jqvmap.css" />
+    <Content Include="Content\assets\css\lightbox.css" />
+    <Content Include="Content\assets\css\minimal.css" />
+    <Content Include="Content\assets\css\monthly.css" />
+    <Content Include="Content\assets\css\morris.css" />
+    <Content Include="Content\assets\css\style-responsive.css" />
+    <Content Include="Content\assets\css\style.css" />
+    <Content Include="Content\assets\css\stylesheet.css" />
+    <Content Include="Content\assets\css\tab.css" />
+    <Content Include="Content\assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\assets\images\1.png" />
+    <Content Include="Content\assets\images\2.png" />
+    <Content Include="Content\assets\images\3.png" />
+    <Content Include="Content\assets\images\bg.jpg" />
+    <Content Include="Content\assets\images\close.png" />
+    <Content Include="Content\assets\images\del.png" />
+    <Content Include="Content\assets\images\exce.png" />
+    <Content Include="Content\assets\images\g1.jpg" />
+    <Content Include="Content\assets\images\g2.jpg" />
+    <Content Include="Content\assets\images\g3.jpg" />
+    <Content Include="Content\assets\images\g4.jpg" />
+    <Content Include="Content\assets\images\g5.jpg" />
+    <Content Include="Content\assets\images\g6.jpg" />
+    <Content Include="Content\assets\images\g7.jpg" />
+    <Content Include="Content\assets\images\g8.jpg" />
+    <Content Include="Content\assets\images\g9.jpg" />
+    <Content Include="Content\assets\images\mail.png" />
+    <Content Include="Content\assets\images\minimal.png" />
+    <Content Include="Content\assets\images\nav-expand.png" />
+    <Content Include="Content\assets\images\next.png" />
+    <Content Include="Content\assets\images\other.png" />
+    <Content Include="Content\assets\images\pass.png" />
+    <Content Include="Content\assets\images\pdf.png" />
+    <Content Include="Content\assets\images\prev.png" />
+    <Content Include="Content\assets\images\search-icon.png" />
+    <Content Include="Content\assets\images\tagFriend.png" />
+    <Content Include="Content\assets\images\text.png" />
+    <Content Include="Content\assets\images\word.png" />
+    <Content Include="Content\assets\js\bootstrap.js" />
+    <Content Include="Content\assets\js\full-year-calendar.js" />
+    <Content Include="Content\assets\js\jquery.dcjqaccordion.2.7.js" />
+    <Content Include="Content\assets\js\jquery.fileupload.js" />
+    <Content Include="Content\assets\js\jquery.min.js" />
+    <Content Include="Content\assets\js\jquery.nicescroll.js" />
+    <Content Include="Content\assets\js\jquery.scrollTo.js" />
+    <Content Include="Content\assets\js\jquery.slimscroll.js" />
+    <Content Include="Content\assets\js\jquery.vmap.asia.js" />
+    <Content Include="Content\assets\js\jquery.vmap.australia.js" />
+    <Content Include="Content\assets\js\jquery.vmap.europe.js" />
+    <Content Include="Content\assets\js\jquery.vmap.js" />
+    <Content Include="Content\assets\js\jquery.vmap.sampledata.js" />
+    <Content Include="Content\assets\js\jquery.vmap.world.js" />
+    <Content Include="Content\assets\js\jquery2.0.3.min.js" />
+    <Content Include="Content\assets\js\lightbox-plus-jquery.min.js" />
+    <Content Include="Content\assets\js\moment.min.js" />
+    <Content Include="Content\assets\js\monthly.js" />
+    <Content Include="Content\assets\js\morris.js" />
+    <Content Include="Content\assets\js\raphael-min.js" />
+    <Content Include="Content\assets\js\script.js" />
+    <Content Include="Content\assets\js\scripts.js" />
+    <Content Include="Content\assets\js\summernote-file.js" />
+    <Content Include="Content\assets\js\summernote.js" />
+    <Content Include="Content\assets\Plugins\Confirmation\jquery-confirm.css" />
+    <Content Include="Content\assets\Plugins\Confirmation\jquery-confirm.js" />
+    <Content Include="Content\assets\Plugins\datatable-highlighter\datatables.mark.js" />
+    <Content Include="Content\assets\Plugins\datatables\css\datatables.min.css" />
+    <Content Include="Content\assets\Plugins\datatables\images\back_disabled.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\back_enabled.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\back_enabled_hover.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\forward_disabled.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\forward_enabled.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\forward_enabled_hover.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\sort_asc.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\sort_asc_disabled.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\sort_both.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\sort_desc.png" />
+    <Content Include="Content\assets\Plugins\datatables\images\sort_desc_disabled.png" />
+    <Content Include="Content\assets\Plugins\datatables\js\datatable.js" />
+    <Content Include="Content\assets\Plugins\datatables\js\datatables.bootstrap.js" />
+    <Content Include="Content\assets\Plugins\datatables\js\datatables.min.js" />
+    <Content Include="Content\assets\Plugins\datatables\js\dataTables.rowsGroup.js" />
+    <Content Include="Content\assets\Plugins\datatables\css\datatables.bootstrap.css" />
+    <Content Include="Content\Common\Css\bootstrap.css" />
+    <Content Include="Content\Common\Css\bootstrap.min.css" />
+    <Content Include="Content\Common\Css\font-awesome.css" />
+    <Content Include="Content\Common\Css\font-awesome.min.css" />
+    <Content Include="Content\Common\Css\nprogress.css" />
+    <Content Include="Content\Common\Css\styleCS.css" />
+    <Content Include="Content\Common\Css\styleprint.css" />
+    <Content Include="Content\Common\Css\TreeStyle.css" />
+    <Content Include="Content\Common\JS\ajaxSpiner.js" />
+    <Content Include="Content\Common\JS\dataTableInit.js" />
+    <Content Include="Content\Common\JS\Error.js" />
+    <Content Include="Content\Common\JS\jQuery.print.js" />
+    <Content Include="Content\Common\JS\nprogress.js" />
+    <Content Include="Content\Common\JS\Utility.js" />
+    <Content Include="Content\vendor\form-wizard-blue.css" />
+    <Content Include="Content\vendor\form-wizard.js" />
+    <Content Include="Content\Image\Active.png" />
+    <Content Include="Content\Image\ajax-loader.gif" />
+    <Content Include="Content\Image\ajax-loader1.gif" />
+    <Content Include="Content\Image\ajax-loader2.gif" />
+    <Content Include="Content\Image\ajax-loader3.gif" />
+    <Content Include="Content\Image\ajax-loader4.gif" />
+    <Content Include="Content\Image\ajax-loader5.gif" />
+    <Content Include="Content\Image\avatar-12.png" />
+    <Content Include="Content\Image\InActive.png" />
+    <Content Include="Content\Image\Lhead_Head.png" />
+    <Content Include="Content\Image\reset.png" />
+    <Content Include="Content\Select2\select2-bootstrap.min.css" />
+    <Content Include="Content\Select2\select2.min.css" />
+    <Content Include="Content\Select2\select2.min.js" />
+    <Content Include="Content\vendor\bootstrap-datepicker\css\datepicker.css" />
+    <Content Include="Content\vendor\bootstrap-datepicker\js\bootstrap-datepicker.js" />
+    <Content Include="Content\vendor\bootstrap-daterangepicker\daterangepicker.css" />
+    <Content Include="Content\vendor\bootstrap-daterangepicker\daterangepicker.js" />
+    <Content Include="Content\vendor\bootstrap-daterangepicker\daterangepicker.min.css" />
+    <Content Include="Content\vendor\bootstrap-daterangepicker\daterangepicker.min.js" />
+    <Content Include="Content\vendor\bootstrap-social\bootstrap-social.css" />
+    <Content Include="Content\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="Content\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="Content\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\vendor\components-md.css" />
+    <Content Include="Content\vendor\datatables-plugins\dataTables.bootstrap.css" />
+    <Content Include="Content\vendor\datatables-plugins\dataTables.bootstrap.js" />
+    <Content Include="Content\vendor\datatables-plugins\dataTables.bootstrap.min.js" />
+    <Content Include="Content\vendor\datatables-plugins\index.html" />
+    <Content Include="Content\vendor\datatables-responsive\dataTables.responsive.css" />
+    <Content Include="Content\vendor\datatables-responsive\dataTables.responsive.js" />
+    <Content Include="Content\vendor\datatables\css\datatables.bootstrap.css" />
+    <Content Include="Content\vendor\datatables\css\datatables.min.css" />
+    <Content Include="Content\vendor\datatables\images\favicon.ico" />
+    <Content Include="Content\vendor\datatables\images\sort_asc.png" />
+    <Content Include="Content\vendor\datatables\images\sort_asc_disabled.png" />
+    <Content Include="Content\vendor\datatables\images\sort_both.png" />
+    <Content Include="Content\vendor\datatables\images\sort_desc.png" />
+    <Content Include="Content\vendor\datatables\images\sort_desc_disabled.png" />
+    <Content Include="Content\vendor\datatables\js\datatable.js" />
+    <Content Include="Content\vendor\datatables\js\datatables.bootstrap.js" />
+    <Content Include="Content\vendor\datatables\js\datatables.min.js" />
+    <Content Include="Content\vendor\flot-tooltip\jquery.flot.tooltip.js" />
+    <Content Include="Content\vendor\flot-tooltip\jquery.flot.tooltip.min.js" />
+    <Content Include="Content\vendor\flot-tooltip\jquery.flot.tooltip.source.js" />
+    <Content Include="Content\vendor\flot\excanvas.js" />
+    <Content Include="Content\vendor\flot\excanvas.min.js" />
+    <Content Include="Content\vendor\flot\jquery.colorhelpers.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.canvas.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.categories.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.crosshair.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.errorbars.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.fillbetween.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.image.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.navigate.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.pie.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.resize.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.selection.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.stack.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.symbol.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.threshold.js" />
+    <Content Include="Content\vendor\flot\jquery.flot.time.js" />
+    <Content Include="Content\vendor\flot\jquery.js" />
+    <Content Include="Content\vendor\font-awesome\css\font-awesome.css" />
+    <Content Include="Content\vendor\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Content\vendor\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\vendor\font-awesome\HELP-US-OUT.txt" />
+    <Content Include="Content\vendor\jquery\jquery.js" />
+    <Content Include="Content\vendor\jquery\jquery.min.js" />
+    <Content Include="Content\vendor\metisMenu\metisMenu.css" />
+    <Content Include="Content\vendor\metisMenu\metisMenu.js" />
+    <Content Include="Content\vendor\metisMenu\metisMenu.min.css" />
+    <Content Include="Content\vendor\metisMenu\metisMenu.min.js" />
+    <Content Include="Content\vendor\morrisjs\morris.css" />
+    <Content Include="Content\vendor\morrisjs\morris.js" />
+    <Content Include="Content\vendor\morrisjs\morris.min.js" />
+    <Content Include="Content\vendor\PrivacyPolicy.html" />
+    <Content Include="Content\vendor\raphael\raphael.js" />
+    <Content Include="Content\vendor\raphael\raphael.min.js" />
+    <Content Include="Content\vendor\RefundPolicy.html" />
+    <Content Include="Content\vendor\select2\select2-bootstrap.min.css" />
+    <Content Include="Content\vendor\select2\select2.min.css" />
+    <Content Include="Content\vendor\select2\select2.min.js" />
+    <Content Include="Content\vendor\TermsofService.html" />
+    <Content Include="EmpImage\loginbanner.jpg" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenReport\OpenReports.aspx" />
+    <Content Include="ReferenceDLL\Select.HtmlToPdf.dll" />
+    <Content Include="ReferenceDLL\Select.HtmlToPdf.xml" />
+    <Content Include="SchImage\1ea641f2_02082022073200.jpeg" />
+    <Content Include="SchImage\dea25a23_14012020080036.jpg" />
+    <Content Include="SchImage\f2c68b7e_22032020120304.png" />
+    <Content Include="SchImage\fc905028_14012020080126.jpg" />
+    <Content Include="SchImage\fd19b44c_22032020191227.png" />
+    <Content Include="UploadedImage\72b000cf_06032021143816.jpg" />
+    <Content Include="UploadedImage\teststudent.png" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\Upload\PrintPDF\" />
+    <Folder Include="DocPost\" />
+    <Folder Include="ImagesPost\" />
+    <Folder Include="ParentsImage\" />
+    <Folder Include="SyllabusDoc\" />
+    <Folder Include="Views\App\" />
+    <Folder Include="Views\test\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <Content Include="Content\assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\assets\fonts\FontAwesome.otf" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\assets\Plugins\datatables\images\Sorting icons.psd" />
+    <Content Include="Areas\ERPAdmin\Views\web.config" />
+    <Content Include="Areas\LearningAdmin\Views\web.config" />
+    <Content Include="Areas\LearningAdmin\Views\Login\LoginAdmin.cshtml" />
+    <Content Include="Areas\ERPAdmin\Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\AdminDashboard\Index.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Master\Specialization.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Master\Subject.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Master\Unit.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Master\Topic.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Master\Level.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Master\Video.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Shared\Error.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Shared\Modal_SuccessError.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Shared\SuccessError.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Mapping\SpecializationWithSubject.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Mapping\SubjectWithUnit.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Mapping\UnitWithTopic.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Mapping\TopicWithVideo.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Question\QuestionMaster.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Question\ViewQuestion.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\LiveTest\LiveTestMaster.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\LiveTest\LiveTestMap.cshtml" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-social\bootstrap-social.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\bootstrap-social\bootstrap-social.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables\images\Sorting icons.psd" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\datatables-responsive\dataTables.responsive.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\css\font-awesome.css.map" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\animated.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\bordered-pulled.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\core.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\extras.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\fixed-width.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\font-awesome.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\icons.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\larger.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\list.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\mixins.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\path.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\rotated-flipped.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\screen-reader.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\spinning.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\stacked.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\less\variables.less" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_animated.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_core.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_extras.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_icons.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_larger.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_list.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_mixins.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_path.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_screen-reader.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_spinning.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_stacked.scss" />
+    <Content Include="Areas\LearningAdmin\Content\vendor\font-awesome\scss\_variables.scss" />
+    <Content Include="Areas\LearningAdmin\Views\Error\Index.cshtml" />
+    <Content Include="Areas\LearningAdmin\Views\Error\CommingSoon.cshtml" />
+    <Content Include="Areas\ERPAdmin\Views\LoginERP\LoginERPAdmin.cshtml" />
+    <Content Include="Areas\ERPAdmin\Views\AdminDashboard\Index.cshtml" />
+    <Content Include="Areas\ERPAdmin\Views\Error\Index.cshtml" />
+    <Content Include="Areas\ERPAdmin\Views\Error\CommingSoon.cshtml" />
+    <Content Include="Areas\ERPAdmin\Views\SchoolMaster\ViewSchool.cshtml" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\FontAwesome.otf" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\ERPAdmin\Content\assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Areas\ERPAdmin\Content\assets\Plugins\datatables\images\Sorting icons.psd" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-social\bootstrap-social.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap-social\bootstrap-social.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables-responsive\dataTables.responsive.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\datatables\images\Sorting icons.psd" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\css\font-awesome.css.map" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\animated.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\bordered-pulled.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\core.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\extras.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\fixed-width.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\font-awesome.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\icons.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\larger.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\list.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\mixins.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\path.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\rotated-flipped.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\screen-reader.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\spinning.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\stacked.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\less\variables.less" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_animated.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_core.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_extras.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_icons.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_larger.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_list.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_mixins.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_path.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_screen-reader.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_spinning.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_stacked.scss" />
+    <Content Include="Areas\ERPAdmin\Content\vendor\font-awesome\scss\_variables.scss" />
+    <Content Include="Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\vendor\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\vendor\bootstrap-social\bootstrap-social.less" />
+    <Content Include="Content\vendor\bootstrap-social\bootstrap-social.scss" />
+    <Content Include="Content\vendor\datatables\images\Sorting icons.psd" />
+    <Content Include="Content\vendor\datatables-responsive\dataTables.responsive.scss" />
+    <Content Include="Content\vendor\font-awesome\css\font-awesome.css.map" />
+    <Content Include="Content\vendor\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\vendor\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\vendor\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\vendor\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\vendor\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Content\vendor\font-awesome\less\animated.less" />
+    <Content Include="Content\vendor\font-awesome\less\bordered-pulled.less" />
+    <Content Include="Content\vendor\font-awesome\less\core.less" />
+    <Content Include="Content\vendor\font-awesome\less\extras.less" />
+    <Content Include="Content\vendor\font-awesome\less\fixed-width.less" />
+    <Content Include="Content\vendor\font-awesome\less\font-awesome.less" />
+    <Content Include="Content\vendor\font-awesome\less\icons.less" />
+    <Content Include="Content\vendor\font-awesome\less\larger.less" />
+    <Content Include="Content\vendor\font-awesome\less\list.less" />
+    <Content Include="Content\vendor\font-awesome\less\mixins.less" />
+    <Content Include="Content\vendor\font-awesome\less\path.less" />
+    <Content Include="Content\vendor\font-awesome\less\rotated-flipped.less" />
+    <Content Include="Content\vendor\font-awesome\less\screen-reader.less" />
+    <Content Include="Content\vendor\font-awesome\less\spinning.less" />
+    <Content Include="Content\vendor\font-awesome\less\stacked.less" />
+    <Content Include="Content\vendor\font-awesome\less\variables.less" />
+    <Content Include="Content\vendor\font-awesome\scss\_animated.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_core.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_extras.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_icons.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_larger.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_list.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_mixins.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_path.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_screen-reader.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_spinning.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_stacked.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\_variables.scss" />
+    <Content Include="Content\vendor\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Content\Common\Css\font-awesome.css.map" />
+    <Content Include="Areas\ERPAdmin\Views\SchoolMaster\Support.cshtml" />
+    <Content Include="bin\roslyn\Microsoft.CSharp.Core.targets" />
+    <Content Include="bin\roslyn\Microsoft.VisualBasic.Core.targets" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe.config" />
+    <Content Include="bin\SchoolERP_System.dll.config" />
+    <Content Include="bin\Select.Html.dep" />
+    <None Include="Project_Readme.html" />
+    <Content Include="Views\Account\AdminAuthentication.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Shared\_SuperAdminLayout.cshtml" />
+    <Content Include="Views\Shared\SuccessError.cshtml" />
+    <Content Include="Views\Shared\Modal_SuccessError.cshtml" />
+    <None Include="Properties\PublishProfiles\ERP.pubxml" />
+    <Content Include="Views\ErrorERP\CommingSoon.cshtml" />
+    <Content Include="Views\ErrorERP\Index.cshtml" />
+    <Content Include="Views\MasterERP\ClassMaster.cshtml" />
+    <Content Include="Views\MasterERP\SectionMaster.cshtml" />
+    <Content Include="Views\MasterERP\ClassSectionMapping.cshtml" />
+    <Content Include="Views\MasterERP\SessionMaster.cshtml" />
+    <Content Include="Views\MasterERP\StreamMaster.cshtml" />
+    <Content Include="Views\MasterERP\RouteMaster.cshtml" />
+    <Content Include="Views\MasterERP\ClassStreamMapping.cshtml" />
+    <Content Include="Views\MasterERP\HolidayMaster.cshtml" />
+    <Content Include="Views\FeeSettingsERP\RouteWiseFees.cshtml" />
+    <Content Include="Views\FeeSettingsERP\FeesHeadMaster.cshtml" />
+    <Content Include="Views\FeeSettingsERP\ClasswiseFees.cshtml" />
+    <Content Include="Views\FeeSettingsERP\AddClasswiseFees.cshtml" />
+    <Content Include="Views\Student\Enquiry.cshtml" />
+    <Content Include="Views\Student\PreAdmitted.cshtml" />
+    <Content Include="Views\Student\Registration.cshtml" />
+    <Content Include="Views\Student\RollNoSettings.cshtml" />
+    <Content Include="Views\Student\AdminCard.cshtml" />
+    <Content Include="Views\Student\Promotion.cshtml" />
+    <Content Include="Views\Student\StudentRegistration.cshtml" />
+    <Content Include="Views\Transaction\StudentFeesCollection.cshtml" />
+    <Content Include="Views\Transaction\StudentFeesCollectionList.cshtml" />
+    <Content Include="ReferenceDLL\Select.Html.dep" />
+    <Content Include="Views\Messaging\ST.cshtml" />
+    <Content Include="Views\Messaging\StudentSMS.cshtml" />
+    <Content Include="Views\Messaging\APSMS.cshtml" />
+    <Content Include="Views\Messaging\TeacherSMS.cshtml" />
+    <Content Include="Views\MasterERP\Desgination.cshtml" />
+    <Content Include="Views\MasterERP\Shift.cshtml" />
+    <Content Include="Views\Exam\ExamMaster.cshtml" />
+    <Content Include="Views\Exam\ExamClassMapping.cshtml" />
+    <Content Include="Views\Student\IDCard.cshtml" />
+    <Content Include="Views\Transaction\DefaulterList.cshtml" />
+    <Content Include="Views\Exam\SubjectMaster.cshtml" />
+    <Content Include="Views\Exam\ClassWiseSubject.cshtml" />
+    <Content Include="Views\Exam\ExamReports.cshtml" />
+    <Content Include="Views\Exam\MarksEntry.cshtml" />
+    <Content Include="Views\Exam\StudentMarks.cshtml" />
+    <Content Include="Views\Expenses\Expenses.cshtml" />
+    <Content Include="Views\Expenses\ExpensesEntry.cshtml" />
+    <Content Include="Views\Expenses\ExpensesReport.cshtml" />
+    <Content Include="Views\Report\StudentPerformance.cshtml" />
+    <Content Include="Views\Report\MonthWiseCollection.cshtml" />
+    <Content Include="Views\Report\FeesHeadWiseCollection.cshtml" />
+    <Content Include="Views\Report\StudentDue.cshtml" />
+    <Content Include="Views\Report\StudentRegistration.cshtml" />
+    <Content Include="Views\HR\EmployeeMaster.cshtml" />
+    <Content Include="Views\HR\LoanAdvanceProcess.cshtml" />
+    <Content Include="Views\HR\SalaryProcess.cshtml" />
+    <Content Include="Views\HR\SalaryReport.cshtml" />
+    <Content Include="Views\HR\Attendence.cshtml" />
+    <Content Include="Views\HR\AttendenceReport.cshtml" />
+    <Content Include="Views\School\SchoolProfile.cshtml" />
+    <Content Include="Views\School\Support.cshtml" />
+    <Content Include="Views\HR\AddEmployee.cshtml" />
+    <Content Include="Views\Routine\AddRoutine.cshtml" />
+    <Content Include="Views\Routine\ViewTeacherRoutine.cshtml" />
+    <Content Include="Views\Messaging\StudentSMSIndividual.cshtml" />
+    <Content Include="Views\MasterERP\EventsMaster.cshtml" />
+    <Content Include="Views\Library\BookList.cshtml" />
+    <Content Include="Views\Library\BookIssue.cshtml" />
+    <Content Include="Views\Dashboard\Teacher.cshtml" />
+    <Content Include="Views\Dashboard\Parents.cshtml" />
+    <Content Include="Views\Dashboard\Student.cshtml" />
+    <Content Include="Views\Dashboard\Accountant.cshtml" />
+    <Content Include="Views\Dashboard\Librarian.cshtml" />
+    <Content Include="Views\Shared\_TeacherLayout.cshtml" />
+    <Content Include="Views\Shared\_ParentsLayout.cshtml" />
+    <Content Include="Views\Shared\_StudentLayout.cshtml" />
+    <Content Include="Views\Shared\_AccountantLayout.cshtml" />
+    <Content Include="Views\Shared\_LibrarianLayout.cshtml" />
+    <Content Include="Views\Profile\TeacherProfile.cshtml" />
+    <Content Include="Views\Profile\ParentsProfile.cshtml" />
+    <Content Include="Views\Profile\StudentProfile.cshtml" />
+    <Content Include="Views\Profile\AccountantProfile.cshtml" />
+    <Content Include="Views\Profile\LibrarianProfile.cshtml" />
+    <Content Include="Views\Post\PostAll.cshtml" />
+    <Content Include="Views\Post\ViewPost.cshtml" />
+    <Content Include="Views\Post\ViewFeed.cshtml" />
+    <Content Include="Views\MasterERP\ViewHoliday.cshtml" />
+    <Content Include="Views\MasterERP\ViewStaff.cshtml" />
+    <Content Include="Views\MasterERP\ViewStudent.cshtml" />
+    <Content Include="Views\MasterERP\ViewRoutine.cshtml" />
+    <Content Include="Views\MasterERP\ViewResult.cshtml" />
+    <Content Include="Views\MasterERP\ViewSubjectSyllabus.cshtml" />
+    <Content Include="Views\Exam\ExamTimetable.cshtml" />
+    <Content Include="Views\MasterERP\ExamTimetable.cshtml" />
+    <Content Include="Views\Post\ViewPostIndividual.cshtml" />
+    <Content Include="Views\Post\ViewFeedIndividual.cshtml" />
+    <Content Include="Views\DailyAttendance\ViewAttendance.cshtml" />
+    <Content Include="Views\DailyAttendance\TakeAttendance.cshtml" />
+    <Content Include="Views\DailyAttendance\ViewStudent.cshtml" />
+    <Content Include="Views\Library\BookManger.cshtml" />
+    <Content Include="Views\Library\BookRetrun.cshtml" />
+    <Content Include="Views\Exam\ExamTimeSchedule.cshtml" />
+    <Content Include="Views\Profile\ParentsSettings.cshtml" />
+    <Content Include="Views\Transaction\FeesCollection.cshtml" />
+    <Content Include="Views\Transaction\FeesCollectionByParents.cshtml" />
+    <Content Include="Views\Post\OpenQuestion.cshtml" />
+    <Content Include="Views\Post\CloseQuestion.cshtml" />
+    <Content Include="Views\Post\ViewQuestion.cshtml" />
+    <Content Include="Views\Transaction\FeesPayementByParents.cshtml" />
+    <Content Include="Views\Report\EmployeeAttendance.cshtml" />
+    <Content Include="Views\Transaction\StudentFees.cshtml" />
+    <Content Include="Views\Transaction\StudentFeesCollection_Bengali.cshtml" />
+    <Content Include="Views\Transaction\StudentFeesCollectionList_Bengali.cshtml" />
+    <Content Include="Views\Messaging\ManualSMS.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\classreport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>classreport.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\DailyAttendance.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAttendance.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ExpenseEntryReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ExpenseEntryReport.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FeeCollection.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FeeCollection.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\MarksEntryReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>MarksEntryReport1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Routine.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Routine.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StudentAdmintCard.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>StudentAdmintCard.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StudentIDCard.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>StudentIDCard1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StudentPerformanceReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>StudentPerformanceReport1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StudentRegistration.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>StudentRegistration.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\StudentRegistrationList.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>StudentRegistrationList1.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>55941</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:55941/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -1,0 +1,568 @@
+﻿
+@{
+    ViewBag.Title = "Open Question";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+
+<style>
+    .select2-selection__rendered {
+        padding-top: 0 !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        text-align: center !important;
+    }
+
+    .fa {
+        cursor: pointer;
+    }
+
+    a.less {
+        color: red !important;
+    }
+
+    a.morelink {
+        color: blue;
+    }
+
+    .hide-bullets {
+        list-style: none;
+        margin-left: -40px;
+        margin-top: 20px;
+    }
+
+    .thumbnail {
+        padding: 0;
+    }
+
+    .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+        width: 100%;
+    }
+
+    #slider-thumbs {
+        height: auto;
+        /*height: 500px;*/
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+
+    .Imgthumbbnail {
+        height: 100px;
+        width: 150px;
+    }
+
+    .note-toolbar {
+        padding: 5px 15px !important;
+        border-bottom: 1px solid transparent !important;
+        line-height: 30px !important;
+        text-transform: none !important;
+        text-align: center !important;
+        position: relative !important;
+        height: 100% !important;
+        letter-spacing: 1.2px !important;
+    }
+
+    .table-responsive {
+        min-height: .01% !important;
+        overflow-x: auto !important;
+    }
+
+    @@media only screen and (min-width: 768px) {
+        .table-responsive {
+            overflow-x: hidden;
+        }
+    }
+
+    .toggle {
+        width: 150px !important;
+        margin-bottom: 25px !important;
+    }
+
+    .toggle-off.btn {
+        padding-left: 15px !important;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                @*<span class="pull-left">View Question</span>*@
+                <button class="btn btn-default pull-right openModal m-t-11">Raise Question</button>
+                <div class="pull-left">
+                    <input id="toggle-event" style="width:150px!important" type="checkbox" checked data-toggle="toggle" data-on="Open Question" data-off="Close Question" data-onstyle="success" data-offstyle="danger">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="table-responsive1">
+                            <table class="table table-bordered table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-sm" id="tblData">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px;">Ticket#</th>
+                                        <th style="width:150px;">Teacher</th>
+                                        <th>Subject</th>
+                                        <th style="width:100px;">Status</th>
+                                        <th style="width:150px;">Last Reply</th>
+                                        <th style="width:70px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdId" value="0" />
+<div class="modal fade" id="MasterModal" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 100%;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update Open Question:</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Shared/Modal_SuccessError.cshtml")
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Teacher:<span style="color:red;">*</span></label>
+                            @Html.DropDownList("ddlTeacherList", (IList<SelectListItem>)ViewBag.TeacherList, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Subject:<span style="color:red;">*</span></label>
+                            <input type="text" id="txtSubject" class="form-control" maxlength="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="form-group">
+                            <textarea id="txtDescription" class="form-control textarea-editor" placeholder="What do you want to share?"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/pbkdf2.js"></script>
+    <script src="~/Content/assets/js/summernote.js"></script>
+    <script src="~/Content/assets/js/summernote-file.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.fileUrl').hide();
+            HideSuccErrDiv();
+            $("#ddlTeacherList").select2({
+                placeholder: "Select"
+            });
+            $('.textarea-editor').summernote({
+                height: 250, // set editor height
+                minHeight: null, // set minimum height of editor
+                maxHeight: null, // set maximum height of editor
+                focus: true // set focus to editable area after initializing summernote
+                , toolbar: [
+
+     ['font', ['bold', 'italic', 'underline', 'clear']],
+
+     ['color', ['color']],
+     ['para', ['ul', 'ol', 'paragraph']],
+     ['table', ['table']],
+     ['insert', ['link', 'picture', 'video', 'file']],
+                ],
+
+                callbacks: {
+                    onFileUpload: function (file) {
+                        var sizeKB = file[0]['size'] / 1000;
+                        //  alert(sizeKB)
+                        if (sizeKB > 5000) {
+                            alert('Please select Less than 5MB File!');
+                            $('.note-icon-file').click();
+                            return false;
+                        }
+                        sendFile(file[0], "Doc");
+                    },
+                    onImageUpload: function (files) {
+
+                        var sizeKB = files[0]['size'] / 1000;
+                        //   alert(sizeKB)
+                        if (sizeKB > 5000) {
+                            alert('Please select Less than 5MB Image!');
+                            $('.note-icon-picture').click();
+                            return false;
+                        }
+                        sendFile(files[0], "img");
+                    },
+                },
+            });
+            fn_Bindtbl("0", "SelectStudentOpen");
+        });
+        function sendFile(file, type) {
+            //  alert(type)
+            let data = new FormData();
+            data.append("file", file);
+            data.append("Type", type);
+            $.ajax({
+                data: data,
+                type: "POST",
+                url: "@Url.Action("UploadImage","Post")",
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (url) {
+                    //alert(url)
+                    //alert(type)
+                    if (type == 'img') {
+                        $('.textarea-editor').summernote("editor.insertImage", url, function ($image) {
+                            $image.css('width', '100%');
+                            $image.attr('data-filename', 'retriever');
+                            $image.attr('target', '_blank');
+                        });
+                    }
+                    else {
+                        let listMimeImg = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/svg'];
+                        let listMimeAudio = ['audio/mpeg', 'audio/ogg', 'audio/mpeg3', 'audio/x-mpeg-3', 'audio/mp3'];
+                        let listMimeVideo = ['video/mpeg', 'video/mp4', 'video/webm', 'video/x-mpeg'];
+                        let elem;
+                        let elemImg;
+                        // alert(file.name)
+                        if (listMimeImg.indexOf(file.type) > -1) {
+                            //Picture
+                            //$('.textarea-editor').summernote('editor.insertImage', url);
+                            $('.textarea-editor').summernote("editor.insertImage", url, function ($image) {
+                                $image.css('width', '100%');
+                                $image.attr('data-filename', 'retriever');
+                                $image.attr('target', '_blank');
+                            });
+                        } else if (listMimeAudio.indexOf(file.type) > -1) {
+                            //Audio
+                            elem = document.createElement("audio");
+                            elem.setAttribute("src", url);
+                            elem.setAttribute("controls", "controls");
+                            elem.setAttribute("preload", "metadata");
+                            elem.setAttribute('style', "width: 100%;");
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        } else if (listMimeVideo.indexOf(file.type) > -1) {
+                            //Video
+                            elem = document.createElement("video");
+                            elem.setAttribute("src", url);
+                            elem.setAttribute("controls", "controls");
+                            elem.setAttribute("preload", "metadata");
+                            elem.setAttribute('style', "width: 100%;");
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        } else {
+                            //Other file type
+                            elem = document.createElement("a");
+                            elem.download = 'download';
+                            elem.href = url;// alert(elem)
+                            elem.target = "_blank";
+                            var extension = file.name.substr((file.name.lastIndexOf('.') + 1));
+                            // alert(extension);
+                            var img = $('<img id="dynamic">');
+                            img.attr('src', 'http://www.meetupschool.com/Content/assets/images/other.png');
+                            if (extension.toLowerCase() == 'pdf') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/pdf.png');
+                            }
+                            if (extension.toLowerCase() == 'doc' || extension.toLowerCase() == 'docx') {
+
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/word.png');
+                            }
+                            if (extension.toLowerCase() == 'xlsx' || extension.toLowerCase() == 'xls' || extension.toLowerCase() == 'csv') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/exce.png');
+                            } if (extension.toLowerCase() == 'txt') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/text.png');
+                            }
+                            //else {
+                            //    img.attr('src', "/Content/assets/images/other.png");
+                            //}
+                            img.attr('style', "width: 30px; height: 30px;");
+                            img.appendTo(elem);
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        }
+                    }
+
+                }
+            });
+        }
+        $('#toggle-event').change(function () {
+            HideSuccErrDiv();
+            if ($(this).prop('checked') == true)
+                fn_Bindtbl("0", "SelectStudentOpen");
+            else
+                fn_Bindtbl("0", "SelectStudentClose");
+        });
+
+        $(document).on("click", ".note-icon-file", function () {
+            $('.fileUrl').hide();
+
+        });
+        $(document).on("click", ".openModal", function () {
+            HideSuccErrDiv();
+            ModalHideSuccErrDiv();
+            fn_resetform();
+            $("#MasterModal").modal();
+        });
+
+        $(document).on("click", ".Iconeditclass", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdId").val(_Id);
+            fn_BindtblID(_Id, "SelectByID");
+        });
+
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id, "Delete");
+            }
+        });
+        $(document).on("click", ".VQ", function () {
+            var ciphertext = $(this).attr('data-ID');
+            var _Id = encrypt(ciphertext);
+            var url = '@Url.Action("ViewQuestion", "Post", new { _Id = "_Id_" })';
+            window.location.href = url.replace('_Id_', _Id);
+        });
+        $(document).on("click", "#btnSave", function () {
+            ModalHideSuccErrDiv();
+            var _Id = $.trim($("#hdId").val());
+            var _ddlTeacherList = $.trim($("#ddlTeacherList").val());
+            var _txtSubject = $.trim($('#txtSubject').val());
+            var _txtPost = $.trim($('#txtDescription').val());
+            if (_ddlTeacherList == "" || _ddlTeacherList <= "-1") {
+                ModalPopupError("Please enter Exam name.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtSubject == '') {
+                ModalPopupError("Please enter Subject.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtPost == '') {
+                ModalPopupError("Please enter Post.", "Error", "M_errorBlock");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveOpenQuestion", "Post")',
+                data: JSON.stringify({ Id: _Id, TID: _ddlTeacherList, Subject: _txtSubject, PostData: _txtPost }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data Inserted successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data updated successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        function myColor(status) {
+            var strRetrun = '';
+            switch (status) {
+
+                case 'Open':
+                    strRetrun = "limegreen";
+                    break;
+                case 'Closed':
+                    strRetrun = "#FF0000";
+                    break;
+                case 'In-Process':
+                    strRetrun = "orange";
+                    break;
+            }
+            return strRetrun;
+        }
+        function fn_Bindtbl(_Id, Type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewOpenQuestion", "Post")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#tblData tbody').empty();
+                    $.each(data, function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr>';
+                        if (val.OPStatus == 'Open') {
+                            row += '<td>' + val.TicketNo + '</td>';
+                        } else {
+                            row += '<td style="color:#0570a9; font-weight: bold;cursor:pointer;text-decoration: underline;"><i class="VQ" data-ID="' + val.OPID + '">' + val.TicketNo + '</i></td>';
+                        } row += '<td>' + val.EM_EmpName + '</td>';
+                        row += '<td>' + val.Subject + '</td>';
+                        row += '<td style="color:' + myColor(val.OPStatus) + '; font-weight: bold;">' + val.OPStatus + '</td>';
+                        row += '<td>' + val.LastReply + '-reply' + '<br><small style="font-size: 10px; color: black;">( ' + val.CreatedDate + ' )</small></td>';
+
+                        if (val.OPStatus == 'Open') {
+                            row += '<td><i class="fa fa-edit Iconeditclass" data-ID="' + val.OPID + '"></i><i class="fa fa-trash-o Icondelclass" data-ID="' + val.OPID + '"></i></td>';
+                        } else
+                            if (val.OPStatus == 'Closed') {
+                                row += '<td><i class="fa fa-undo IconCloseclass" style="color: limegreen;" data-ID="' + val.OPID + '"></i></td>';
+                            } else
+                                if (val.OPStatus == 'In-Process') {
+                                    row += '<td><i class="fa fa-times-circle-o IconOpenclass"  style="color: red;" data-ID="' + val.OPID + '"></i></td>';
+                                }
+                        row += '</tr>';
+                        $('#tblData tbody').append(row);
+                    });
+                    $('#tblData').dataTable();
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+        $(document).on("click", ".IconCloseclass", function () {
+            if (confirm("Are you sure want to Open the Question?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id, "Open");
+            }
+        });
+
+        $(document).on("click", ".IconOpenclass", function () {
+            if (confirm("Are you sure want to Close the Question?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id, "Close");
+            }
+        });
+        function fn_BindtblID(_Id, Type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewOpenQuestionByID", "Post")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    console.log(data[0]);
+                    console.log(data[1]);
+                    $('#btnSave').text("Update");
+                    $("#ddlTeacherList").select2("val", data[0][0].TeacherID);
+                    $('#txtSubject').val(data[0][0].Subject);
+                    $('#txtDescription').summernote('code', data[1][0].PostData);
+                    $("#MasterModal").modal();
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+        function fn_del(Id, type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteOpenQuestion", "Post")',
+                data: JSON.stringify({ Id: Id, type: type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data " + type + " successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+
+        function fn_resetform() {
+            $("#hdId").val('0');
+            $('#ddlTeacherList').select2("val", '');
+            $('#txtSubject').val('');
+            $('#txtDescription').summernote('reset');
+        }
+
+        function encrypt(msg) {
+            var salt = CryptoJS.lib.WordArray.random(128 / 8);
+
+            var key = CryptoJS.PBKDF2('meetup', salt, {
+                keySize: 256 / 32,
+                iterations: 100
+            });
+
+            var iv = CryptoJS.lib.WordArray.random(128 / 8);
+
+            var encrypted = CryptoJS.AES.encrypt(msg, key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC
+
+            });
+
+            // salt, iv will be hex 32 in length
+            // append them to the ciphertext for use  in decryption
+            var transitmessage = salt.toString() + iv.toString() + encrypted.toString();
+            return transitmessage;
+        }
+
+        function decrypt(transitmessage) {
+            var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+            var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+            var encrypted = transitmessage.substring(64);
+
+            var key = CryptoJS.PBKDF2('meetup', salt, {
+                keySize: 256 / 32,
+                iterations: 100
+            });
+
+            var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC
+
+            })
+            return decrypted;
+        }
+    </script>
+}

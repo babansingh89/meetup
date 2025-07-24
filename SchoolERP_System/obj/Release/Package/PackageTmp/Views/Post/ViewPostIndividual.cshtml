@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewBag.Title = "View Post Individual";
+  //  Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+
+
+<style>
+    .media-heading1 {
+        line-height: 1;
+        font-size: 12px;
+    }
+
+    .media-heading0 {
+        line-height: 1.5;
+        font-size: 11px;
+    }
+
+    .panel-default > .panel-heading {
+        color: #333 !important;
+        background-color: #f5f5f5 !important;
+        border-color: #ddd !important;
+        font-size: 17px !important;
+    }
+
+    .panel-heading {
+        padding: 5px 15px !important;
+        border-bottom: 1px solid transparent !important;
+        border-top-left-radius: 3px !important;
+        border-top-right-radius: 3px !important;
+        line-height: 30px !important;
+        text-transform: none !important;
+        text-align: unset !important;
+        position: relative !important;
+        height: 68px !important;
+        letter-spacing: 1.2px !important;
+    }
+
+    p {
+        margin: 0 !important;
+    }
+
+    .modal-confirm {
+        color: #636363;
+        width: 400px;
+    }
+
+        .modal-confirm .modal-content {
+            padding: 20px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .modal-confirm .modal-header {
+            border-bottom: none;
+            position: relative;
+        }
+
+        .modal-confirm h4 {
+            text-align: center;
+            font-size: 26px;
+            margin: 30px 0 -10px;
+        }
+
+        .modal-confirm .close {
+            position: absolute;
+            top: -5px;
+            right: -2px;
+        }
+
+        .modal-confirm .modal-body {
+            color: #999;
+        }
+
+        .modal-confirm .modal-footer {
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 13px;
+            padding: 10px 15px 25px;
+        }
+
+            .modal-confirm .modal-footer a {
+                color: #999;
+            }
+
+        .modal-confirm .icon-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            border-radius: 50%;
+            z-index: 9;
+            text-align: center;
+            border: 3px solid #f15e5e;
+        }
+
+            .modal-confirm .icon-box i {
+                color: #f15e5e;
+                font-size: 46px;
+                display: inline-block;
+                margin-top: 13px;
+            }
+
+        .modal-confirm .btn {
+            color: #fff;
+            border-radius: 4px;
+            background: #60c7c1;
+            text-decoration: none;
+            transition: all 0.4s;
+            line-height: normal;
+            min-width: 120px;
+            border: none;
+            min-height: 40px;
+            border-radius: 3px;
+            margin: 0 5px;
+            outline: none !important;
+        }
+
+        .modal-confirm .btn-info {
+            background: #c1c1c1;
+        }
+
+            .modal-confirm .btn-info:hover, .modal-confirm .btn-info:focus {
+                background: #a8a8a8;
+            }
+
+        .modal-confirm .btn-danger {
+            background: #f15e5e;
+        }
+
+            .modal-confirm .btn-danger:hover, .modal-confirm .btn-danger:focus {
+                background: #ee3535;
+            }
+
+    .trigger-btn {
+        display: inline-block;
+        margin: 100px auto;
+    }
+
+    .btn-group, .btn-group-vertical {
+        padding: 2px;
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .dropdown-menu {
+        -webkit-box-shadow: 0 0 35px 0 rgba(154,161,171,.15);
+        box-shadow: 0 0 35px 0 rgba(154,161,171,.15);
+    }
+
+        .dropdown-menu[x-placement^=bottom], .dropdown-menu[x-placement^=left], .dropdown-menu[x-placement^=right], .dropdown-menu[x-placement^=top] {
+            right: auto;
+            bottom: auto;
+        }
+
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: .375rem 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #6c757d;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
+
+    a:not([href]):not([tabindex]) {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .show > .dropdown-menu {
+        visibility: visible;
+        opacity: 1;
+        margin-top: 0 !important;
+    }
+
+    a, button {
+        outline: 0 !important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        float: left;
+        min-width: 10rem;
+        padding: .25rem 0;
+        margin: .125rem 0 0;
+        font-size: .875rem;
+        color: #6c757d;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #d9e3e9;
+        border-radius: .25rem;
+    }
+
+    .media {
+        overflow: inherit !important;
+    }
+</style>
+<div class="row" id="div_Scroll">
+    <div class="col-lg-8">
+        <div class="panel panel-primary">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tab" role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#Section1" class="clsHW" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-user fa-fw"></i>Individual</a></li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content tabs">
+                            <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+                                <div id="div_HW" @*style="width:90%"*@></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+<!-- Modal HTML -->
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="material-icons">&#xE5CD;</i>
+                </div>
+                <h4 class="modal-title">Are you sure?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Do you really want to delete these Post?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btnDel">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section body_scripts{
+    <link href="~/Content/assets/css/tab.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //   $("#style1").attr("disabled", "disabled");
+            fn_Bindpost("ViewPostTeacher");
+        });
+
+        $(document).on("click", "#btnDel", function () {
+            var _Id = $.trim($("#hdId").val());
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeletePostIndividual", "Post")',
+                data: JSON.stringify({ Id: _Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        $("#hdId").val('0');
+                        $('#myModal').modal('hide');
+                        var url = '@Url.Action("ViewPostIndividual", "Post")'
+                        window.location.href = url;
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        $(document).on("click", ".Iconeditclass", function () {
+            var _INDId = $(this).attr('data-ID');
+            var url = '@Url.Action("PostAll", "Post", new { _INDId = "__INDid__" })';
+            alert(url.replace('__INDid__', _INDId))
+            window.location.href = url.replace('__INDid__', _INDId);
+        });
+        function fn_Bindpost(_Action) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewPostTeacherIndividual", "Post")',
+                data: JSON.stringify({ Action: _Action }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#div_HW').empty();
+
+                    $.each(data, function (rowIndex, r) {
+                        var str = "";
+                        str += '<div class="panel panel-default">';
+                        // Start Panel Head
+                        str += '<div class="panel-heading"><div class="media">';
+                        if (r.EM_ProfilePic == '') {
+                            str += '<div class="media-left media-top"><img class="media-object img-circle rotateImg" src="/Content/Image/avatar-12.png" height="55" width="60"></div>';
+                        } else {
+                            str += '<div class="media-left media-top"><img class="media-object img-circle rotateImg" src="/EmpImage/' + r.EM_ProfilePic + '" height="55" width="60"></div>';
+                        }
+                        str += '<div class="media-body"><p class="media-heading12" style="color:#077315;"><b>' + r.EM_EmpName + '</b></p><p class="media-heading1"><b>' + r.CreatedDate + '</b></p></div>';
+                        str += '<div class="media-right">';
+                        str += '<div class="btn-group text-left"><button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button><div class="dropdown-menu"><a class="dropdown-item Iconeditclass" style="cursor:pointer;" data-ID="' + r.PostINDID + '">Edit</a><a class="dropdown-item Icondelclass" style="cursor:pointer;" data-ID="' + r.PostINDID + '">Delete</a></div></div>';
+                        str += '</div></div>';
+                        str += '</div></div>';
+                        str += '<div class="panel-body"><div class="row">';
+                        str += '<div class="col-xs-12 col-md-12 comment">' + r.PostData + '</div>';
+                        str += '</div></div></div>';
+                        $('#div_HW').append(str);
+                    });
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        }
+        $(document).on("click", ".Icondelclass", function () {
+
+            var _Id = $(this).attr('data-ID');
+            $("#hdId").val(_Id);
+            $("#myModal").modal();
+
+        });
+    </script>
+}
+

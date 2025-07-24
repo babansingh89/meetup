@@ -1,0 +1,9 @@
+
+USE [SchoolERP_10_DB]
+GO
+
+/****** Object:  User [school]    Script Date: 1/15/2020 12:09:33 PM ******/
+CREATE USER [school] FOR LOGIN [schoollogin] WITH DEFAULT_SCHEMA=[db_accessadmin]
+GO
+
+

@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "Feed";
+    //Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+
+<style>
+      .media-heading1 {
+        line-height: 1;
+        font-size: 12px;
+    }
+
+    .media-heading0 {
+        line-height: 1.5;
+        font-size: 11px;
+    }
+
+    .panel-default > .panel-heading {
+        color: #333 !important;
+        background-color: #f5f5f5 !important;
+        border-color: #ddd !important;
+        font-size: 17px!important;
+    }
+
+    .panel-heading {
+        padding: 5px 15px !important;
+        border-bottom: 1px solid transparent !important;
+        border-top-left-radius: 3px !important;
+        border-top-right-radius: 3px !important;
+        line-height: 30px !important;
+        text-transform: none !important;
+        text-align: unset !important;
+        position: relative !important;
+        height: 68px !important;
+         letter-spacing: 1.2px!important;
+    }
+
+    p {
+        margin: 0 !important;
+    }
+
+</style>
+<div class="row" id="div_Scroll">
+    <div class="col-lg-8">
+        <div class="panel panel-primary">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tab" role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#Section1" class="clsHW" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tasks fa-fw"></i>Homework</a></li>
+                            <li role="presentation"><a href="#Section2" class="clsCS" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-laptop fa-fw"></i>Class Study</a></li>
+                            <li role="presentation"><a href="#Section3" class="clsAS" aria-controls="messages" role="tab" data-toggle="tab"><i class="fa fa-briefcase fa-fw"></i>Assignment</a></li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content tabs">
+                            <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+                                <div id="div_HW" @*style="width:90%"*@></div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="Section2">
+                                <div id="div_CS" @*style="width:90%"*@></div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="Section3">
+                            <div id="div_AS" @*style="width:90%"*@></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <link href="~/Content/assets/css/tab.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fn_Bindpost("ViewPostStudent", "HW");
+        });
+        $(document).on("click", ".clsHW", function () {
+            fn_Bindpost("ViewPostStudent", "HW");
+        });
+        $(document).on("click", ".clsCS", function () {
+            fn_Bindpost("ViewPostStudent", "CS");
+        });
+        $(document).on("click", ".clsAS", function () {
+            fn_Bindpost("ViewPostStudent", "AS");
+        });
+       
+        function fn_Bindpost(_Action, _PostType) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewPostTeacher", "Post")',
+                data: JSON.stringify({ Action: _Action, PostType: _PostType }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    // $('#div_' + _PostType + '').empty();
+                    $('#div_HW').empty();
+                    $('#div_AS').empty();
+                    $('#div_CS').empty();
+                    $.each(data, function (rowIndex, r) {
+                        var str = "";
+                        str += '<div class="panel panel-default">';
+                        // Start Panel Head
+                        str += '<div class="panel-heading"><div class="media">';
+                        if (r.EM_ProfilePic == '') {
+                            str += '<div class="media-left media-top"><img id=" class="media-object img-circle rotateImg" src="/Content/Image/avatar-12.png" height="55" width="60"></div>';
+                        } else {
+                            str += '<div class="media-left media-top"><img class="media-object img-circle rotateImg" src="/EmpImage/' + r.EM_ProfilePic + '" height="55" width="60"></div>';
+                        }
+                        str += '<div class="media-body"><p class="media-heading12" style="color:#077315;"><b>' + r.EM_EmpName + '</b></p><p class="media-heading1"><b>' + r.CreatedDate + '</b></p><p class="media-heading0"><b> ' + r.ClassName + ' (' + r.SectionName + ')</b></p></div>';
+                       
+                        str += '</div></div>';
+                        str += '<div class="panel-body"><div class="row">';
+                        str += '<div class="col-xs-12 col-md-12 comment">' + r.PostData + '</div>';
+                        str += '</div></div></div>';
+                        $('#div_' + _PostType + '').append(str);
+                    });
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        }
+       
+    </script>
+}
+

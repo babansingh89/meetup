@@ -1,0 +1,421 @@
+﻿
+@{
+    ViewBag.Title = "Add Class wise Fees";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Add Class Wise Fee</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Class:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Category:<span style="color:red;">*</span></label>
+                                <select id="ddlCategoryList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="1">General</option>
+                                    <option value="2">Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Stream:</label>
+                                <select id="ddlStreamList" class="form-control"> </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Fees Head:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlFeeHeadList", (IList<SelectListItem>)ViewBag.FeeHeadList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>No. of Installment:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" disabled id="txtFeeInstallment">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Amount:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtAmount">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Install.Amount:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtInstallAmount">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Late Fees:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtLateFees">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button class="btn btn-warning" style="margin-top: 20px; width: 90px;" id="btnAdd">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel-body">
+                                <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                                    <thead>
+                                        <tr style="background-color: antiquewhite;">
+                                            <th>Fees Head</th>
+                                            <th>Total Installment</th>
+                                            <td>Total Fees Amt</td>
+                                            <th>Inst.No</th>
+                                            <th>Inst.Amt</th>
+                                            <th>Due Date</th>
+                                            <th>Late Fine</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $("#txtAmount").keyup(function () {
+            var budget = parseFloat($("#txtFeeInstallment").val()) || 0;
+            var ppc = parseFloat($("#txtAmount").val()) || 0;
+            var value = ppc / budget;
+            if (!isNaN(value) && value !== Infinity) {
+                $("#txtInstallAmount").val(value.toFixed(2));
+            }
+        });
+        $("#txtInstallAmount").keyup(function () {
+            $('#txtAmount').val(Math.floor($('#txtInstallAmount').val() * $('#txtFeeInstallment').val()));
+        });
+        $(document).ready(function () {
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlCategoryList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlStreamList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlFeeHeadList").select2({
+                placeholder: "Select"
+            });
+            var query_event_id = getParameterByName('_Id');
+            if (query_event_id) {
+                $("#hdId").val(query_event_id);
+                fn_Bindtbl(query_event_id, "SelectByID");
+            }
+        });
+        $("#ddlFeeHeadList").change(function () {
+            $('#txtAmount').val('');
+            $('#txtInstallAmount').val('');
+            $('#txtLateFees').val('');
+            $('#txtFeeInstallment').val('');
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/FeeSettingsERP/BindInstallment',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#txtFeeInstallment').val(data[0].Total_of_Installment);
+                    }
+                }
+            });
+        });
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/FeeSettingsERP/BindStream',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlStreamList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlStreamList").append($("<option/>").val(this.StreamID).text(this.StreamName));
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on("click", "#btn-clear", function () {
+            var url = '@Url.Action("ClasswiseFees", "FeeSettingsERP")'
+            window.location.href = url;
+        });
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete Fee head?")) {
+                var _Id = $(this).attr('data-ID');
+
+                $('#tblMapping tr').each(function () {
+                    if (_Id == this.id) {
+                        $(this).remove();
+                    }
+                })
+            }
+        });
+        $(document).on("click", "#btnAdd", function () {
+            var _ddl1 = $('#ddlFeeHeadList').val();
+            var _txtFeeInstallment = $('#txtFeeInstallment').val();
+            var _txtAmount = $('#txtAmount').val();
+            var _txtInstallAmount = $('#txtInstallAmount').val();
+            var _txtLateFees = $('#txtLateFees').val();
+
+            if (_ddl1 == '' || _ddl1 <= 0) {
+                FormSuccessError1("Please select FeeHead.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            if (_txtFeeInstallment == '') {
+                FormSuccessError1("Please enter Fee Installment.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtAmount == '') {
+                FormSuccessError1("Please enter Amount.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtInstallAmount == '') {
+                FormSuccessError1("Please enter Installment Amount.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtLateFees == '') {
+                FormSuccessError1("Please enter Late Fees.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            var exists = false;
+            $('#tblMapping tr').each(function () {
+                if (_ddl1 == this.id) {
+                    exists = true;
+                }
+            })
+            if (exists) {
+                FormSuccessError1("Fee Head Already Added!", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            var data = $('#ddlFeeHeadList').select2('data')[0]['text'];
+            for (var i = 1; i <= _txtFeeInstallment; i++) {
+                var markup = '<tr id=' + _ddl1 + '><td>' + data + '</td><td>' + _txtFeeInstallment + '</td><td>' + _txtAmount + '</td><td>' + i + '</td><td>' + _txtInstallAmount + '</td><td><input type="text" class="form-control Datepicker" id="txtdate' + _ddl1 + i + '"></td><td>' + _txtLateFees + '</td><td><i class="fa fa-trash-o Icondelclass" data-ID="' + _ddl1 + '"></i></td></tr>';
+
+                $("#tblMapping >tbody").append(markup);
+                $("#txtdate" + _ddl1 + i).datepicker({
+                    language: 'en',
+                    format: 'dd-M-yyyy',
+                    todayHighlight: true,
+                    autoclose: true
+                });
+            }
+            fn_add();
+        });
+
+        $(document).on("click", "#btnSave", function () {
+
+            var _Id = $.trim($("#hdId").val());
+            var _ddl1 = $('#ddlClassList').val();
+            // var _ddl2 = $('#ddlCategoryList').val();
+            var _ddl2 = $('#ddlCategoryList').select2('data')[0]['text'];
+            var _ddl3 = $('#ddlStreamList').val();
+            var rowCount = $('#tblMapping tr').length;
+            var rowCount1 = $('#tblMapping >tbody >tr').length;
+
+
+            if (_ddl1 == '' || _ddl1 <= 0) {
+                FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl2 == '' || _ddl2 <= 0) {
+                FormSuccessError1("Please select Category.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (rowCount1 == 0) {
+                FormSuccessError1("Please Add class wise fee.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            var Datadt = [];
+            $('#tblMapping > tbody > tr').each(function () {
+                var v1 = $(this).find('td:eq(1)').text();
+                var v2 = $(this).find('td:eq(2)').text();
+                var v3 = $(this).find('td:eq(3)').text();
+                var v4 = $(this).find('td:eq(4)').text();
+                var v5 = $(this).find('td:eq(5)').find(":text").val();
+                var v6 = $(this).find('td:eq(6)').text();
+
+                Datadt.push({
+                    'FeeHeadID': this.id, 'Total_No_Ins': v1, 'Total_Fee_Amt': v2, 'Ins_No': v3
+                , 'Ins_Amt': v4, 'Due_Date': v5, 'Late_Fee': v6
+                });
+            });
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveClasswiseFees", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: _Id, CategoryID: _ddl2, StreamID: _ddl3, ClassID: _ddl1, Datadt }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        fn_add();
+                        FormSuccessError1("Data Inserted successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        fn_add();
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewClasswiseFeesEdit", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#btnSave').text("Update");
+
+                    $('#ddlClassList').select2("val", data[0].ClassID);
+                    if (data[0].CategoryID == "General")
+                        $('#ddlCategoryList').select2("val", 1);
+                    else
+                        $('#ddlCategoryList').select2("val", 2);
+                    $('#ddlStreamList').select2("val", data[0].StreamID);
+                    $("#ddlClassList").prop("disabled", true);
+                    $("#ddlCategoryList").prop("disabled", true);
+                    $("#ddlStreamList").prop("disabled", true);
+
+                    for (var i = 0; i < data.length; i++) {
+                     
+                        var markup = '<tr id=' + data[i].FeeHeadID + '><td>' + data[i].FeeHeadName + '</td><td>' + data[i].Total_No_Ins + '</td><td>' + data[i].Total_Fee_Amt + '</td><td>' + data[i].Ins_No + '</td><td>' + data[i].Ins_Amt + '</td><td><input type="text" value=' + data[i].Due_Date.replace(/\s+/g, '-') + ' class="form-control Datepicker" id="txtdate' + data[i].FeeHeadID + i + 1 + '"></td><td>' + data[i].Late_Fee + '</td><td><i class="fa fa-trash-o Icondelclass" data-ID="' + data[i].FeeHeadID + '"></i></td></tr>';
+
+                        $("#tblMapping >tbody").append(markup);
+                        $("#txtdate" + data[i].FeeHeadID + i + 1).datepicker({
+                            language: 'en',
+                            format: 'dd-M-yyyy',
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_add() {
+            $('#txtFeeInstallment').val('');
+            $('#txtAmount').val('');
+            $('#txtInstallAmount').val('');
+            $('#txtLateFees').val('');
+            $('#ddlFeeHeadList').select2("val", '');
+
+        }
+        function fn_resetform() {
+            $("#hdId").val('0');
+            $('#ddlClassList').select2("val", '');
+            $('#ddlCategoryList').select2("val", '');
+            $('#ddlStreamList').select2("val", '');
+            $('#tblMapping tbody').empty();
+            fn_add();
+            $('#btnSave').text("Save");
+        }
+    </script>
+}
+
+
+
+

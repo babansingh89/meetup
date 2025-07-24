@@ -1,0 +1,502 @@
+﻿
+@{
+    ViewBag.Title = "View Attendance";
+    //Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    .table .thead-dark th {
+        color: #98a6ad;
+        background-color: #313a46;
+        border-color: #414d5d;
+    }
+
+    .table-bordered thead td, .table-bordered thead th {
+        border-bottom-width: 2px;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #e3eaef;
+    }
+
+    .table-bordered td, .table-bordered th {
+        border: 1px solid #e3eaef;
+    }
+
+    .table-sm td, .table-sm th {
+        padding: .4rem !important;
+    }
+
+    .table-sm {
+        width: 100% !important;
+        font-size: .87rem !important;
+    }
+
+    .table td, .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 5px !important;
+    }
+
+    .text-white {
+        color: #fff !important;
+    }
+
+    .bg-secondary {
+        background-color: #6c757d !important;
+    }
+
+    .card {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #e3eaef;
+        border-radius: .50rem;
+    }
+
+    .card-body {
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1rem;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="pull-left">View Attendance</span>
+                    @{
+                        if (Convert.ToString(HttpContext.Current.Session["userType"]).ToString() == "SuperAdmin")
+                        { <button class="btn btn-default pull-right openModal m-t-10">Add Attendance</button> }
+                    }
+                    
+                </div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Month:<span style="color:red;"></span></label>
+                                @Html.DropDownList("ddlMonthList", (IList<SelectListItem>)ViewBag.MonthList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Class:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Section:<span style="color:red;">*</span></label>
+                                <select id="ddlSectionList" class="form-control"> </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" style="margin-top: 20px;" id="btnSearch">Filter</button>
+
+                                @{ 
+                                  string AppID =   Convert.ToString(HttpContext.Current.Session["AppID"]).ToString();
+                                }
+
+                                <button type="button" class="btn btn-primary" style="margin-top: 20px;" id="btnPrint" onclick="Print(@AppID)" >Print</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="dvData">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    @*<div class="panel-heading">Attendance Report</div>*@
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-secondary text-white">
+                                                <div class="card-body">
+                                                    <div class="text-center">
+                                                        <h4>Attendance Report Of <span id="spmonth"></span> </h4>
+                                                        <h5>Class : <span id="spclass"></span>, 
+                                                            Section : <span id="spsection"></span>   
+                                                        </h5>
+                                                        
+                                                        <h5>
+                                                            Last Updated At : <span id="spdate"></span>,  
+                                                            Time : <span id="sptime"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div> <!-- end card-body-->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+
+                                            <div id="dvStudent" class="table-responsive"></div>
+                                        </div>
+                                        <div class="row d-print-none mt-3" style="display:none"> 
+                                            <div class="col-12 text-right"><a href="#" onclick='printDiv();' class="btn btn-primary"><i class="fa fa-print"  style="color:white;"></i>Print</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            $("#ddlMonthList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+            $("#dvData").hide();
+        });
+        $(document).on("click", "#btn-clear", function () {
+            var url = '@Url.Action("ViewAttendance", "DailyAttendance")'
+            window.location.href = url;
+        });
+        //$(document).on("click", "#btnPrint", function () {
+        //    Print();
+        //});
+
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Post/BindpostSection',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSectionList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", "#btnSearch", function () {
+            hideAlert();
+            $('#dvData').hide();
+
+            var _ddl0 = $.trim($('#ddlMonthList option:selected').text());
+            var _ddl00 = $('#ddlMonthList').val();
+            var _ddl1 = $('#ddlClassList').val();
+            var _ddl2 = $('#ddlSectionList').val();
+
+            if (_ddl00 == '' || _ddl00 <= 0) {
+                FormSuccessError1("Please Select Month.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl1 == '' || _ddl1 <= 0) {
+                FormSuccessError1("Please Select Class.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl2 == '' || _ddl2 <= 0) {
+                FormSuccessError1("Please Select Section.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/DailyAttendance/viewMonthAttendance',
+                data: JSON.stringify({ MonthID: _ddl0, ClassID: _ddl1, SectionID: _ddl2 }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+
+                    if (data.length > 0) {
+                        if (data[2].length > 0) {
+                            $("#dvData").show();
+                            $('#tblstudent tbody').empty();
+                            $('#dvStudent').empty();
+
+                            var row = '<table class="table table-bordered table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-sm" id="tblstudent"><thead class="thead-dark"><tr style="font-size: 12px;">';
+                            row += '<th width="40px">Student <i class="fa fa-arrow-down" style="color: lime;font-size: inherit;"></i> Date <i class="fa fa-arrow-right" style="color: white;font-size: inherit;"></i></th><th>P-Days</th><th>W-Days</th>';
+                            for (var i = 1; i <= data[0]; i++) {
+                                row += '<th>' + i + '</th>';
+                            }
+                            row += ' </tr></thead><tbody></tbody></table>';
+                            $('#dvStudent').append(row);
+                            $.each(data[2], function (rowIndex, r) {
+                                var trRow = "<tr><td style='vertical-align: middle;'>" + r._StudentName + " (" + r._StudentCode + ")</td><td style='vertical-align: middle;'>" + r._PDays + "</td><td style='vertical-align: middle;'>" + r._TotalWorkingDays + "</td>";
+
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._1) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._2) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._3) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._4) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._5) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._6) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._7) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._8) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._9) + "; text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._10) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._11) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._12) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._13) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._14) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._15) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._16) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._17) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._18) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._19) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._20) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._21) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._22) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._23) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._24) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._25) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._26) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._27) + ";text-align: center;'></span></td>";
+                                //trRow += "<td style='vertical-align: middle;'><span class='fa fa-circle' style='color:" + myColor(r._28) + ";text-align: center;'></span></td>";
+
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._1) + "; text-align: center;'>" + r._1 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._2) + "; text-align: center;'>" + r._2 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._3) + "; text-align: center;'>" + r._3 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._4) + "; text-align: center;'>" + r._4 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._5) + "; text-align: center;'>" + r._5 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._6) + "; text-align: center;'>" + r._6 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._7) + "; text-align: center;'>" + r._7 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._8) + "; text-align: center;'>" + r._8 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._9) + "; text-align: center;'>" + r._9 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._10) + ";text-align: center;'>" + r._10 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._11) + ";text-align: center;'>" + r._11 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._12) + ";text-align: center;'>" + r._12 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._13) + ";text-align: center;'>" + r._13 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._14) + ";text-align: center;'>" + r._14 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._15) + ";text-align: center;'>" + r._15 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._16) + ";text-align: center;'>" + r._16 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._17) + ";text-align: center;'>" + r._17 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._18) + ";text-align: center;'>" + r._18 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._19) + ";text-align: center;'>" + r._19 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._20) + ";text-align: center;'>" + r._20 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._21) + ";text-align: center;'>" + r._21 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._22) + ";text-align: center;'>" + r._22 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._23) + ";text-align: center;'>" + r._23 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._24) + ";text-align: center;'>" + r._24 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._25) + ";text-align: center;'>" + r._25 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._26) + ";text-align: center;'>" + r._26 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._27) + ";text-align: center;'>" + r._27 + "</span></td>";
+                                trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._28) + ";text-align: center;'>" + r._28 + "</span></td>";
+
+                                if (data[0] == '29' || data[0] == '30' || data[0] == '31') {
+                                    trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._29) + ";text-align: center;'>" + r._29 + "</span></td>";
+                                }
+                                if (data[0] == '30' || data[0] == '31') {
+                                    trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._30) + ";text-align: center;'>" + r._30 + "</span></td>";
+                                }
+                                if (data[0] == '31' ) {
+                                    //trRow += "<td style='color:" + myColor(r._31) + ";font-weight: bold;font-size: 19px;'>" + r._31 + "</td>";
+                                    trRow += "<td style='vertical-align: middle;'><span style='color:" + myColor(r._31) + ";text-align: center;'>" + r._31 + "</span></td>";
+                                }
+
+                                trRow += "</tr>";
+
+
+                                $('#tblstudent tbody').append(trRow);
+                            });
+                            const monthNames = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"];
+                            var d = new Date();
+                            var currMonth = monthNames[d.getMonth()];
+                            var currYear = d.getFullYear();
+                            var day = d.getDate();
+                            var time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+                            var startDate = day + " " + currMonth + " " + currYear;
+                            $('#spmonth').text(_ddl0);
+                            $('#spclass').text($('#ddlClassList option:selected').text());
+                            $('#spsection').text($('#ddlSectionList option:selected').text());
+                            $('#spdate').text(startDate);
+                            $('#sptime').text(time);
+
+                        } else { FormSuccessError1("No attendacne taken, Record not found!", "Error", "errorBlock", "div_Scroll"); return false; }
+                        //if ($.fn.dataTable.isDataTable('#tblstudent')) {
+                        //    table = $('#tblstudent').DataTable();
+                        //}
+                        //else {
+                        //    table = $('#tblstudent').DataTable({
+                        //        paging: false,
+                        //        //"sScrollX": '100%'
+                        //        "scrollX": true,
+                        //        dom: 'Bfrtip',
+                        //        buttons: [
+                        //            'copy', 'csv', 'excel', 'print'
+                        //        ]
+                        //    });
+                        //}
+                        //$('#tblstudent').dataTable({
+                        //    "bPaginate": false,
+                        //    dom: 'Bfrtip',
+                        //    buttons: [
+                        //        'copy', 'csv', 'excel', 'print'
+                        //    ]
+                        //});
+                    }
+                }
+            });
+        });
+        function Print(AppID) {
+            var final = {}; var master = []; var detail = [];
+           
+            master.push({
+                ReportName: "DailyAttendance.rpt",
+                FileName: "DailyAttendances",
+                AppID: AppID
+            });
+
+            detail.push({
+                ClassID: $('#ddlClassList').val(),
+                SectionID: $('#ddlSectionList').val(),
+                MonthText: $("#ddlMonthList option:selected").text(),
+                AppID: AppID
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+        function printDiv() {
+
+
+            var printContents = document.getElementById('dvData').innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = "<html><head><title></title></head><body>" + printContents + "</body>"; ;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+
+        }
+        function myColor(status) {
+            var strRetrun = '';
+
+            switch (status) {
+                case 'N':
+                    //strRetrun = "#000000";
+                    strRetrun = "";
+                    break;
+                case 'P':
+                    //strRetrun = "#006400";
+                    strRetrun = "limegreen";
+                    break;
+                case 'A':
+                    strRetrun = "#FF0000";
+                    break;
+                case 'S':
+                    //strRetrun = "#FFFF66";
+                    strRetrun = "fuchsia";
+                    break;
+                case 'H':
+                    strRetrun = "fuchsia";
+                    break;
+
+            }
+            return strRetrun;
+        }
+        function myColor1(status) {
+            var strRetrun = '';
+
+            switch (status) {
+                case 'N':
+                    //strRetrun = "#000000";
+                    strRetrun = "";
+                    break;
+                case 'P':
+                    //strRetrun = "#006400";
+                    strRetrun = "P";
+                    break;
+                case 'A':
+                    strRetrun = "#FF0000";
+                    break;
+                case 'S':
+                    //strRetrun = "#FFFF66";
+                    strRetrun = "fuchsia";
+                    break;
+                case 'H':
+                    strRetrun = "#ffff00";
+                    break;
+
+            }
+            return strRetrun;
+        }
+        function fn_resetform() {
+            $('#tblMapping tbody').empty();
+            $('#ddlMonthList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+            $('#dvData').hide();
+        }
+        $(document).on("click", ".openModal", function () {
+            var url = '@Url.Action("TakeAttendance", "DailyAttendance")'
+            window.location.href = url;
+        });
+    </script>
+}
+
+
+
+

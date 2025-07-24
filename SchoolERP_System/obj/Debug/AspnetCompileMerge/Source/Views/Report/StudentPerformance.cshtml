@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "Student Performance";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Student Performance</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Class:<span style="color:red;">*</span></label>
+                                    @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Section:<span style="color:red;">*</span></label>
+                                    <select id="ddlSectionList" class="form-control"> </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">From:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtFrom">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">To:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtTo">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" style="margin-top: 20px;" id="btnSave">Generate</button>
+                                    @{
+                                        string AppID = Convert.ToString(HttpContext.Current.Session["AppID"]).ToString();
+                                    }
+                                    <button class="btn btn-primary" style="margin-top: 20px;" id="btnPrint" AppId="@AppID">Print</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Reg.No</th>
+                                    <th>RollNo</th>
+                                    <th style="width: 95px;">DOB</th>
+                                    <th style="width: 66px;">Contact No.</th>
+                                    <th style="width: 50px;">Working Days</th>
+                                    <th style="width: 30px;">Present</th>
+                                    <th style="width: 30px;">Absent</th>
+                                    <th style="width: 50px;">%</th>
+                                    <th style="text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+        });
+
+        function fn_resetform() {
+            $('#ddlClassList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+            $('#txtFrom').val('');
+            $('#txtTo').val('');
+        }
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Student/BindStream',
+                data: JSON.stringify({ ID: ID, Type: "Se" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSectionList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", ".Iconprint", function () {
+            var _Id = $(this).attr('data-ID');
+            var _AppID = $(this).attr('data-AppID');
+            Print(_Id, _AppID);
+        });
+        $(document).on("click", "#btnPrint", function () {
+            var _Id = 0;
+            var _AppID = $(this).attr('AppId');
+            Print(_Id, _AppID);
+        });
+
+        $(document).on("click", "#btnSave", function () {
+            var _ddlClassList = $('#ddlClassList').val();
+            var _ddlSectionList = $('#ddlSectionList').val();
+            var _From = $('#txtFrom').val();
+            var _To = $('#txtTo').val();
+            if (_ddlClassList == '' || _ddlClassList <= 0) {
+                FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlSectionList == '' || _ddlSectionList <= 0) {
+                FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_From == '') {
+                FormSuccessError1("Please enter From Date.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_To == '') {
+                FormSuccessError1("Please enter To Date.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("PrintStudent", "Report")',
+                data: JSON.stringify({ Class: _ddlClassList, Section: _ddlSectionList, From: _From, To: _To }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (data == "Error") {
+                        alert("Error! Try again later.");
+                    }
+                    else {
+                        $('#tblMapping tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.SR_StudentName + '</td>';
+                            row += '<td><i class="fa IconGenrateclass" data-ID="' + val.SR_ID + '">' + val.SR_RegNo + '</i></td>';
+                            row += '<td>' + val.SR_CurrentRollNo + '</td>';
+                            row += '<td>' + val.SR_DOB + '</td>';
+                            row += '<td><i class="fa IconResetclass" data-ID-UT="Parents" data-ID="' + val.SR_PhNo + '">' + val.SR_PhNo + '</i></td>';
+
+                            row += '<td style="text-align:center; width:120px;">' + val.WD + '</td>';
+                            row += '<td style="text-align:center; width:60px;">' + val.Pass + '</td>';
+                            row += '<td style="text-align:center; width:60px;">' + val.Fail + '</td>';
+                            row += '<td style="text-align:center;">' + val.Per + '</td>';
+                            row += '<td style="text-align:center; width:50px;""><i class="fa fa-print Iconprint" data-ID="' + val.SR_ID + '" data-AppID="' + val.AppID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblMapping tbody').append(row);
+                        });
+                        $('#tblMapping').dataTable();
+                        //window.open(data);
+                        //previewPdfDocument(data);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    //alert("Error! Try again later.");
+                    window.location.href = "/Error";
+                }
+            });
+        });
+
+        function Print(SR_ID, AppID) {
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "StudentPerformanceReport.rpt",
+                FileName: "Student_Performance",
+                AppID: AppID
+            });
+
+            detail.push({
+                SR_ID: SR_ID	,
+                From: $('#txtFrom').val()	,
+                To: $('#txtTo').val(),
+                Class: $('#ddlClassList').val()	,
+                Section: $('#ddlSectionList').val(),
+                AppID: AppID	
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+    </script>
+}
+
+
+
+

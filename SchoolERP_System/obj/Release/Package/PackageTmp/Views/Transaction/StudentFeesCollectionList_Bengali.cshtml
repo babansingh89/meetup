@@ -1,0 +1,374 @@
+﻿@{
+    ViewBag.Title = "Student Fees Collection List";
+    //Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Student Fees Collection List</span>
+                <a href="@Url.Action("StudentFeesCollection_Bengali", "Transaction")" class="btn btn-default pull-right m-t-10">Add New Record</a>
+            </div>
+
+            <div class="row">
+                @*<div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Class:</label>
+                            @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                        </div>
+                    </div>*@
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Reg No.:</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" id="txtRegNo" autocomplete="off" value="" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" id="btnsearch" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Student Name:</label>
+                        <input type="text" class="form-control" id="txtStudentName" autocomplete="off" value="" disabled />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Class & Section:</label>
+                        <input type="text" class="form-control" id="txtclassSec" autocomplete="off" value="" disabled />
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="control-label">Gender:</label>
+                        <input type="text" class="form-control" id="txtGender" autocomplete="off" value="" disabled />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Roll No.:</label>
+                        <input type="text" class="form-control" id="txtRollNo" autocomplete="off" value="" disabled />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Phone No.:</label>
+                        <input type="text" class="form-control" id="txtPhone" autocomplete="off" value="" disabled />
+                    </div>
+                </div>
+
+                <div class="col-md-9" style="display:none">
+                    <div class="form-group">
+                        @{
+                            // Initialize the list of months statically in the view
+                            var months = new List<dynamic>
+                                                                                                                                                                                                                                                                                                                                    {
+                        new { Id = 1, Name = "Jan" },
+                        new { Id = 2, Name = "Feb" },
+                        new { Id = 3, Name = "Mar" },
+                        new { Id = 4, Name = "Apr" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "Jun" },
+                        new { Id = 7, Name = "Jul" },
+                        new { Id = 8, Name = "Aug" },
+                        new { Id = 9, Name = "Sep" },
+                        new { Id = 10, Name = "Oct" },
+                        new { Id = 11, Name = "Nov" },
+                        new { Id = 12, Name = "Dec" }
+                    };
+
+                            <div class="horizontal-checkbox-list" style="font-family: fantasy;font-size: 18px;color: darkslategray; padding-top:26px;">
+                                <div id="monthlst"></div>
+                                @foreach (var month in months)
+                                {
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="months" class="chkMonth" value="@month.Id" /> @month.Name
+                                    </label>
+
+                                }
+
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+
+                        <table class="table table-striped table-bordered table-hover table-condensed" id="tblFeesCollection">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">SlNo.</th>
+                                    <th style="text-align:center">Student Name</th>
+                                    <th style="text-align:center">Receipt No.</th>
+                                    <th style="text-align:center">Receipt Date</th>
+                                    <th style="text-align:center">Admission Amount</th>
+                                    <th style="text-align:center">Other Amt</th>
+                                    <th style="text-align:center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+
+@section body_scripts{
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fn_Bindtbl("0", "Select");
+
+        });
+
+        $(document).ready(function () {
+                $('#txtRegNo').autocomplete({
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: '@Url.Action("Auto_RegNo", "Transaction")',
+                            data: { SR_No: $("#txtRegNo").val() },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            cache: false,
+                            success: function (serverResponse) {
+                                var AutoComplete = [];
+                                console.log(serverResponse[0]);
+
+                                if ((serverResponse[0]).length > 0) {
+
+                                    $.each(serverResponse[0], function (index, item) {
+                                        AutoComplete.push({
+                                            label: item.SR_RegNo,
+                                            SR_ID: item.SR_ID
+                                        });
+                                    });
+
+                                    response(AutoComplete);
+                                }
+                            }
+                        });
+                    },
+                    select: function (e, i) {
+                        //$('#hdId').val(i.item.SR_ID);
+
+                    },
+                    minLength: 1
+                }).click(function () {
+                    $(this).autocomplete('search', ($(this).val()));
+                });
+            });
+
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id);
+            }
+        });
+
+        $(document).on('click', '#btnsearch', function () {
+
+var _RegNo = $('#txtRegNo').val();
+if (_RegNo == '') {
+    FormSuccessError1("Please enter Reg No.", "Error", "errorBlock", "div_Scroll");
+    $('#txtRegNo').focus();
+    return false;
+}
+
+$.ajax({
+    type: "POST",
+    url: '@Url.Action("ViewFeecollection", "Transaction")',
+    data: JSON.stringify({ RegNo: _RegNo, Type: "FeeList_Bengali"}),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    cache: false,
+    success: function (data) {
+
+        console.log(data);
+        if (data.length > 0) {
+            $('#tblFeesCollection tbody').empty();
+            var cnt = 0;
+
+            $('#txtStudentName').val(data[0]["SR_StudentName"]);
+            $('#txtclassSec').val(data[0]["ClassName"] + " & " + data[0]["SectionName"]);
+            $('#txtGender').val(data[0]["SR_Gender"]);
+            $('#txtRollNo').val(data[0]["SR_CurrentRollNo"]);
+            $('#txtPhone').val(data[0]["SR_PhNo"]);
+
+            $.each(data, function (rowIndex, val) {
+                cnt++;
+                var row = '';
+                row += '<tr id=' + val.SR_ID + '>';
+                row += '<td style="vertical-align: middle; width:30px; text-align:center; ">' + cnt + '</td>';
+                row += '<td style="vertical-align: middle; text-align:center; ">' + val.SR_StudentName + '</td>';
+                row += '<td style="vertical-align: middle; text-align:center; ">' + val.SFC_ReceiptNo + '</td>';
+                row += '<td style="vertical-align: middle; text-align:center;  ">' + val.SFC_Date + '</td>';
+                row += '<td style="vertical-align: middle; text-align:right;  ">' + val.SFC_PaymentAmount + '</td>';
+                row += '<td style="vertical-align: middle; text-align:right;  ">' + val.SFC_PaymentAmountOther + '</td>';
+                row += '<td style="vertical-align: middle; text-align:center; "><i class="fa fa-print Iconprint" data-RegNo="' + val.SR_RegNo + '" data-MonthID="' + val.PayMonthID + '"></i></td>';
+                row += '</tr>';
+                $('#tblFeesCollection tbody').append(row);
+            });
+
+            //alert(data[0][0].SR_ID);
+            //$("#hdId").val(data[0][0].SR_ID);
+
+        } else {
+            $('#tblFeesCollection tbody').empty();
+            FormSuccessError1("No any Fee payment record found.", "Error", "errorBlock", "div_Scroll");
+            $('#txtRegNo').focus();
+            return false;
+        }
+    },
+    error: function (error) {
+        console.error(error);
+        //FormSuccessError(error, "Error", "errorBlock");
+        return false;
+    }
+});
+
+
+});
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewFeecollection", "Transaction")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "Select") {
+                        $('#tblFeesCollection tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.SFC_ReceiptNo + '</td>';
+                            row += '<td>' + val.SFC_Date + '</td>';
+                            row += '<td>' + val.SR_StudentName + '</td>';
+                            row += '<td>' + val.ClassName + '</td>';
+                            row += '<td>' + val.SFC_PaymentAmount + '</td>';
+                            row += '<td><i class="fa fa-print Iconprint" data-ID="' + val.SFC_Id + '"></i><i class="fa fa-trash-o Icondelclass" data-ID="' + val.SFC_Id + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblFeesCollection tbody').append(row);
+
+                        });
+                        $('#tblFeesCollection').dataTable();
+                    }
+
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteCollectionFees", "Transaction")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data deleted successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+        $(document).on('click', '.Iconprint', function (e) {
+            e.preventDefault();
+            var _RegNo = $(this).attr('data-RegNo');
+            //var _PayMonth = $(this).attr('data-MonthID');
+            Print(_RegNo);
+        });
+        function Print(_RegNo) {
+
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "FeeCollection_Bengali.rpt",
+                FileName: "FeeCollection",
+                AppID: ""
+            });
+
+            detail.push({
+                Class: "", //$('#ddlClassList').val(),
+                Section: "", // $('#ddlSectionList').val(),
+                RegNo: _RegNo,
+                PayMonth: "", //selectedMonths.join(','),
+                //AppID: "" // 18
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+        function GeneratePrintPDF(StdId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("FeePrintPDF", "Transaction")',
+                data: JSON.stringify({ StdId: StdId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (data == "Error") {
+                        alert("Error! Try again later.");
+                    }
+                    else {
+                        window.open(data);
+                        //previewPdfDocument(data);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    //alert("Error! Try again later.");
+                    window.location.href = "/Error";
+                }
+            });
+        }
+
+    </script>
+}
+
+

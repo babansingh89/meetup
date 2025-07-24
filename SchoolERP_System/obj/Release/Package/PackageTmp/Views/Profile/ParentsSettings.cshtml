@@ -1,0 +1,308 @@
+﻿
+@{
+    ViewBag.Title = "Parents Settings";
+    Layout = "~/Views/Shared/_ParentsLayout.cshtml";
+}
+
+
+<style>
+    .modal-confirm {
+        color: #636363;
+        width: 400px;
+    }
+
+        .modal-confirm .modal-content {
+            padding: 20px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .modal-confirm .modal-header {
+            border-bottom: none;
+            position: relative;
+        }
+
+        .modal-confirm h4 {
+            text-align: center;
+            font-size: 26px;
+            margin: 30px 0 -10px;
+        }
+
+        .modal-confirm .close {
+            position: absolute;
+            top: -5px;
+            right: -2px;
+        }
+
+        .modal-confirm .modal-body {
+            color: #999;
+        }
+
+        .modal-confirm .modal-footer {
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 13px;
+            padding: 10px 15px 25px;
+        }
+
+            .modal-confirm .modal-footer a {
+                color: #999;
+            }
+
+        .modal-confirm .icon-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            border-radius: 50%;
+            z-index: 9;
+            text-align: center;
+            border: 3px solid #f15e5e;
+        }
+
+            .modal-confirm .icon-box i {
+                color: #f15e5e;
+                font-size: 46px;
+                display: inline-block;
+                margin-top: 13px;
+            }
+
+        .modal-confirm .btn {
+            color: #fff;
+            border-radius: 4px;
+            background: #60c7c1;
+            text-decoration: none;
+            transition: all 0.4s;
+            line-height: normal;
+            min-width: 120px;
+            border: none;
+            min-height: 40px;
+            border-radius: 3px;
+            margin: 0 5px;
+            outline: none !important;
+        }
+
+        .modal-confirm .btn-info {
+            background: #c1c1c1;
+        }
+
+            .modal-confirm .btn-info:hover, .modal-confirm .btn-info:focus {
+                background: #a8a8a8;
+            }
+
+        .modal-confirm .btn-danger {
+            background: #f15e5e;
+        }
+
+            .modal-confirm .btn-danger:hover, .modal-confirm .btn-danger:focus {
+                background: #ee3535;
+            }
+
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Student Details</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                            <thead>
+                                <tr>
+                                    <th>Reg No</th>
+                                    <th>Student Name</th>
+                                    <th style="width:50px">User ID</th>
+                                    <td style="width:50px">Classs</td>
+                                    <th style="width:50px">Section</th>
+                                    <th style="width:50px">Roll No</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdId" value="0" />
+<input type="hidden" id="hdUTId" value="0" />
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="material-icons">&#xE5CD;</i>
+                </div>
+                <h4 class="modal-title">Are you sure?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Do you really want to reset password?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btnDel">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fn_Bindtbl("ParentsProfile");
+        });
+
+        $(document).on("click", ".IconResetclass", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdId").val(_Id);
+            $("#myModal").modal();
+        });
+        $(document).on("click", "#btnDel", function () {
+
+            var _Id = $.trim($("#hdId").val());
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ResetPassword", "HR")',
+                data: JSON.stringify({ Id: _Id, userType: 'Student', passsword: '123456' }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "resetSuccessful") {
+                        $("#hdId").val('0');
+                        $('#myModal').modal('hide');
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+
+        $(document).on("click", ".Icondelclass", function () {
+            var _Id = $(this).attr('data-ID');
+            var _Def = $(this).attr('data-ID-D');
+            if (_Def == "True") {
+                alert('Please Select other Student, Unable to proceed!');
+                return false;
+            }
+            fn_del(_Id);
+        });
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ResetDefalut", "Profile")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "Yes") {
+                        fn_Bindtbl("ParentsProfile");
+                        FormSuccessError("Default change successfully!", "Success", "errorBlock");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        };
+
+        function fn_Bindtbl(Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewParentsStudent", "profile")',
+                data: JSON.stringify({ Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#tblMapping tbody').empty();
+                    // alert(data.length)
+                    //alert(data[0])
+                    $.each(data[1], function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr>';
+                        row += '<td>' + val.SR_RegNo + '</td>';
+                        row += '<td>' + val.SR_StudentName + '</td>';
+                        row += '<td>' + val.UserID + '</td>';
+                        row += '<td>' + val.ClassName + '</td>';
+                        row += '<td>' + val.SectionName + '</td>';
+                        row += '<td>' + val.SR_CurrentRollNo + '</td>';
+                        if (data[0] == 1) {
+                            if (val.SR_DefaultLogin == "True") {
+                                row += '<td><i class="fa fa-refresh IconResetclass" data-ID="' + val.UserID + '"></i></td>';
+                            } else { row += '<td><i class="fa fa-refresh IconResetclass" data-ID="' + val.UserID + '"></i></td>'; }
+
+                        } else {
+                            if (val.SR_DefaultLogin == "True") {
+                                row += '<td><i class="fa fa-refresh IconResetclass" data-ID="' + val.UserID + '"></i><i class="fa fa-battery-full Icondelclass" style="color: limegreen;" data-ID-D="' + val.SR_DefaultLogin + '" data-ID="' + val.SR_ID + '"></i></td>';
+                            } else { row += '<td><i class="fa fa-refresh IconResetclass" data-ID="' + val.UserID + '"></i><i class="fa fa-battery-empty Icondelclass" style="color: red;" data-ID-D="' + val.SR_DefaultLogin + '" data-ID="' + val.SR_ID + '"></i></td>'; }
+                        }
+                        row += '</tr>';
+                        $('#tblMapping tbody').append(row);
+
+                    });
+                    $('#tblMapping').dataTable();
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+
+
+    </script>
+}
+
+
+
+

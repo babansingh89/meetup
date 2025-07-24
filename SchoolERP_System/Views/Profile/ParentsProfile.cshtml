@@ -1,0 +1,381 @@
+﻿
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_ParentsLayout.cshtml";
+}
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    hr.style2 {
+        border-top: 3.5px double #8c8b8b;
+    }
+
+    .imagePreview {
+        width: 100%;
+        height: 180px;
+        background-position: center center;
+        background: url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg);
+        background-color: #fff;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: inline-block;
+        box-shadow: 0px -3px 6px 2px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary1 {
+        display: block;
+        border-radius: 0px;
+        box-shadow: 0px 4px 6px 2px rgba(0,0,0,0.2);
+        margin-top: -5px;
+        background-color: bisque;
+    }
+
+    .imgUp {
+        margin-bottom: 15px;
+    }
+
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Profile</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Parent Name:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="txEmployeeName">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Gender:<span style="color:red;">*</span></label>
+                                <select id="ddlGenderList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>DOB:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control dateFormat" id="txtDOB">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Fathers Name:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txFathersName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Address:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtAddress">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Adhar No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txAdharNo" maxlength="16">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>PAN No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txPanNo" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Email:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtEmail">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Phone:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control Numeric" id="txtPhone" disabled maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Password:<span style="color:red;">*</span></label>
+                                <input type="password" class="form-control" id="txtpassword">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-2 imgUp">
+                                        <div id="img1" class="imagePreview"></div>
+                                        <label class="btn btn-primary1">
+                                            Upload Photo <input type="file" name="Imagefile" accept="image/*" id="FileUpload1" class="uploadFile img" style="display:none;width: 0px;height: 0px;overflow: hidden;">
+
+                                        </label>
+                                    </div><!-- col-2 -->
+
+                                </div><!-- row -->
+                            </div><!-- container -->
+                        </div>
+
+                    </div>
+
+                    <hr class="style2" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+
+        $(function () {
+            $(document).on("change", ".uploadFile", function () {
+                var uploadFile = $(this);
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+                if (/^image/.test(files[0].type)) { // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+
+                    reader.onloadend = function () { // set image data as background of div
+                        //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+                        uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
+                    }
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            $("#ddlGenderList").select2({
+                placeholder: "Select"
+            });
+            fn_Bindtbl("Profile");
+
+        });
+        $(document).on("click", "#btn-clear", function () {
+            var url = '@Url.Action("Parents", "Dashboard")'
+            window.location.href = url;
+        });
+
+        $(document).on("click", "#btnSave", function () {
+
+            var _Id = $.trim($("#hdId").val());
+            var _txEmployeeName = $('#txEmployeeName').val();
+            var _ddlGenderList = $('#ddlGenderList').select2('data')[0]['text'];
+            var _txtDOB = $('#txtDOB').val();
+            var _txFathersName = $('#txFathersName').val();
+            var _txAdharNo = $('#txAdharNo').val();
+            var _txPanNo = $('#txPanNo').val();
+            var _txtEmail = $('#txtEmail').val();
+            var _txtAddress = $('#txtAddress').val();
+            var _txtpassword = $('#txtpassword').val();
+            var fileUpload = $("#FileUpload1").get(0).files;
+
+
+            if (_txEmployeeName == '') {
+                FormSuccessError1("Please enter Name.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlGenderList == '' || _ddlGenderList == 'Select' || _ddlGenderList <= 0) {
+                FormSuccessError1("Please select Gender.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtDOB == '') {
+                FormSuccessError1("Please enter DOB.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            if (_txtpassword == '') {
+                FormSuccessError1("Please enter Password.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (window.FormData !== undefined) {
+                var fileData = new FormData();
+
+                fileData.append("P_EmpId", _Id);
+                fileData.append("P_EmpName", _txEmployeeName);
+                fileData.append("P_DOB", _txtDOB);
+                fileData.append("P_Gender", _ddlGenderList);
+                fileData.append("P_EmpFathers", _txFathersName);
+                fileData.append("P_EmpAddress", _txtAddress);
+                fileData.append("P_Password", _txtpassword);
+                fileData.append("P_PanNo", _txPanNo);
+                fileData.append("P_AdharNo", _txAdharNo);
+                fileData.append("P_Email", _txtEmail);
+                fileData.append("P_ProfilePic", fileUpload[0]);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveParents", "Profile")',
+                contentType: false,
+                processData: false,
+                data: fileData,
+                success: function (response) {
+                    if (response == "resetSuccessful") {
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+        function fn_Bindtbl(Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewParents", "Profile")',
+                data: JSON.stringify({ Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == 'Profile') {
+                        $('#btnSave').text("Update");
+                        $("#hdId").val(data[0].P_EmpId);
+                        $('#txEmployeeName').val(data[0].P_EmpName);
+                        if (data[0].P_Gender!='')
+                        $('#ddlGenderList').select2('val', data[0].P_Gender);
+                        $('#txtDOB').val(data[0].P_DOB);
+                        $('#txFathersName').val(data[0].P_EmpFathers);
+                        $('#txtPhone').val(data[0].P_EmpContactNo);
+                        $('#txtPhone').attr("disabled", "disabled");
+                        $('#txAdharNo').val(data[0].P_AdharNo);
+                        $('#txPanNo').val(data[0].P_PanNo);
+                        $('#txtEmail').val(data[0].P_Email);
+                        $('#txtAddress').val(data[0].P_EmpAddress);
+                        $('#txtpassword').val(data[0].UserPassword);
+                        $("#img1").css("background-image", "url(../ParentsImage/" + data[0].P_ProfilePic + ")");
+                    }
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+    </script>
+}
+
+
+
+

@@ -1,0 +1,388 @@
+﻿
+@{
+    ViewBag.Title = "View Attendance";
+    //Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+
+<style>
+    #calendar {
+        max-width: auto;
+        margin: auto;
+    }
+
+    .Absent {
+        background: #ea1919 !important;
+    }
+
+    .present {
+        background: #2cc232 !important;
+    }
+
+    .Holiday {
+        background: #e4990a;
+    }
+
+    /* basic positioning */
+    .legend {
+        list-style: none;
+    }
+
+        .legend li {
+            float: left;
+            margin-right: 10px;
+        }
+
+        .legend span {
+            border: 1px solid #ccc;
+            float: left;
+            width: 12px;
+            height: 12px;
+            margin: 2px;
+        }
+        /* your colors */
+        .legend .superawesome {
+            background-color: #ff00ff;
+        }
+
+        .legend .awesome {
+            background-color: #00ffff;
+        }
+
+        .legend .kindaawesome {
+            background-color: #0000ff;
+        }
+
+        .legend .notawesome {
+            background-color: #000000;
+        }
+
+ 
+    #tbl_Calender {
+        margin-top: 2%;
+    }
+
+    /* Large desktops and laptops */
+    @@media (min-width: 1200px) {
+        #tbl_Calender {
+            width: 30%;
+        }
+    }
+
+    /* Landscape tablets and medium desktops */
+    @@media (min-width: 992px) and (max-width: 1199px) {
+        #tbl_Calender {
+            width: 40%;
+        }
+    }
+
+    /* Portrait tablets and small desktops */
+    @@media (min-width: 768px) and (max-width: 991px) {
+        #tbl_Calender {
+            width: 100%;
+        }
+    }
+
+    /* Landscape phones and portrait tablets */
+    @@media (max-width: 767px) {
+        #tbl_Calender {
+            width: 100%;
+        }
+    }
+
+    /* Portrait phones and smaller */
+    @@media (max-width: 480px) {
+        #tbl_Calender {
+            width: 100%;
+        }
+    }
+
+    /* very smaller */
+    @@media (max-width: 310px) {
+        #tbl_Calender {
+            width: 100%;
+        }
+    }
+
+    .fyc-calendar-table {
+        /*width: 80%;*/
+        height: 300px;
+        margin: 20px auto;
+    }
+
+        .fyc-calendar-table thead > tr:first-child > th {
+            padding: 20px 0;
+            background-color: #d7d7d7;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .fyc-calendar-table thead > tr > th {
+            background-color: #f5f5f5;
+            color: #000;
+            text-align: center;
+        }
+
+        .fyc-calendar-table tbody > tr > td {
+            border: 0px solid #555;
+            text-align: center;
+        
+        }
+
+    .fyc-holiday {
+        background-color: #FFFF66;
+        color: black !important;
+    }
+
+    .fyc-P-holiday {
+        background-color: #2cc232;
+        color: white !important;
+    }
+
+    .fyc-A-holiday {
+        /*background-color: #ea1919;*/
+        /*position: relative;
+        display: inline-block;
+        width: 2.5em !important;
+        height: 2.5em !important;
+        line-height: 2.5em !important;*/
+        border-radius: 50%;
+        /*border: 2px solid transparent !important;*/
+        background: #ea1919;
+        color: white !important;
+    }
+
+    /*.fyc-hide {
+            display: none;
+        }*/
+  
+
+    .text-white {
+        color: #fff !important;
+    }
+
+    .bg-secondary {
+        background-color: #6c757d !important;
+    }
+   .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 0px!important;
+    vertical-align: middle;
+}
+    .card {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #e3eaef;
+        border-radius: .50rem;
+    }
+
+    .card-body {
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1rem;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="pull-left">View Attendance</span>
+
+                </div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Month:<span style="color:red;"></span></label>
+                                @Html.DropDownList("ddlMonthList", (IList<SelectListItem>)ViewBag.MonthList, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" style="margin-top: 20px;" id="btnSearch">Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="dvData">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-secondary text-white">
+                                                <div class="card-body">
+                                                    <div class="text-center">
+                                                        <h4>Attendance Report Of <span id="spmonth"></span> </h4>
+                                                        <h5>Present : <span id="spclass"></span></h5>
+                                                        <h5>Absent : <span id="spsection"></span></h5>
+                                                        <h5>
+                                                            Last Updated At :
+                                                            <span id="spdate"></span> <br>
+                                                            Time : <span id="sptime"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div> <!-- end card-body-->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+
+                                            @*<div id="dvStudent" class="table-responsive"></div>*@
+                                            <div id="full-year-calendar"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <link href="~/Content/assets/css/jquerysctipttop.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/stylesheet.css" rel="stylesheet" />
+    <script src="~/Content/assets/js/full-year-calendar.js"></script>
+    <script src="~/Content/assets/js/moment.min.js"></script>
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        var d = new Date();
+        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var _MonthID = monthNames[d.getMonth()] + ' ' + d.getFullYear();
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            $("#ddlMonthList").select2({
+                placeholder: "Select"
+            });
+            $("#dvData").hide();
+
+            $('#ddlMonthList').select2('val', new Date().getMonth() + 1);
+
+            //$.when(CallStudentSearch(_MonthID)).done(function () {
+            //    ShowMonth();
+            //});
+            $('#btnSearch').click();
+        });
+        $(document).on("click", "#btnSearch", function () {
+            hideAlert();
+            $('#dvData').hide();
+
+            var _ddl0 = $.trim($('#ddlMonthList option:selected').text());
+            var _MonthVal = $.trim($('#ddlMonthList option:selected').val());
+            var _ddl00 = $('#ddlMonthList').val();
+
+            if (_ddl00 == '' || _ddl00 <= 0) {
+                FormSuccessError1("Please Select Month.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/DailyAttendance/viewAttendanceStudent',
+                data: JSON.stringify({ MonthID: _ddl0 }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+
+                    if (data.length > 0) {
+                        if (data[0].length > 0) {
+                            $("#dvData").show();
+                            $('#dvStudent').empty();
+                            InitNewCalender(data);
+                            const monthNames = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"];
+                            var d = new Date();
+                            var currMonth = monthNames[d.getMonth()];
+                            var currYear = d.getFullYear();
+                            var day = d.getDate();
+                            var time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+                            var startDate = day + " " + currMonth + " " + currYear;
+                            $('#spclass').text('0');
+                            $('#spsection').text('0');
+                            $('#spmonth').text(_ddl0);
+                            $('#spclass').text(data[1]);
+                            $('#spsection').text(data[2]);
+                            $('#spdate').text(startDate);
+                            $('#sptime').text(time);
+                            showChangeMonth(_MonthVal);
+                        } else { FormSuccessError1("No attendacne taken, Record not found!", "Error", "errorBlock", "div_Scroll"); return false; }
+
+                    }
+                }
+            });
+        });
+
+        function InitNewCalender(data) {
+            let fyc = $('#full-year-calendar').fullYearCalendar({
+                weekDaysHolidays: [0],
+                yearStart: new Date('2020-04-01'),
+
+                yearEnd: new Date('2021-03-31')
+
+            });
+
+            //var fyc = $('#full-year-calendar').fullYearCalendar({
+            //    weekDaysHolidays: [0]
+            //});
+            // fyc.addHoliday({ type: 'niwds', from: '2020-04-04' });
+            $.each(data[0], function (key, value) {
+                fyc.addHoliday({ type: value.summary, from: value.start });
+            });
+        }
+        function ShowMonth() {
+            $('.fyc-hide').hide();
+            var mid = monthNameToNum(monthNames[d.getMonth()]);
+            var Mname = monthNumToName(mid);
+            var calenderID = ('#' + Mname);
+            $(calenderID).show();
+        }
+
+        function showChangeMonth(_MonthVal) {
+            $('.fyc-hide').hide();
+            var Mname = monthNumToName(_MonthVal);
+            var calenderID = ('#' + Mname);
+            $(calenderID).show();
+        }
+
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        function monthNumToName(monthnum) {
+            return months[monthnum - 1] || '';
+        }
+        function monthNameToNum(monthname) {
+            var month = monthNames.indexOf(monthname);
+            return month ? month + 1 : 0;
+        }
+    </script>
+}
+
+
+
+
+

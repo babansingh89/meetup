@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "Fees Payement";
+    //Layout = "~/Views/Shared/_ParentsLayout.cshtml";
+}
+<div><input type="submit" value="Pay" onclick="launchBOLT(); return false;" /></div>
+<input type="hidden" id="udf5" name="udf5" value="BOLT_KIT_ASP.NET" />
+<script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script id="bolt" src="https://sboxcheckout-static.citruspay.com/bolt/run/bolt.min.js" bolt-color="e34524" bolt-logo="https://boltiswatching.com/wp-content/uploads/2015/09/Bolt-Logo-e14421724859591.png"></script>
+@section body_scripts{
+
+<!-- this meta viewport is required for BOLT //-->
+@*<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">*@
+<!-- BOLT Sandbox/test //-->
+
+<!-- BOLT Production/Live //-->
+<!--// script id="bolt" src="https://checkout-static.citruspay.com/bolt/run/bolt.min.js" bolt-color="e34524" bolt-logo="http://boltiswatching.com/wp-content/uploads/2015/09/Bolt-Logo-e14421724859591.png"></script //-->
+
+   @* <script id="bolt" src="https://sboxcheckout-static.citruspay.com/bolt/run/bolt.min.js" bolt-color="black" bolt-logo="http://boltiswatching.com/wp-content/uploads/2015/09/Bolt-Logo-e14421724859591.png"></script>
+    <script id="bolt" src="https://checkout-static.citruspay.com/bolt/run/bolt.min.js" bolt-color="black" bolt-logo="http://boltiswatching.com/wp-content/uploads/2015/09/Bolt-Logo-e14421724859591.png"></script>*@
+    <script>
+        //var RequestData = {
+        //    key: 'BqqrzgQD',
+        //    txnid: '123456789',
+        //    hash: 'defdfaadgerhetiwerer',
+        //    amount: '1',
+        //firstname: 'Jaysinh',
+        //email: 'dummyemail@dummy.com',
+        //phone: '6111111111',
+        //productinfo: 'Bag',
+        //surl : 'https://sucess-url.in',
+        //furl: 'https://fail-url.in',
+        //mode:'dropout'// non-mandatory for Customized Response Handling
+        //}
+        //var Handler = {
+
+        //    responseHandler: function (BOLT) {
+        //        alert(BOLT.message);
+        //        // your payment response Code goes here, BOLT is the response object
+
+        //    },
+        //    catchException: function (BOLT) {
+        //        alert(BOLT.message);
+        //        // the code you use to handle the integration errors goes here
+
+        //    }
+        //}
+    </script>
+}

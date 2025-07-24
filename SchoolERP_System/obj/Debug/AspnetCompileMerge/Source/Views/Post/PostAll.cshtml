@@ -1,0 +1,796 @@
+﻿
+@{
+    ViewBag.Title = "Post";
+    //Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+<style type="text/css">
+    .select2-selection__rendered {
+        padding-top: 0 !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        text-align: center !important;
+    }
+
+    .fa {
+        cursor: pointer;
+    }
+
+    a.less {
+        color: red !important;
+    }
+
+    a.morelink {
+        color: blue;
+    }
+
+    .hide-bullets {
+        list-style: none;
+        margin-left: -40px;
+        margin-top: 20px;
+    }
+
+    .thumbnail {
+        padding: 0;
+    }
+
+    .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+        width: 100%;
+    }
+
+    #slider-thumbs {
+        height: auto;
+        /*height: 500px;*/
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+
+    .Imgthumbbnail {
+        height: 100px;
+        width: 150px;
+    }
+
+    .panel-heading {
+        padding: 5px 15px !important;
+        border-bottom: 1px solid transparent !important;
+        border-top-left-radius: 3px !important;
+        border-top-right-radius: 3px !important;
+        line-height: 30px !important;
+        text-transform: none !important;
+        text-align: center !important;
+        position: relative !important;
+        height: 100% !important;
+        letter-spacing: 1.2px !important;
+    }
+    /*.note-group-select-from-files {
+                display: none;
+            }*/
+    .table-title .btn i {
+        float: left;
+        font-size: 21px;
+        margin-right: 5px;
+    }
+
+    .table {
+        margin-bottom: 0px !important;
+    }
+
+    .table-title .btn span {
+        float: left;
+        margin-top: 2px;
+    }
+
+    table.table tr th, table.table tr td {
+        border-color: #e9e9e9;
+        vertical-align: middle;
+    }
+
+
+
+    table.table-striped tbody tr:nth-of-type(odd) {
+        background-color: #fcfcfc;
+    }
+
+    table.table-striped.table-hover tbody tr:hover {
+        background: #f5f5f5;
+    }
+
+    table.table th i {
+        font-size: 13px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    table.table td:last-child i {
+        opacity: 0.9;
+        font-size: 22px;
+        margin: 0 5px;
+    }
+
+    table.table td a {
+        font-weight: bold;
+        color: #566787;
+        display: inline-block;
+        text-decoration: none;
+        outline: none !important;
+    }
+
+        table.table td a:hover {
+            color: #2196F3;
+        }
+
+
+    .table-responsive {
+        max-height: 300px;
+    }
+</style>
+
+<div id="div_Scroll">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Create Post</div>
+        <div class="panel-body">
+            @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+            <div class="row">
+                <div class="col-md-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Type:<span style="color:red;">*</span></label>
+                        <select id="ddlTypeList" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="HW">Homework</option>
+                            <option value="CS">Class Study</option>
+                            <option value="AS">Assignment</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Class:<span style="color:red;">*</span></label>
+                        @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Section:<span style="color:red;">*</span></label>
+                        <select id="ddlSectionList" class="form-control"> </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group">
+                        <textarea id="txtDescription" class="form-control textarea-editor" placeholder="What do you want to share?"></textarea>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div id="dvPreview" style="display: flex;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <button type="submit" class="btn btn-warning" id="btnTag">
+                        <img src="~/Content/assets/images/tagFriend.png" /> Tag Students
+                        @*<a href="#" class="btn btn-warning"></a>*@
+                    </button>
+                    <button type="submit" class="btn btn-primary pull-right" id="btnSave">Post</button>
+                    <button class="btn btn-grey pull-right" id="clear">Discard</button>
+                    <input type="hidden" id="hdType" value="NA" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+<div class="modal fade" id="classeModal" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width:100%;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-tag"></i>Tag Student:</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Shared/Modal_SuccessError.cshtml")
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Class:<span style="color:red;">*</span></label>
+                            @Html.DropDownList("ddlClassAddList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Student:<span style="color:red;">*</span></label>
+                            <select id="ddlStudentList" class="form-control"> </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="btnAdd" style="margin-top: 25px;margin-right: -10px;float: right;">Add</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="dvstudent" class="panel-body table-responsive">
+                            <table id="tblstudent" class="table  table-bordered table-hover" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="color: cornflowerblue;">Name</th>
+                                        <th style="color: cornflowerblue;">Class & Section</th>
+                                        <th style="color: cornflowerblue;">Phone</th>
+                                        <th style="color: salmon;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*<tr><td>Thomas Hardy</td><td>89 Chiaroscuro Rd, Portland, USA</td><td>(171) 555-2222</td>
+                                        <td><i class="fa Icondelclass" data-toggle="tooltip" title="Delete"><img src="~/Content/assets/images/del.png" /></i></td></tr>*@
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary" id="btnSave">Save</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+@section body_scripts{
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="~/Content/assets/js/summernote.js"></script>
+    <script src="~/Content/assets/js/summernote-file.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.fileUrl').hide();
+
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlClassAddList").select2({
+                placeholder: "Select"
+            });
+
+            $("#ddlTypeList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlStudentList").select2({
+                placeholder: "Select"
+            });
+
+            $("#ddlSectionList").select2({
+                multiple: true,
+                allowClear: true,
+                placeholder: "Select"
+            });
+            //var HelloButton = function (context) {
+            //    var ui = $.summernote.ui;
+            //    // create button
+            //    var button = ui.button({
+            //        contents: '<i class="fa fa-child"/> Hello',
+            //        tooltip: 'hello',
+            //        click: function () {
+            //            // invoke insertText method with 'hello' on editor module.
+            //            context.invoke('editor.insertText', 'hello');
+            //        }
+            //    });
+
+            //    return button.render();   // return button as jquery object
+            //}
+            $('.textarea-editor').summernote({
+                height: 350, // set editor height
+                minHeight: null, // set minimum height of editor
+                maxHeight: null, // set maximum height of editor
+                focus: true // set focus to editable area after initializing summernote
+                , toolbar: [
+     ['style', ['style']],
+     ['font', ['bold', 'italic', 'underline', 'clear']],
+     ['fontname', ['fontname']],
+     ['color', ['color']],
+     ['para', ['ul', 'ol', 'paragraph']],
+     ['height', ['height']],
+     ['table', ['table']],
+     ['insert', ['link', 'picture', 'video', 'file']],
+     ['view', ['fullscreen', 'codeview']],
+     ['help', ['help']]
+                ],
+
+                callbacks: {
+                    onFileUpload: function (file) {
+                        var sizeKB = file[0]['size'] / 1000;
+                        //  alert(sizeKB)
+                        if (sizeKB > 5000) {
+                            alert('Please select Less than 5MB File!');
+                            $('.note-icon-file').click();
+                            return false;
+                        }
+                        sendFile(file[0], "Doc");
+                    },
+                    onImageUpload: function (files) {
+
+                        var sizeKB = files[0]['size'] / 1000;
+                        //   alert(sizeKB)
+                        if (sizeKB > 5000) {
+                            alert('Please select Less than 5MB Image!');
+                            $('.note-icon-picture').click();
+                            return false;
+                        }
+                        sendFile(files[0], "img");
+                    },
+                },
+            });
+
+            //$('.modal-footer').hide();
+            //$('.btn-codeview').hide();
+            var query_event_id = getParameterByName('_Id');
+            var query_event_INDid = getParameterByName('_INDId');
+
+            if (query_event_id) {
+                $('#btnTag').hide();
+                $("#hdId").val(query_event_id);
+                fn_Bindpost(query_event_id);
+            }
+            if (query_event_INDid) {
+                HideSuccErrDiv();
+                ModalHideSuccErrDiv();
+                fn_resetformTag();
+                $("#hdId").val(query_event_INDid);
+                fn_BindpostIND(query_event_INDid);
+            }
+        });
+        $(document).on("click", "#btnAdd", function () {
+            ModalHideSuccErrDiv();
+            var _Class = $.trim($("#ddlClassAddList").val());
+            var _Student = $.trim($("#ddlStudentList").val());
+            var ds = 0;
+            if (_Class == "" || _Class <= 0) {
+                ModalPopupError("Please Select class name.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_Student == "" || _Student <= 0) {
+                ModalPopupError("Please Select Student.", "Error", "M_errorBlock");
+                return false;
+            }
+            $('#tblstudent > tbody > tr').each(function () {
+
+                var tr_id = $(this).attr('id');
+                if (tr_id == _Student) {
+                    ds = 1
+                }
+
+            });
+            if (ds == "1") {
+                ModalPopupError("Please Select Unique Student.", "Error", "M_errorBlock");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("BindStudent", "Post")',
+                data: JSON.stringify({ ID: _Student, type: "PostStudentByID" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+
+                    $.each(data, function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr id=' + val.SR_ID + '>';
+                        row += '<td>' + val.SR_StudentName + '</td>';
+                        row += '<td>' + val.ClassName + '</td>';
+                        row += '<td>' + val.SR_PhNo + '</td>';
+                        row += '<td><i class="fa Icondelclass" data-toggle="tooltip" title="Delete" data-ID="' + val.SR_ID + '"><img src="/Content/assets/images/del.png" /></i></td>';
+                        row += '</tr>';
+                        $('#tblstudent tbody').append(row);
+                    });
+                    $('#dvstudent').show();
+                    $('#ddlStudentList').select2("val", '');
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete?")) {
+                $(this).closest("tr").remove();
+            }
+        });
+        $("#ddlClassAddList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Post/BindStudent',
+                data: JSON.stringify({ ID: ID, type: "PostStudent" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlStudentList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlStudentList").append($("<option/>").val(this.SR_ID).text(this.SR_StudentName));
+                        });
+                    }
+                }
+            });
+        });
+        function sendFile(file, type) {
+            //  alert(type)
+            let data = new FormData();
+            data.append("file", file);
+            data.append("Type", type);
+            $.ajax({
+                data: data,
+                type: "POST",
+                url: "@Url.Action("UploadImage","Post")",
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (url) {
+                    //alert(url)
+                    //alert(type)
+                    if (type == 'img') {
+                        $('.textarea-editor').summernote("editor.insertImage", url, function ($image) {
+                            $image.css('width', '100%');
+                            $image.attr('data-filename', 'retriever');
+                            $image.attr('target', '_blank');
+                        });
+                    }
+                    else {
+                        let listMimeImg = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/svg'];
+                        let listMimeAudio = ['audio/mpeg', 'audio/ogg', 'audio/mpeg3', 'audio/x-mpeg-3', 'audio/mp3'];
+                        let listMimeVideo = ['video/mpeg', 'video/mp4', 'video/webm', 'video/x-mpeg'];
+                        let elem;
+                        let elemImg;
+                        // alert(file.name)
+                        if (listMimeImg.indexOf(file.type) > -1) {
+                            //Picture
+                            //$('.textarea-editor').summernote('editor.insertImage', url);
+                            $('.textarea-editor').summernote("editor.insertImage", url, function ($image) {
+                                $image.css('width', '100%');
+                                $image.attr('data-filename', 'retriever');
+                                $image.attr('target', '_blank');
+                            });
+                        } else if (listMimeAudio.indexOf(file.type) > -1) {
+                            //Audio
+                            elem = document.createElement("audio");
+                            elem.setAttribute("src", url);
+                            elem.setAttribute("controls", "controls");
+                            elem.setAttribute("preload", "metadata");
+                            elem.setAttribute('style', "width: 100%;");
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        } else if (listMimeVideo.indexOf(file.type) > -1) {
+                            //Video
+                            elem = document.createElement("video");
+                            elem.setAttribute("src", url);
+                            elem.setAttribute("controls", "controls");
+                            elem.setAttribute("preload", "metadata");
+                            elem.setAttribute('style', "width: 100%;");
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        } else {
+                            //Other file type
+                            elem = document.createElement("a");
+                            elem.download = 'download';
+                            elem.href = url;// alert(elem)
+                            elem.target = "_blank";
+                            var extension = file.name.substr((file.name.lastIndexOf('.') + 1));
+                            // alert(extension);
+                            var img = $('<img id="dynamic">');
+                            img.attr('src', 'http://www.meetupschool.com/Content/assets/images/other.png');
+                            if (extension.toLowerCase() == 'pdf') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/pdf.png');
+                            }
+                            if (extension.toLowerCase() == 'doc' || extension.toLowerCase() == 'docx') {
+
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/word.png');
+                            }
+                            if (extension.toLowerCase() == 'xlsx' || extension.toLowerCase() == 'xls' || extension.toLowerCase() == 'csv') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/exce.png');
+                            } if (extension.toLowerCase() == 'txt') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/text.png');
+                            }
+                            //else {
+                            //    img.attr('src', "/Content/assets/images/other.png");
+                            //}
+                            img.attr('style', "width: 30px; height: 30px;");
+                            img.appendTo(elem);
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        }
+                    }
+
+                }
+            });
+        }
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        $(document).on("click", ".note-icon-file", function () {
+            $('.fileUrl').hide();
+
+        });
+
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Post/BindpostSection',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSectionList").empty();//.append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on("click", "#clear", function () {
+            var url = '@Url.Action("PostAll", "Post")'
+            window.location.href = url;
+        });
+        function fn_Bindpost(_Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditViewPostTeacher", "Post")',
+                data: JSON.stringify({ Id: _Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+
+                    $.each(data, function (rowIndex, r) {
+                        var Classarr = [];
+                        Classarr = data[0].SectionID.split(",");
+                        $("#hdId").val(_Id);
+                        $('#ddlTypeList').select2("val", data[0].PostMode);
+                        $('#ddlClassList').select2("val", data[0].ClassID);
+                        $('#ddlSectionList').select2("val", Classarr);
+                        $('#txtDescription').summernote('code', data[0].PostData);
+                        $('#btnSave').text("Update");
+                    });
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        }
+        function fn_BindpostIND(_Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditViewPostTeacherIndividual", "Post")',
+                data: JSON.stringify({ Id: _Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    console.log(data)
+
+                    $("#hdId").val(_Id);
+                    $('#txtDescription').summernote('code', data[0][0].PostData);
+                    $('#btnSave').text("Update");
+
+                    $.each(data[1], function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr id=' + val.SR_ID + '>';
+                        row += '<td>' + val.SR_StudentName + '</td>';
+                        row += '<td>' + val.ClassName + '</td>';
+                        row += '<td>' + val.SR_PhNo + '</td>';
+                        row += '<td><i class="fa Icondelclass" data-toggle="tooltip" title="Delete" data-ID="' + val.SR_ID + '"><img src="/Content/assets/images/del.png" /></i></td>';
+                        row += '</tr>';
+                        $('#tblstudent tbody').append(row);
+                    });
+                    $('#dvstudent').show();
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        }
+        $(document).on("click", "#btnSave", function () {
+
+            var _Id = $.trim($("#hdId").val());
+            if ($('#ddlTypeList').is(':disabled') == true) {
+                if ($('#tblstudent >tbody >tr').length == 0) {
+                    FormSuccessError1("Please select Student.", "Error", "errorBlock", "div_Scroll");
+                    return false;
+                }
+                var _txtPost = $.trim($('#txtDescription').val());
+                if (_txtPost == '') {
+                    FormSuccessError1("Please enter Post.", "Error", "errorBlock", "div_Scroll");
+                    return false;
+                }
+                var StdData = [];
+
+                $('#tblstudent > tbody > tr').each(function () {
+                    var tr_id = $(this).attr('id');
+                    StdData.push(tr_id);
+                });
+                var strData = StdData.join(",");
+                if (window.FormData !== undefined) {
+                    var fileData = new FormData();
+                    fileData.append("ID", _Id);
+                    fileData.append("StudentID", strData);
+                    fileData.append("PostData", _txtPost);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("PostSaveForTag", "Post")',
+                    contentType: false,
+                    processData: false,
+                    data: fileData,
+                    success: function (response) {
+                        if (response == "InsertSuccessful") {
+                            fn_resetformTagSave();
+                            FormSuccessError1("Data Inserted successfully.", "Success", "errorBlock", "div_Scroll");
+                        }
+                        else if (response == "UpdateSuccessful") {
+                            fn_resetformTagSave();
+                            FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+                            var uri = window.location.href.toString();
+                            $('#btnSave').text("Save");
+                            if (uri.indexOf("?") > 0) {
+                                var clean_uri = uri.substring(0, uri.indexOf("?"));
+                                window.history.replaceState({}, document.title, clean_uri);
+                            }
+                        }
+                        else {
+                            alert("Error. Try again latet.");
+                            return false;
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        //FormSuccessError(error, "Error", "errorBlock");
+                        return false;
+                    }
+                });
+            } else {
+
+                var _ddl0 = $('#ddlTypeList').val();
+                var _ddl1 = $('#ddlClassList').val();
+                var _ddl2 = $('#ddlSectionList').val();
+                var _txtPost = $.trim($('#txtDescription').val());
+                if (_ddl0 == '' || _ddl0 <= 0) {
+                    FormSuccessError1("Please select Type.", "Error", "errorBlock", "div_Scroll");
+                    return false;
+                }
+                if (_ddl1 == '' || _ddl1 <= 0) {
+                    FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+                    return false;
+                }
+                if (_ddl2 == '' || _ddl2 <= 0) {
+                    FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
+                    return false;
+                } else {
+
+                    _ddl2 = _ddl2.join(",");
+                }
+
+                if (_txtPost == '') {
+                    FormSuccessError1("Please enter Post.", "Error", "errorBlock", "div_Scroll");
+                    return false;
+                }
+                if (window.FormData !== undefined) {
+                    var fileData = new FormData();
+
+                    fileData.append("ID", _Id);
+                    fileData.append("Type", _ddl0);
+                    fileData.append("Class", _ddl1);
+                    fileData.append("Section", _ddl2);
+                    fileData.append("PostData", _txtPost);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("PostSave", "Post")',
+                    //data: JSON.stringify({ ID: _Id, Type: _ddl0, Class: _ddl1, Section: _ddl2, PostData: _txtPost }),
+                    contentType: false,
+                    processData: false,
+                    data: fileData,
+                    success: function (response) {
+                        if (response == "InsertSuccessful") {
+                            fn_resetform();
+                            FormSuccessError1("Data Inserted successfully.", "Success", "errorBlock", "div_Scroll");
+
+                        }
+                        else if (response == "UpdateSuccessful") {
+                            fn_resetform();
+                            FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+                            $('#btnSave').text("Save");
+                            var uri = window.location.href.toString();
+                            if (uri.indexOf("?") > 0) {
+                                var clean_uri = uri.substring(0, uri.indexOf("?"));
+                                window.history.replaceState({}, document.title, clean_uri);
+                            }
+                        }
+                        else {
+                            alert("Error. Try again latet.");
+                            return false;
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        //FormSuccessError(error, "Error", "errorBlock");
+                        return false;
+                    }
+                });
+            }
+        });
+        $(document).on("click", "#btnTag", function () {
+            HideSuccErrDiv();
+            ModalHideSuccErrDiv();
+            fn_resetformTag();
+            var cnt = $('#tblstudent >tbody >tr').length;
+            if (cnt <= 0) {
+                $('#tblstudent tbody').empty();
+                $('#dvstudent').hide();
+            }
+            $("#classeModal").modal();
+        });
+        function fn_resetformTagSave() {
+            $('#ddlTypeList').select2("val", '');
+            $('#ddlClassAddList').val(null).trigger('change.select2');
+            $('#ddlStudentList').select2("val", '');
+            $('#ddlClassList').val(null).trigger('change.select2');
+            $('#ddlSectionList').select2("val", '');
+            $('#ddlSectionList').removeAttr("disabled");
+            $('#ddlClassList').removeAttr("disabled");
+            $('#ddlTypeList').removeAttr("disabled");
+            $("#hdId").val('0');
+            $('#ddlTypeList').select2("val", '');
+            $('#ddlClassList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+            $('#txtDescription').summernote('reset');
+            $('#tblstudent tbody').empty();
+            $('#dvstudent').hide();
+            $('#btnSave').text("Save");
+        }
+        function fn_resetformTag() {
+
+            $('#ddlTypeList').select2("val", '');
+            $('#ddlClassAddList').val(null).trigger('change.select2');
+            $('#ddlStudentList').select2("val", '');
+            $('#ddlClassList').val(null).trigger('change.select2');
+            $('#ddlSectionList').select2("val", '');
+            $('#ddlSectionList').attr("disabled", "disabled");
+            $('#ddlClassList').attr("disabled", "disabled");
+            $('#ddlTypeList').attr("disabled", "disabled");
+        }
+        function fn_resetform() {
+            $("#hdId").val('0');
+            $('#ddlTypeList').select2("val", '');
+            $('#ddlClassList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+            $('#txtDescription').summernote('reset');
+        }
+    </script>
+}
+

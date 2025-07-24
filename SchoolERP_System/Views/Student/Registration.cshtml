@@ -1,0 +1,438 @@
+﻿@{
+    ViewBag.Title = "Registration";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+<style>
+    .modal-confirm {
+        color: #636363;
+        width: 400px;
+    }
+
+        .modal-confirm .modal-content {
+            padding: 20px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .modal-confirm .modal-header {
+            border-bottom: none;
+            position: relative;
+        }
+
+        .modal-confirm h4 {
+            text-align: center;
+            font-size: 26px;
+            margin: 30px 0 -10px;
+        }
+
+        .modal-confirm .close {
+            position: absolute;
+            top: -5px;
+            right: -2px;
+        }
+
+        .modal-confirm .modal-body {
+            color: #999;
+        }
+
+        .modal-confirm .modal-footer {
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 13px;
+            padding: 10px 15px 25px;
+        }
+
+            .modal-confirm .modal-footer a {
+                color: #999;
+            }
+
+        .modal-confirm .icon-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            border-radius: 50%;
+            z-index: 9;
+            text-align: center;
+            border: 3px solid #f15e5e;
+        }
+
+            .modal-confirm .icon-box i {
+                color: #f15e5e;
+                font-size: 46px;
+                display: inline-block;
+                margin-top: 13px;
+            }
+
+        .modal-confirm .btn {
+            color: #fff;
+            border-radius: 4px;
+            background: #60c7c1;
+            text-decoration: none;
+            transition: all 0.4s;
+            line-height: normal;
+            min-width: 120px;
+            border: none;
+            min-height: 40px;
+            border-radius: 3px;
+            margin: 0 5px;
+            outline: none !important;
+        }
+
+        .modal-confirm .btn-info {
+            background: #c1c1c1;
+        }
+
+            .modal-confirm .btn-info:hover, .modal-confirm .btn-info:focus {
+                background: #a8a8a8;
+            }
+
+        .modal-confirm .btn-danger {
+            background: #f15e5e;
+        }
+
+            .modal-confirm .btn-danger:hover, .modal-confirm .btn-danger:focus {
+                background: #ee3535;
+            }
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Admitted</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Reg.No</th>
+                                    <th style="width: 95px;">Student Name</th>
+                                    <th style="width: 95px;">Father Name</th>
+                                    <th style="width: 66px;">Mother Name</th>
+                                    <th style="width: 66px;">User ID</th>
+                                    <th style="width: 66px;">Contact No.</th>
+                                    <th style="width: 20px;">Class</th>
+                                    <th style="width: 30px;">Section</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+<input type="hidden" id="hdUTId" value="0" />
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="material-icons">&#xE5CD;</i>
+                </div>
+                <h4 class="modal-title">Are you sure?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Do you really want to reset password?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btnDel">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section body_scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fn_Bindtbl("0", "SelectAdmit");
+        });
+        $(document).on("click", ".IconResetclass", function () {
+
+            var _Id = $(this).attr('data-ID');
+            var _UT = $(this).attr('data-ID-UT');
+            $("#hdId").val(_Id);
+            $("#hdUTId").val(_UT);
+            if (_UT == 'Parents' || _UT == 'Student') {
+                $("#myModal").modal();
+            }
+
+        });
+        $(document).on("click", ".openModal", function () {
+         var   url= '@Url.Action("StudentRegistration", "Student")'
+            window.location.href = url;
+        });
+        $(document).on("click", "#btnDel", function () {
+
+            var _Id = $.trim($("#hdId").val());
+            var _UT = $.trim($("#hdUTId").val());
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ResetPassword", "HR")',
+                data: JSON.stringify({ Id: _Id, userType: _UT, passsword: '123456' }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "resetSuccessful") {
+                        $("#hdId").val('0');
+                        $("#hdUTId").val('0');
+                        $('#myModal').modal('hide');
+
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        $(document).on("click", ".Iconeditclass", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdId").val(_Id);
+            fn_Bindtbl(_Id, "SelectByID");
+        });
+        $(document).on("click", ".IconeditclassFee", function () {
+            var _Id = $(this).attr('data-ID');
+            var medium_type = $(this).attr('medium-type');
+            var url = "";
+            if (medium_type == "1") {
+                url = '@Url.Action("StudentFeesCollection_Bengali", "Transaction", new { _Id = "__id__" })';
+
+            }
+            else {
+                url = '@Url.Action("StudentFeesCollection", "Transaction", new { _Id = "__id__" })';
+            }
+
+
+            //var url = '@Url.Action("StudentFeesCollection", "Transaction", new { _Id = "__id__" })';
+            window.location.href = url.replace('__id__', _Id);
+        });
+
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id);
+            }
+        });
+        $(document).on("click", ".IconGenrateclass", function () {
+
+                var _Id = $(this).attr('data-ID');
+                fn_delGenrate(_Id);
+
+        });
+        function fn_Bindtbl(_Id, Type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewPreAdmitted", "Student")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "SelectAdmit") {
+                        $('#tblMapping tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            //row += '<td>' + val.SR_RegNo + '</td>';
+                            row += '<td><i class="fa IconGenrateclass" data-ID="' + val.SR_ID + '">' + val.SR_RegNo + '</i></td>';
+                            row += '<td>' + val.SR_StudentName + '</td>';
+                            row += '<td>' + val.SR_FatherName + '</td>';
+                            row += '<td>' + val.SR_MotherName + '</td>';
+                            row += '<td><i class="fa IconResetclass" data-ID-UT="Student" data-ID="' + val.UserID + '">' + val.UserID + '</i></td>';
+                            row += '<td><i class="fa IconResetclass" data-ID-UT="Parents" data-ID="' + val.SR_PhNo + '">' + val.SR_PhNo + '</i></td>';
+                           // row += '<td>' + val.SR_PhNo + '</td>';
+                            row += '<td>' + val.ClassName + '</td>';
+                            row += '<td>' + val.SectionName + '</td>';
+                            row += '<td><i class="fa fa-print Iconprint" data-ID="' + val.SR_ID + '" data-AppID="' + val.AppID + '"></i><i class="fa fa-inr IconeditclassFee" data-ID="' + val.SR_RegNo + '" medium-type="' + val.MediumType + '"></i><i class="fa fa-edit Iconeditclass" data-ID="' + val.SR_ID + '"></i><i class="fa fa-trash-o Icondelclass" data-ID="' + val.SR_ID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblMapping tbody').append(row);
+                        });
+                        $('#tblMapping').dataTable({
+                            "destroy": true,  // Allows re-initialization
+                            "autoWidth": false,
+                            "paging": true,   // Enable pagination
+                            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]], // Set dropdown options
+                            "pageLength": 10, // Default rows per page
+                            "columnDefs": [
+                                { "width": "100px", "targets": "_all" }
+                            ]
+                        });
+                    }
+                    if (Type == "SelectByID") {
+                        var url = '@Url.Action("StudentRegistration", "Student", new { _Id = "__id__" })';
+                        window.location.href = url.replace('__id__', _Id);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        }
+
+        function fn_delGenrate(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GenerateLogin", "Student")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "genrateSuccessful") {
+                        fn_Bindtbl("0", "SelectAdmit");
+                        FormSuccessError("Generate successfully.", "Success", "errorBlock");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        };
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeletePreAdmitted", "Student")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "SelectAdmit");
+                        FormSuccessError("Data deleted successfully.", "Success", "errorBlock");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        };
+        $(document).on('click', '.Iconprint', function (e) {
+            e.preventDefault();
+            var _Id = $(this).attr('data-ID');
+            var _AppId = $(this).attr('data-AppID');
+            //GeneratePrintPDF(_Id);
+            Print(_Id, _AppId);
+        });
+
+        function GeneratePrintPDF(StdId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("PrintPDF", "Student")',
+                data: JSON.stringify({ StdId: StdId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (data == "Error") {
+                        alert("Error! Try again later.");
+                    }
+                    else {
+                        window.open(data);
+                        //previewPdfDocument(data);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    //alert("Error! Try again later.");
+                    window.location.href = "/Error";
+                }
+            });
+        }
+        function Print(_Id, AppID) {
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "StudentRegistration.rpt",
+                FileName: "Student_Reg_Report",
+                AppID: AppID
+            });
+
+            detail.push({
+                SR_ID: _Id,
+                AppID: AppID
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+
+
+
+    </script>
+}
+
+<style>
+    #tblMapping th, #tblMapping td {
+        text-align: left; /* Align text */
+        vertical-align: middle;
+        white-space: nowrap; /* Prevent wrapping */
+    }
+
+    #tblMapping th {
+        width: 100px; /* Set equal width for all columns */
+    }
+
+    #tblMapping td {
+        width: 100px;
+        word-wrap: break-word; /* Prevents content overflow */
+    }
+
+
+
+</style>

@@ -1,0 +1,355 @@
+﻿
+@{
+    ViewBag.Title = "APSMS";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Student SMS</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Class Name <span style="color:red;"> *</span> </label>
+                                <div class="input-group input-group-sm">
+                                    @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                                    <span class="input-group-btn">
+                                        <button style="height:33px" class="btn btn-primary" id="btnsearch" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label>Message (Min : 25 character)<span style="color:red;"> *</span></label>
+                                    <input id="txtmsg" class="form-control" cols="5" maxlength="25" placeholder="Min 25 Character" />
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div id="stlist" class="row">
+                            <div class="col-lg-12">
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover table-condensed" id="tblMapping">
+                                            <thead>
+                                                <tr style="background-color: antiquewhite;">
+                                                    <th></th>
+                                                    <th>Reg.No</th>
+                                                    <th>Student Name</th>
+                                                    <th>Phone No.</th>
+                                                    <th style="text-align:center;">Section</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button class="btn btn-primary pull-right" id="btnSave">Send</button>
+                                <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            //$('#stlist').hide();
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlMSGList").select2({
+                placeholder: "Select"
+            });
+            $("#btnsearch").click(function () {
+                BindTable();
+            });
+        });
+        $("#ddlMSGList").change(function () {
+            $('#txtmsg').val('');
+
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Messaging/viewSTMaster',
+                data: JSON.stringify({ STID: ID, Type: "SelectByID" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#txtmsg').val(data[0].STDesc);
+                    }
+                }
+            });
+        });
+        $('#tblMapping').find('tbody tr input:checkbox').click(function () {
+            //alert($(".chkRow").length);
+            //alert($(".chkRow:checked").length);
+            if ($(".chkRow").length == $(".chkRow:checked").length) {
+                $("#chkAll").prop("checked", true);
+            } else {
+                $("#chkAll").prop("checked", false);
+            }
+        });
+        $("#chkAll").click(function () {
+            var checkAll = $("#chkAll").prop('checked');
+            if (checkAll) {
+                $(".chkRow").prop("checked", true);
+            } else {
+                $(".chkRow").prop("checked", false);
+            }
+        });
+        $("#ddlClassList").change(function () {
+            /*
+            var ID = $('option:selected', this).val(); 
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/Messaging/ViewStudent',
+                data: JSON.stringify({ STID: ID,}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $('#tblMapping tbody').empty();
+                    console.log(data);
+                    $.each(data, function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr>';
+                        row += '<td>' + '<input type="checkbox" class="single-select" id="chk_' + val.SR_RegNo + '" />' + '</td>';
+                        row += '<td>' + val.SR_RegNo + '</td>';
+                        row += '<td>' + val.SR_StudentName + '</td>';
+                        row += '</tr>';
+                        $('#tblMapping tbody').append(row);
+                    });
+                }
+            });
+            */
+            //$.ajax({
+            //    type: "POST",
+            //    url: '/Student/BindStream',
+            //    data: JSON.stringify({ ID: ID, Type: "Se" }),
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    async: false,
+            //    cache: false,
+            //    success: function (data) {
+            //        $("#ddlSectionList").empty().append('<option selected="selected" value="0">Select</option>');
+            //        if (data.length > 0) {
+            //            $.each(data, function () {
+            //                $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+            //            });
+            //        }
+            //    }
+            //});
+        });
+        $("#ddlSectionList").change(function () {
+            hideAlert();
+            $("#chkAll").prop("checked", false);
+            var _ddl1 = $('#ddlClassList').val();
+            var ID = $('option:selected', this).val();
+            $.ajax({
+                type: "POST",
+                url: '/Messaging/viewAPSMSMaster',
+                data: JSON.stringify({ STID: _ddl1, section: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+
+                    $('#tblMapping tbody').empty();
+                    $.each(data, function (rowIndex, val) {
+
+                        var markup = '<tr id=' + val.SR_ID + '><td><input type="checkbox" class="chkRow" /></td><td>' + val.SR_RegNo + '</td><td>' + val.SR_StudentName + '</td><td>' + val.SR_PhNo + '</td><td>' + val.SR_CurrentRollNo + '</td><td>' + val.SectionName + '</td></tr>';
+
+                        $("#tblMapping >tbody").append(markup);
+                    });
+                    $('#stlist').show();
+                    if ($.fn.dataTable.isDataTable('#tblMapping')) {
+                        table = $('#tblMapping').DataTable();
+                    }
+                    else {
+                        table = $('#tblMapping').DataTable({
+                            paging: false
+                        });
+                    }
+                    //$('#tblMapping').dataTable({ paging: false });
+                }
+
+            });
+        });
+        function fn_resetform() {
+
+            $('#ddlClassList').select2("val", '');
+            //$('#ddlMSGList').select2("val", '');
+            $('#txtmsg').val('');
+            $('#tblMapping tbody').empty();
+            //$('#stlist').hide();
+        }
+        function BindTable() {
+            var ID = $('option:selected', '#ddlClassList').val(); 
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/Messaging/ViewStudent',
+                data: JSON.stringify({ STID: ID, }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $('#tblMapping tbody').empty();
+                    console.log(data);
+                    $.each(data, function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr>';
+                        row += '<td style="text-align:center;">' + '<input type="checkbox" class="single-select" id="chk_' + val.SR_ID + '" />' + '</td>';
+                        row += '<td>' + val.SR_RegNo + '</td>';
+                        row += '<td>' + val.SR_StudentName + '</td>';
+                        row += '<td class="clsMobNo">' + val.SR_PhNo + '</td>';
+                        row += '<td style="text-align:center;">' + val.SectionName + '</td>';
+                        row += '</tr>';
+                        $('#tblMapping tbody').append(row);
+                    });
+                }
+            });
+        }
+        $(document).on("click", "#btnSave", function () {
+            var _ddl1 = $('#ddlClassList').val();
+            //var _ddl2 = $('#ddlSECList').val();
+            var msg = $('#txtmsg').val();
+            //var _ddl3 = $('#ddlMSGList').select2('data')[0]['text'];
+            var rowCount1 = $('#tblMapping >tbody >tr').length;
+
+            if (_ddl1 == '' || _ddl1 == '-1') {
+                FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            //if (_ddl2 == '' || _ddl2 == '-1') {
+            //    FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
+            //    return false;
+            //}
+            if (msg == '') {
+                FormSuccessError1("Please Enter Message.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl1 >= 1 && rowCount1 == 0) {
+                FormSuccessError1("Student detail is not available.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            if ($('.single-select:checked').length === 0) {
+                FormSuccessError1("Please select at least one student.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            var selectedCheckbox = $('.single-select:checked'); 
+            var selectedId = selectedCheckbox.attr('id').split('_')[1];
+
+            var selectedRow = selectedCheckbox.closest('tr'); 
+            var phoneNo = selectedRow.find('.clsMobNo').text().trim();
+
+
+            //var StdData = [];
+
+            //$('#tblMapping > tbody > tr').each(function () {
+
+            //    var tr_id = $(this).attr('id');
+            //    var number = $(this).find('td:eq(3)').text();
+            //    if ($(this).find('td input[type=checkbox]').prop('checked') == true)
+            //        StdData.push({ 'StudentID': tr_id, 'Mobile': number });
+            //  });
+
+            //if (_ddl1 >= 1 && StdData.length == 0) {
+            //    FormSuccessError1("Please select Student.", "Error", "errorBlock", "div_Scroll");
+            //    return false;
+            //}
+           
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SendManualSMS", "Messaging")',
+                data: JSON.stringify({ StudentID: selectedId, SMSText: msg, ClassID: _ddl1, MobNo: phoneNo }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+
+                        FormSuccessError1("SMS Sent successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        $(document).on('change', '.single-select', function () {
+            $('.single-select').not(this).prop('checked', false);
+        });
+    </script>
+}
+
+
+

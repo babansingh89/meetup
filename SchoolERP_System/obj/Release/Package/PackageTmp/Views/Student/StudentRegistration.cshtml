@@ -1,0 +1,1087 @@
+﻿
+@{
+    ViewBag.Title = "Student Registration";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    hr.style2 {
+        border-top: 3.5px double #8c8b8b;
+    }
+
+    .imagePreview {
+        width: 100%;
+        height: 180px;
+        background-position: center center;
+        background: url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg);
+        background-color: #fff;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: inline-block;
+        box-shadow: 0px -3px 6px 2px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary1 {
+        display: block;
+        border-radius: 0px;
+        box-shadow: 0px 4px 6px 2px rgba(0,0,0,0.2);
+        margin-top: -5px;
+        background-color: bisque;
+    }
+
+    .imgUp {
+        margin-bottom: 15px;
+    }
+
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Student Registration</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Reg.No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" disabled id="txtRegNo">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Reg.Date:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control dateFormat" id="txtRegDate">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Student Name:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="txtStudentName">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Gender:<span style="color:red;">*</span></label>
+                                <select id="ddlGenderList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>DOB:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control dateFormat" id="txtDOB">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>School Reg.No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtSchoolRegNo">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Punching Code:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtPunchingCode">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Phone:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtPhone" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Alternet Contact No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control Numeric" id="txtAlternetContactNo" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Email:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtEmail">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Address:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtAddress">
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr class="style2" />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Class:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Section:<span style="color:red;">*</span></label>
+                                <select id="ddlSectionList" class="form-control"> </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Stream:</label>
+                                <select id="ddlStreamList" class="form-control"> </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Category:<span style="color:red;"></span></label>
+                                <select id="ddlCategoryList" class="form-control">
+                                    @*<option value="0">Select</option>*@
+                                    <option value="1">General</option>
+                                    <option value="2">Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-md-2">
+            <div class="form-group">
+                <label>Shift Detail:<span style="color:red;"></span></label>
+                <select id="ddlShiftList" class="form-control">
+                    <option value="0">Select</option>
+                    <option value="3.00">3.00</option>
+                    <option value="3.30">3.30</option>
+                    <option value="4.00">4.00</option>
+                </select>
+            </div>
+        </div>*@
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>SMS:<span style="color:red;"></span></label>
+                                <select id="ddlSMSList" class="form-control">
+                                    @*<option value="0">Select</option>*@
+                                    <option value="Y">Yes</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Caste:<span style="color:red;"></span></label>
+                                <select id="ddlCasteList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="GENERAL">GENERAL</option>
+                                    <option value="OBC">OBC</option>
+                                    <option value="SC">SC</option>
+                                    <option value="ST">ST</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input type="checkbox" class="form-check-input" id="chk_Discount" style="margin-top: 35px;">
+                                <label class="form-check-label" for="exampleCheck1">Full Discount</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input type="checkbox" class="form-check-input" id="chk_Mandatory" style="margin-top: 35px;">
+                                <label class="form-check-label" for="exampleCheck1">Available Bus</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Route Name:<span style="color:red;"></span></label>
+                                @Html.DropDownList("ddlRouteList", (IList<SelectListItem>)ViewBag.RouteList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Confrim Bus Month:<span style="color:red;"></span></label>
+                                <button class="btn btn-primary icon-plus" disabled id="btnAddBusMonth"> Bus Month List</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Confrim Hostel Month:<span style="color:red;"></span></label>
+                                <button class="btn btn-primary icon-plus"  id="btnAddHostelMonth"> Hostel Month List</button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="style2" />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Father Name:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtFatherName">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Father Occupation:<span style="color:red;"></span></label>
+                                <select id="ddlFatherOccList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="Service">Service</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Farmer">Farmer</option>
+                                    <option value="other">other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Mother Name:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtMotherName">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Mother Occupation:<span style="color:red;"></span></label>
+                                <select id="ddlMotherOccList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="Service">Service</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Farmer">Farmer</option>
+                                    <option value="other">other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Local Guardian Name:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtLocalGuardianName">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Local Guardian Mobile:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control Numeric" id="txtLocalGuardianMobile" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="style2" />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-2 imgUp">
+                                        <div id="img1" class="imagePreview"></div>
+                                        <label class="btn btn-primary1">
+                                            Upload Photo <input type="file" name="Imagefile" accept="image/*" id="FileUpload1" class="uploadFile img" style="display:none;width: 0px;height: 0px;overflow: hidden;">
+
+                                        </label>
+                                    </div><!-- col-2 -->
+
+                                </div><!-- row -->
+                            </div><!-- container -->
+                        </div>
+                        <div class="col-md-4">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-2 imgUp">
+                                        <div id="img2" class="imagePreview"></div>
+                                        <label class="btn btn-primary1">
+                                            Upload Address <input type="file" name="Imagefile" accept="image/*" id="FileUpload2" class="uploadFile img" style="display:none;width: 0px;height: 0px;overflow: hidden;">
+
+                                        </label>
+                                    </div><!-- col-2 -->
+
+                                </div><!-- row -->
+                            </div><!-- container -->
+                        </div>
+                        <div class="col-md-4">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-2 imgUp">
+                                        <div id="img3" class="imagePreview"></div>
+                                        <label class="btn btn-primary1">
+                                            Upload Certificate <input type="file" name="Imagefile" accept="image/*" id="FileUpload3" class="uploadFile img" style="display:none;width: 0px;height: 0px;overflow: hidden;">
+
+                                        </label>
+                                    </div><!-- col-2 -->
+
+                                </div><!-- row -->
+                            </div><!-- container -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+<div class="modal fade" id="monthModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width:1250px;height:300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update Month:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="horizontal-checkbox-list">
+                            <div id="monthlst"></div>
+
+                            @{
+                                IList<SelectListItem> ActiveMonth = ViewBag.ActiveMonth as IList<SelectListItem>;
+
+                                if (ActiveMonth != null && ActiveMonth.Count > 1)
+                                {
+                                    var secondValue = ActiveMonth[1].Value; // Get the value of the second item
+
+                                    if (secondValue == "1")
+                                    {
+                                        var months = new List<dynamic> {
+                        new { Id = 1, Name = "January" },
+                        new { Id = 2, Name = "February" },
+                        new { Id = 3, Name = "March" },
+                        new { Id = 4, Name = "April" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "June" },
+                        new { Id = 7, Name = "July" },
+                        new { Id = 8, Name = "August" },
+                        new { Id = 9, Name = "September" },
+                        new { Id = 10, Name = "October" },
+                        new { Id = 11, Name = "November" },
+                        new { Id = 12, Name = "December" }
+                };
+                                        <div class="horizontal-checkbox-list">
+                                            <div id="monthlst"></div>
+                                            @foreach (var month in months)
+                                            {
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="months" class="chkMonth" value="@month.Id" /> @month.Name
+                                                </label>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var months = new List<dynamic> {
+                        new { Id = 4, Name = "April" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "June" },
+                        new { Id = 7, Name = "July" },
+                        new { Id = 8, Name = "August" },
+                        new { Id = 9, Name = "September" },
+                        new { Id = 10, Name = "October" },
+                        new { Id = 11, Name = "November" },
+                        new { Id = 12, Name = "December" },
+                        new { Id = 1, Name = "January" },
+                        new { Id = 2, Name = "February" },
+                        new { Id = 3, Name = "March" },
+                };
+                                        <div class="horizontal-checkbox-list">
+                                            <div id="monthlst"></div>
+                                            @foreach (var month in months)
+                                            {
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="months" class="chkMonth" value="@month.Id" /> @month.Name
+                                                </label>
+                                            }
+                                        </div>
+                                    }
+
+                                }
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"  data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary" id="btnSave">Save</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="HostelMonthModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width:1250px;height:300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update Month:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="horizontal-checkbox-list">
+                            <div id="monthlst"></div>
+
+                            @{
+                                IList<SelectListItem> HostelActiveMonth = ViewBag.ActiveMonth as IList<SelectListItem>;
+
+                                if (HostelActiveMonth != null && HostelActiveMonth.Count > 1)
+                                {
+                                    var secondValue = HostelActiveMonth[1].Value; // Get the value of the second item
+
+                                    if (secondValue == "1")
+                                    {
+                                        var months = new List<dynamic> {
+                        new { Id = 1, Name = "January" },
+                        new { Id = 2, Name = "February" },
+                        new { Id = 3, Name = "March" },
+                        new { Id = 4, Name = "April" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "June" },
+                        new { Id = 7, Name = "July" },
+                        new { Id = 8, Name = "August" },
+                        new { Id = 9, Name = "September" },
+                        new { Id = 10, Name = "October" },
+                        new { Id = 11, Name = "November" },
+                        new { Id = 12, Name = "December" }
+                };
+                                        <div class="horizontal-checkbox-list">
+                                            <div id="monthlst"></div>
+                                            @foreach (var month in months)
+                                            {
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="Hmonths" class="chkMonth" value="@month.Id" /> @month.Name
+                                                </label>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var months = new List<dynamic> {
+                        new { Id = 4, Name = "April" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "June" },
+                        new { Id = 7, Name = "July" },
+                        new { Id = 8, Name = "August" },
+                        new { Id = 9, Name = "September" },
+                        new { Id = 10, Name = "October" },
+                        new { Id = 11, Name = "November" },
+                        new { Id = 12, Name = "December" },
+                        new { Id = 1, Name = "January" },
+                        new { Id = 2, Name = "February" },
+                        new { Id = 3, Name = "March" },
+                };
+                                        <div class="horizontal-checkbox-list">
+                                            <div id="monthlst"></div>
+                                            @foreach (var month in months)
+                                            {
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="Hmonths" class="chkMonth" value="@month.Id" /> @month.Name
+                                                </label>
+                                            }
+                                        </div>
+                                    }
+
+                                }
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary" id="btnSave">Save</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .horizontal-checkbox-list label.checkbox-inline {
+        display: inline-block;
+        margin-right: 15px; /* Add space between checkboxes */
+    }
+</style>
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $('#chk_Mandatory').click(function () {
+            if (!$(this).is(':checked')) {
+                $("#ddlRouteList").attr("disabled", "disabled");
+                $('#ddlStreamList').select2("val", '');
+                $("#btnAddBusMonth").attr("disabled", "");
+            } else {
+                $("#ddlRouteList").removeAttr("disabled");
+                $("#btnAddBusMonth").removeAttr("disabled");
+            }
+        });
+        $(function () {
+            $(document).on("change", ".uploadFile", function () {
+                var uploadFile = $(this);
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+                if (/^image/.test(files[0].type)) { // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+
+                    reader.onloadend = function () { // set image data as background of div
+                        //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+                        uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
+                    }
+                }
+
+            });
+        });
+
+
+        $(document).ready(function () {
+            var d = new Date();
+            var currMonth = d.getMonth();
+            var currYear = d.getFullYear();
+            var day = d.getDate();
+
+            var startDate = new Date(currYear, currMonth, day);
+
+            $("#txtRegDate").datepicker("setDate", startDate);
+
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlCategoryList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlStreamList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlGenderList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+            //$("#ddlShiftList").select2({
+            //    placeholder: "Select"
+            //});
+            $("#ddlSMSList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlCasteList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlRouteList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlFatherOccList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlMotherOccList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlRouteList").attr("disabled", "disabled");
+
+            var query_event_id = getParameterByName('_Id');
+
+            if (query_event_id) {
+                $("#hdId").val(query_event_id);
+                fn_Bindtbl(query_event_id, "SelectByID");
+            }
+            var query_event_id1 = getParameterByName('_EId');
+
+            if (query_event_id1) {
+                $("#hdId").val("E_"+query_event_id1);
+                fn_Bindtbl(query_event_id1, "SelectByIDEN");
+            }
+        });
+
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Student/BindStream',
+                data: JSON.stringify({ ID: ID, Type: "S" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+
+                    $("#ddlStreamList").empty().append('<option selected="selected" value="0">Select</option>');
+                    //$("#ddlSectionList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+
+                        $.each(data, function () {
+                            $("#ddlStreamList").append($("<option/>").val(this.StreamID).text(this.StreamName));
+                        });
+                        //$.each(data[1], function () {
+                        //    $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+                        //});
+                    }
+                }
+            });
+        });
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Student/BindStream',
+                data: JSON.stringify({ ID: ID, Type: "Se" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSectionList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on("click", "#btn-clear", function () {
+            var url = '@Url.Action("PreAdmitted", "Student")'
+            window.location.href = url;
+        });
+        $(document).on("click", "#btnAddBusMonth", function () {
+            $("#monthModal").modal();
+        });
+        $(document).on("click", "#btnAddHostelMonth", function () {
+            $("#HostelMonthModal").modal();
+        });
+        //$('#txtRollNo').keypress(function (e) {
+        //    var charCode = (e.which) ? e.which : event.keyCode
+        //    if (String.fromCharCode(charCode).match(/[^0-9]/g))
+        //        return false;
+        //});
+
+        $(document).on("click", "#btnSave", function () {
+
+            var selectedMonths = [], selectedHMonths = [];
+
+            var _Id = $.trim($("#hdId").val());
+            var _txtRegDate = $('#txtRegDate').val();
+            var _txtStudentName = $('#txtStudentName').val();
+            var _ddlGenderList = $('#ddlGenderList').select2('data')[0]['text'];
+            var _txtDOB = $('#txtDOB').val();
+            var _txtSchoolRegNo = $('#txtSchoolRegNo').val();
+            var _txtPunchingCode = $('#txtPunchingCode').val();
+            var _txtPhone = $('#txtPhone').val();
+            var _txtAlternetContactNo = $('#txtAlternetContactNo').val();
+            var _txtEmail = $('#txtEmail').val();
+            var _txtAddress = $('#txtAddress').val();
+            var _ddlClassList = $('#ddlClassList').val();
+            var _ddlSectionList = $('#ddlSectionList').val();
+            var _ddlStreamList = $('#ddlStreamList').val();
+            var _ddlCategoryList = $('#ddlCategoryList').val();
+
+           // var _ddlSMSList = $('#ddlSMSList').select2('data')[0]['text'];
+            var _ddlSMSList = $('#ddlSMSList').val();
+           // var _ddlCasteList = $('#ddlCasteList').select2('data')[0]['text'];
+            var _ddlCasteList = $('#ddlCasteList').val();
+            var _chk_Discount = false;
+            if ($('#chk_Discount').is(':checked'))
+                _chk_Discount = true;
+            var _chk_Mandatory = false;
+            if ($('#chk_Mandatory').is(':checked')) {
+                _chk_Mandatory = true;
+
+                // Get all checked checkboxes with name 'months' that are not disabled
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+            }
+            // Get all checked checkboxes with name 'Hostel months' that are not disabled
+            $('input[name="Hmonths"]:checked:not(:disabled)').each(function () {
+                selectedHMonths.push($(this).val());
+            });
+
+            var _ddlRouteList = $('#ddlRouteList').val(); 
+            var _txtFatherName = $('#txtFatherName').val();
+           // var _ddlFatherOccList = $('#ddlFatherOccList').select2('data')[0]['text'];
+            var _ddlFatherOccList = $('#ddlFatherOccList').val();
+            var _txtMotherName = $('#txtMotherName').val();
+            //var _ddlMotherOccList = $('#ddlMotherOccList').select2('data')[0]['text'];
+            var _ddlMotherOccList = $('#ddlMotherOccList').val();
+            var _txtLocalGuardianName = $('#txtLocalGuardianName').val();
+            var _txtLocalGuardianMobile = $('#txtLocalGuardianMobile').val();
+            var fileUpload = $("#FileUpload1").get(0).files;
+            var fileUpload1 = $("#FileUpload2").get(0).files;
+            var fileUpload2 = $("#FileUpload3").get(0).files;
+
+
+            if (_txtRegDate == '') {
+                FormSuccessError1("Please enter Reg Date.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtStudentName == '') {
+                FormSuccessError1("Please enter Student Name.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlGenderList == '' || _ddlGenderList <= 0) {
+                FormSuccessError1("Please select Gender.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtDOB == '') {
+                FormSuccessError1("Please enter Student DOB.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtPhone == '') {
+                FormSuccessError1("Please enter Student Phone.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlClassList == '' || _ddlClassList <= 0) {
+                FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlCategoryList == '' || _ddlCategoryList <= 0) {
+                FormSuccessError1("Please select Category.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlSectionList == '' || _ddlSectionList <= 0) {
+                FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (window.FormData !== undefined) {
+                var fileData = new FormData();
+                fileData.append("_SR_ID", _Id);
+                fileData.append("_SR_Date", _txtRegDate);
+                fileData.append("_SR_StudentName", _txtStudentName);
+                fileData.append("_SR_FatherName", _txtFatherName);
+                fileData.append("_SR_MotherName", _txtMotherName);
+                fileData.append("_SR_FatherOccupation", _ddlFatherOccList);
+                fileData.append("_SR_MotherOccupation", _ddlMotherOccList);
+
+                fileData.append("_SR_SMS", _ddlSMSList);
+                fileData.append("_SR_Email", _txtEmail);
+                fileData.append("_SR_PhNo", _txtPhone);
+                fileData.append("_SR_AlternetContactNo", _txtAlternetContactNo);
+                fileData.append("_SR_DOB", _txtDOB);
+                fileData.append("_SR_Gender", _ddlGenderList);
+                fileData.append("_SR_PunchingCode", _txtPunchingCode);
+                fileData.append("_SR_LocalGurdianName", _txtLocalGuardianName);
+                fileData.append("_SR_LocalGurdianMobile", _txtLocalGuardianMobile);
+                fileData.append("_SR_Addrees", _txtAddress);
+                fileData.append("_SR_ClassID", _ddlClassList);
+                fileData.append("_SR_CategoryID", _ddlCategoryList);
+                fileData.append("_SR_StreamID", _ddlStreamList);
+                fileData.append("_SR_SectionID", _ddlSectionList);
+                fileData.append("_IsDiscount", _chk_Discount);
+                fileData.append("_IsAvailBus", _chk_Mandatory);
+                fileData.append("_RouteID", _ddlRouteList);
+                fileData.append("_SR_EN_ID", _txtSchoolRegNo);
+                fileData.append("_SR_Caste", _ddlCasteList);
+
+                fileData.append("_SR_Pic", fileUpload[0]);
+                fileData.append("_SR_AddressPic", fileUpload1[0]);
+                fileData.append("_SR_CirtificatePic", fileUpload2[0]);
+                fileData.append("_SR_OptedBusMonth", selectedMonths); 
+                fileData.append("_SR_OptedHostelMonth", selectedHMonths); 
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveStudentRegistration", "Student")',
+                contentType: false,
+                processData: false,
+                data: fileData,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+
+                        FormSuccessError1("Data Inserted successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditStudent", "Student")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == 'SelectByID') {
+                        $('#btnSave').text("Update");
+
+                        //-------
+                        $('#txtRegNo').val(data[0].SR_RegNo);
+                        $('#txtRegDate').val(data[0].SR_Date);
+                        $('#txtStudentName').val(data[0].SR_StudentName);
+                        $('#ddlGenderList').select2('val', data[0].SR_Gender);
+                        $('#txtDOB').val(data[0].SR_DOB);
+                        $('#txtSchoolRegNo').val(data[0].SR_EN_ID);
+                        $('#txtPunchingCode').val(data[0].SR_PunchingCode);
+                        $('#txtPhone').val(data[0].SR_PhNo);
+                        $('#txtAlternetContactNo').val(data[0].SR_AlternetContactNo);
+                        $('#txtEmail').val(data[0].SR_Email);
+                        $('#txtAddress').val(data[0].SR_Addrees);
+                        $('#ddlClassList').select2('val', data[0].SR_ClassID);
+                        $('#ddlSectionList').select2('val', data[0].SR_SectionID);
+                        $('#ddlStreamList').select2('val', data[0].SR_StreamID);
+                        $('#ddlCategoryList').select2('val', data[0].SR_CategoryID);
+                        $('#ddlSMSList').select2('val', data[0].SR_SMS.trim());
+                        $('#ddlCasteList').select2('val', data[0].SR_Caste);
+                        if (data[0].IsAvailBus == 'True') {
+                            $('#chk_Mandatory').prop("checked", true);
+                            $("#ddlRouteList").removeAttr("disabled");
+                            $('#ddlRouteList').select2('val', data[0].RouteID);
+                            $("#btnAddBusMonth").removeAttr("disabled");
+
+                            if (data[0].OptedMonth != "") { 
+                            var checkValues = data[0].OptedMonth.split(',');
+                            $('input[name="months"]').each(function () {
+                                if (checkValues.includes($(this).val())) {
+                                    $(this).prop('checked', true);
+                                }
+                            });
+                            }
+                            if (data[0].BusPayMonth != "") {
+                                var checkValues = data[0].BusPayMonth.split(',');
+                                $('input[name="months"]').each(function () {
+                                    if (checkValues.includes($(this).val())) {
+                                        $(this).prop('checked', true);
+                                        $(this).prop('disabled', true); 
+                                    }
+                                });
+                            }
+
+                        }
+                        else {
+                            $('#chk_Mandatory').prop("checked", false);
+                            $("#btnAddBusMonth").attr("disabled", "disabled");
+                        }
+
+                        if (data[0].OptedHostelMonth != "") {
+                            var checkValues = data[0].OptedHostelMonth.split(',');
+                            $('input[name="Hmonths"]').each(function () {
+                                if (checkValues.includes($(this).val())) {
+                                    $(this).prop('checked', true);
+                                }
+                            });
+                        }
+                        if (data[0].HostelPayMonth != "") {
+                            var checkValues = data[0].HostelPayMonth.split(',');
+                            $('input[name="Hmonths"]').each(function () {
+                                if (checkValues.includes($(this).val())) {
+                                    $(this).prop('checked', true);
+                                    $(this).prop('disabled', true); 
+                                }
+                            });
+                        }
+
+                        if (data[0].IsDiscount == 'True')
+                            $('#chk_Discount').prop("checked", true);
+                        else
+                            $('#chk_Discount').prop("checked", false);
+
+
+                        $('#txtFatherName').val(data[0].SR_FatherName);
+                        $('#ddlFatherOccList').select2('val', data[0].SR_FatherOccupation);
+                        $('#txtMotherName').val(data[0].SR_MotherName);
+                        $('#ddlMotherOccList').select2('val', data[0].SR_MotherOccupation);
+                        $('#txtLocalGuardianName').val(data[0].SR_LocalGurdianName);
+                        $('#txtLocalGuardianMobile').val(data[0].SR_LocalGurdianMobile);
+
+                        $("#img1").css("background-image", "url(../UploadedImage/" + data[0].SR_Pic + ")");
+                        $("#img2").css("background-image", "url(../UploadedImage/" + data[0].SR_AddressPic + ")");
+                        $("#img3").css("background-image", "url(../UploadedImage/" + data[0].SR_CirtificatePic + ")");
+
+                        //var fileUpload = $("#FileUpload1").get(0).files;
+                        //var fileUpload1 = $("#FileUpload2").get(0).files;
+                        //var fileUpload2 = $("#FileUpload3").get(0).files;
+                        //-------
+                    } else if (Type == 'SelectByIDEN') {
+                        $('#ddlClassList').select2('val', data[0].ClassID);
+                        $('#txtStudentName').val(data[0].StudentName);
+                        $('#ddlGenderList').select2('val', data[0].Gender);
+                        $('#txtDOB').val(data[0].DOB);
+                        $('#txtPhone').val(data[0].Mobile);
+                        $('#txtEmail').val(data[0].Email);
+                        $('#txtFatherName').val(data[0].FatherName);
+                    }
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+        function fn_resetform() {
+            $("#hdId").val('0');
+            $('#txtRegNo').val('');
+            $('#txtRegDate').val('');
+            $('#txtStudentName').val('');
+            $('#ddlGenderList').select2("val", '');
+            $('#txtDOB').val('');
+            $('#txtSchoolRegNo').val('');
+            $('#txtPunchingCode').val('');
+            $('#txtPhone').val('');
+            $('#txtAlternetContactNo').val('');
+            $('#txtEmail').val('');
+            $('#txtAddress').val('');
+            $('#ddlClassList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+            $('#ddlStreamList').select2("val", '');
+            $('#ddlCategoryList').select2("val", '');
+
+            $('#ddlSMSList').select2("val", '');
+            $('#ddlCasteList').select2("val", '');
+            $('#chk_Discount').prop("checked", false);
+            $('#chk_Mandatory').prop("checked", false);
+            $('#ddlRouteList').select2("val", '');
+            $('#txtFatherName').val('');
+            $('#ddlFatherOccList').select2("val", '');
+            $('#txtMotherName').val('');
+            $('#ddlMotherOccList').select2("val", '');
+            $('#txtLocalGuardianName').val('');
+            $('#txtLocalGuardianMobile').val('');
+            $("#FileUpload1").val('');
+            $("#FileUpload2").val('');
+            $("#FileUpload3").val('');
+            $(".imagePreview").removeAttr("style");
+            $('#btnSave').text("Save");
+        }
+    </script>
+}
+
+

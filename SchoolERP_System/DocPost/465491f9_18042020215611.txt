@@ -1,0 +1,39 @@
+http://localhost:55941/api/SchoolAPI/Common
+[{"AppID":"1","Type":"Class"}]
+[{"AppID":"1","Type":"SectionByClass","ID":"1"}]
+[{"AppID":"1","Type":"SelectDesgination"}]
+-----------------------------------------------------
+http://localhost:55941/api/SchoolAPI/PreAdmitted
+[{"AppID":"1","Type":"Select"}]
+
+[{"AppID":"1","Type":"Insert","SR_ID":"0","SR_StudentName":"testapp","SR_Gender":"Male","SR_DOB":"29 Mar 2020","SR_PhNo":"123456987","SR_ClassID":"1","SR_SectionID":"1","SR_CategoryID":"1","SR_PunchingCode":"punch code"}]
+-----------------------------------------------------
+http://localhost:55941/api/SchoolAPI/GetProfile
+[{"AppID":"1","UserType":"Teacher","UserID":"7595882924"}]
+[{"AppID":"1","UserType":"Accountant","UserID":"8777735516"}]
+[{"AppID":"1","UserType":"Librarian","UserID":"9163737363"}]
+[{"AppID":"1","UserType":"Parents","UserID":"123"}]
+[{"AppID":"1","UserType":"Student","UserID":"SAH1211"}]
+--------------------------------------------------------------
+http://localhost:55941/api/SchoolAPI/UpdateProfile
+[{"AppID":"1","UserType":"Student","UserID":"SAH1211","SR_ID":"1920","SR_StudentName":"SAHIL UDDIN1","SR_Email":"MYSELFKUTUB@GMAIL.COM","SR_AlternetContactNo":"7595882924","SR_DOB":"31 Dec 2008","SR_Gender":"Male","SR_Addrees":"Kolkata2","UserPassword":"10","ProfileLogo":""}]
+[{"AppID":"1","UserType":"Parents","UserID":"123","P_EmpId":"1","P_EmpName":"RAJESH DAS1","P_DOB":"29 Jan 1970","P_Gender":"Male","P_EmpFathers":"SANJOY DAS","P_EmpAddress":"bkp,kolkata","P_Email":"rvtechnology012@gmail.com","P_PanNo":"APNZ213456","P_AdharNo":"434345654521","P_Password":"11","ProfileLogo":""}]
+[{"AppID":"1","UserType":"Teacher","UserID":"7595882924","EM_EmpId":"10","EM_EmpName":"sk kutub UDDIN1","EM_DOB":"02 Jan 1976","EM_Gender":"Male","EM_EmpFathers":"SK KORIM","EM_EmpAddress":"kolkata","EM_Email":"test@gmail.com","EM_PanNo":"123","EM_AdharNo":"123","EM_Password":"12","ProfileLogo":""}]
+
+
+
+Teacher
+7595882924 user
+12 pasword
+Accountant
+8777735516 user
+123 pasword
+Libaryan
+9163737363 user
+123 pasword
+Parent 123 user
+Pasword 11
+Student SAH1211
+PASWORD 10
+----------------------------
+Notice Board All and single with Display

@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewBag.Title = "Close Question";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+
+<style>
+    .select2-selection__rendered {
+        padding-top: 0 !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        text-align: center !important;
+    }
+
+    .fa {
+        cursor: pointer;
+    }
+
+    a.less {
+        color: red !important;
+    }
+
+    a.morelink {
+        color: blue;
+    }
+
+    .hide-bullets {
+        list-style: none;
+        margin-left: -40px;
+        margin-top: 20px;
+    }
+
+    .thumbnail {
+        padding: 0;
+    }
+
+    .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+        width: 100%;
+    }
+
+    #slider-thumbs {
+        height: auto;
+        /*height: 500px;*/
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+
+    .Imgthumbbnail {
+        height: 100px;
+        width: 150px;
+    }
+
+    .note-toolbar {
+        padding: 5px 15px !important;
+        border-bottom: 1px solid transparent !important;
+        line-height: 30px !important;
+        text-transform: none !important;
+        text-align: center !important;
+        position: relative !important;
+        height: 100% !important;
+        letter-spacing: 1.2px !important;
+    }
+
+    .table-responsive {
+        min-height: .01% !important;
+        overflow-x: auto !important;
+    }
+
+    @@media only screen and (min-width: 768px) {
+        .table-responsive {
+            overflow-x: hidden;
+        }
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Question</span>
+                <div class="pull-right">
+                    <input id="toggle-event" type="checkbox" checked data-toggle="toggle" data-on="Open" data-off="Close" data-onstyle="success" data-offstyle="danger">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="table-responsive1">
+                            <table class="table table-bordered table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-sm" id="tblData">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px;">Ticket#</th>
+                                        <th style="width:150px;">Student</th>
+                                        <th>Subject</th>
+                                        <th style="width:100px;">Status</th>
+                                        <th style="width:150px;">Last Reply</th>
+                                        <th id="thtext" style="width:70px;">Close</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdId" value="0" />
+
+@section body_scripts{
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/pbkdf2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            HideSuccErrDiv();
+            fn_Bindtbl("0", "SelectTeacherOpen");
+        });
+        $('#toggle-event').change(function () {
+            HideSuccErrDiv();
+            if ($(this).prop('checked') == true) {
+                fn_Bindtbl("0", "SelectTeacherOpen");
+            }
+            else {
+                fn_Bindtbl("0", "SelectTeacherClose");
+                $("#thtext").html("Open");
+            }
+        });
+        $(document).on("click", ".Iconeditclass", function () {
+            if (confirm("Are you sure want to Open the Question?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id, "Open");
+            }
+        });
+        $(document).on("click", ".VQ", function () {
+            var ciphertext = $(this).attr('data-ID');
+            var _Id = encrypt(ciphertext);
+            var url = '@Url.Action("ViewQuestion", "Post", new { _Id = "_Id_" })';
+            window.location.href = url.replace('_Id_', _Id);
+        });
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to Close the Question?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id, "Close");
+            }
+        });
+        function fn_del(Id, type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteOpenQuestion", "Post")',
+                data: JSON.stringify({ Id: Id, type: type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data " + type + " successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+        function myColor(status) {
+            var strRetrun = '';
+            switch (status) {
+
+                case 'Open':
+                    strRetrun = "limegreen";
+                    break;
+                case 'Close':
+                    strRetrun = "#FF0000";
+                    break;
+                case 'In-Process':
+                    strRetrun = "orange";
+                    break;
+            }
+            return strRetrun;
+        }
+        function fn_Bindtbl(_Id, Type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewOpenQuestion", "Post")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#tblData tbody').empty();
+                    $.each(data, function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr>';
+                        row += '<td style="color:#0570a9; font-weight: bold;cursor:pointer;text-decoration: underline;"><i class="VQ" data-ID="' + val.OPID + '">' + val.TicketNo + '</i></td>';
+                        row += '<td>' + val.SR_StudentName + '</br><small style="font-size: 10px; color: black;">' + val.ClassName + '</small></td>';
+                        row += '<td>' + val.Subject + '</td>';
+                        row += '<td style="color:' + myColor(val.OPStatus) + '; font-weight: bold;">' + val.OPStatus + '</td>';
+                        row += '<td>' + val.LastReply + '-reply' + '<br><small style="font-size: 10px; color: black;">( ' + val.CreatedDate + ' )</small></td>';
+                        if (val.OPStatus == 'Open' || val.OPStatus == 'In-Process') {
+                            row += '<td><i class="fa fa-trash-o Icondelclass" style="color: red;" data-ID="' + val.OPID + '"></i></td>';
+                        } else {
+                            row += '<td><i class="fa fa-edit Iconeditclass" style="color: limegreen;" data-ID="' + val.OPID + '"></i></td>';
+                        }
+                        row += '</tr>';
+                        $('#tblData tbody').append(row);
+                    });
+                    $('#tblData').dataTable();
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+        function encrypt(msg) {
+            var salt = CryptoJS.lib.WordArray.random(128 / 8);
+
+            var key = CryptoJS.PBKDF2('meetup', salt, {
+                keySize: 256 / 32,
+                iterations: 100
+            });
+
+            var iv = CryptoJS.lib.WordArray.random(128 / 8);
+
+            var encrypted = CryptoJS.AES.encrypt(msg, key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC
+
+            });
+
+            // salt, iv will be hex 32 in length
+            // append them to the ciphertext for use  in decryption
+            var transitmessage = salt.toString() + iv.toString() + encrypted.toString();
+            return transitmessage;
+        }
+
+        function decrypt(transitmessage) {
+            var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+            var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+            var encrypted = transitmessage.substring(64);
+
+            var key = CryptoJS.PBKDF2('meetup', salt, {
+                keySize: 256 / 32,
+                iterations: 100
+            });
+
+            var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC
+
+            })
+            return decrypted;
+        }
+    </script>
+}
