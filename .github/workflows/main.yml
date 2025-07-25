@@ -1,0 +1,35 @@
+name: Build and Deploy to Local IIS
+
+on:
+  push:
+    branches: [ master ]  # Trigger on push to master branch
+
+jobs:
+  build:
+    runs-on: self-hosted  # Use your local IIS server as a runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '7.0.x' # Or your version
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Publish
+      run: dotnet publish -c Release -o ./publish
+
+    - name: Deploy to IIS folder
+      run: |
+        $target = "C:\inetpub\wwwroot\meetup"
+        if (Test-Path $target) { Remove-Item -Recurse -Force $target }
+        New-Item -ItemType Directory -Path $target
+        Copy-Item -Path ./publish/* -Destination $target -Recurse
+      shell: pwsh
