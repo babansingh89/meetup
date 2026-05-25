@@ -496,6 +496,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="Areas\ERPAdmin\Content\assets\css\bootstrap.min.css" />
     <Content Include="Areas\ERPAdmin\Content\assets\css\font-awesome.css" />
     <Content Include="Areas\ERPAdmin\Content\assets\css\font.css" />

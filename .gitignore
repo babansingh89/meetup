@@ -50,3 +50,12 @@ Desktop.ini
 
 ## Environment files
 .env
+
+## Large files
+UploadedImage/
+EmpImage/
+ParentsImage/
+SchlImage/
+DocPost/
+ImagesPost/
+SyllabusDoc/
