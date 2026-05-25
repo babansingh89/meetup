@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewBag.Title = "Live Test Master";
+    Layout = "~/Areas/LearningAdmin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    .ui-timepicker-container {
+        z-index: 999999 !important;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Live Test</span>
+                <button class="btn btn-default pull-right openModal m-t-10">Add Live Test</button>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                            <thead>
+                                <tr>
+                                    <th>Specialization</th>
+                                    <th>Subject</th>
+                                    <th>Test Name</th>
+                                    <th>Date</th>
+                                    <th>From Time</th>
+                                    <th>To Time</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdnId" value="0" />
+<div class="modal fade" id="Modal" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update Live Test:</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Shared/Modal_SuccessError.cshtml")
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Specialization<span style="color:red;">*</span></label>
+                            @Html.DropDownList("ddlSpecializationList", (IList<SelectListItem>)ViewBag.SpecializationList, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Subject<span style="color:red;">*</span></label>
+                            <select id="ddlSubjectList" class="form-control"> </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Test Name<span style="color:red;">*</span></label>
+                            <input type="text" id="txtTestName" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Test Date<span style="color:red;">*</span></label>
+                            <input type="text" id="txtTestDate" class="form-control dateFormat" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>From Time<span style="color:red;">*</span></label>
+                            <input type="text" id="txtFromTime" class="form-control timepicker" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>To Time<span style="color:red;">*</span></label>
+                            <input type="text" id="txtToTime" class="form-control timepicker" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="txtDescription" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#ddlSpecializationList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSubjectList").select2({
+                placeholder: "Select"
+            });
+            fn_Bindtbl("0", "Select");
+        });
+
+        $(document).on("click", ".openModal", function () {
+            HideSuccErrDiv();
+            ModalHideSuccErrDiv();
+            fn_resetform();
+            $("#Modal").modal();
+        });
+
+        $(document).on("click", ".Iconedit", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdnId").val(_Id);
+            fn_Bindtbl(_Id, "SelectByID");
+        });
+
+        $(document).on("click", ".Icondel", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id);
+            }
+        });
+
+        $(document).on("click", "#btnSave", function () {
+            ModalHideSuccErrDiv();
+            var _Id = $.trim($("#hdnId").val());
+            var _ddl1 = $('#ddlSpecializationList').val();
+            var _ddl2 = $('#ddlSubjectList').val();
+            var _txtTestName = $('#txtTestName').val();
+            var _txtTestDate = $('#txtTestDate').val();
+            var _txtFromTime = $('#txtFromTime').val();
+            var _txtToTime = $('#txtToTime').val();
+            var _txtDescription = $('#txtDescription').val();
+
+            if (_ddl1 == '' || _ddl1 <= 0) {
+                ModalPopupError("Please select Specialization.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_ddl2 == '' || _ddl2 <= 0) {
+                ModalPopupError("Please select Subject.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtTestName == '') {
+                ModalPopupError("Please enter Test Name.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtTestDate == '') {
+                ModalPopupError("Please enter Test Date.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtFromTime == '') {
+                ModalPopupError("Please enter From Time.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtToTime == '') {
+                ModalPopupError("Please enter To Time.", "Error", "M_errorBlock");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveLiveTest", "LiveTest")',
+                data: JSON.stringify({ LT_ID: _Id, LT_SC_ID: _ddl1, LT_SubjectID: _ddl2, LT_TestName: _txtTestName, LT_Date: _txtTestDate, LT_FromTime: _txtFromTime, LT_ToTime: _txtToTime, LT_Description: _txtDescription }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data Inserted successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data updated successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else {
+                        alert("Error. " + response);
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        $("#ddlSpecializationList").change(function () {
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Question/BindSubject',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSubjectList").empty().append('<option selected="selected" value="-1">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSubjectList").append($("<option/>").val(this.SM_Id).text(this.SM_SubjectName));
+                        });
+                    }
+                }
+            });
+        });
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewLiveTest", "LiveTest")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "Select") {
+                        $('#tblMapping tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.SC_Name + '</td>';
+                            row += '<td>' + val.SM_SubjectName + '</td>';
+                            row += '<td>' + val.LT_TestName + '</td>';
+                            row += '<td>' + val.LT_Date + '</td>';
+                            row += '<td>' + val.LT_FromTime + '</td>';
+                            row += '<td>' + val.LT_ToTime + '</td>';
+                            row += '<td>' + val.LT_Description + '</td>';
+                            row += '<td><i class="fa fa-edit Iconedit" data-ID="' + val.LT_ID + '"></i><i class="fa fa-trash-o Icondel" data-ID="' + val.LT_ID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblMapping tbody').append(row);
+                        });
+                        $('#tblMapping').dataTable();
+                    }
+
+                    if (Type == "SelectByID") {
+                        $('#btnSave').text("Update");
+                        $('#ddlSpecializationList').select2("val", data[0].LT_SC_ID);
+                        $('#ddlSubjectList').select2("val", data[0].LT_SubjectID);
+                        $('#txtTestName').val(data[0].LT_TestName);
+                        $('#txtTestDate').val(data[0].LT_Date);
+                        $('#txtFromTime').val(data[0].LT_FromTime);
+                        $('#txtToTime').val(data[0].LT_ToTime);
+                        $('#txtDescription').val(data[0].LT_Description);
+                        $("#Modal").modal();
+                        HideSuccErrDiv();
+                        ModalHideSuccErrDiv();
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteLiveTest", "LiveTest")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data deleted successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+
+        function fn_resetform() {
+            $("#hdnId").val('0');
+            $('#ddlSpecializationList').select2("val", '');
+            $('#ddlSubjectList').select2("val", '');
+            $('#txtTestName').val('');
+            $('#txtTestDate').val('');
+            $('#txtFromTime').val('');
+            $('#txtToTime').val('');
+            $('#txtDescription').val('');
+            $('#btnSave').text("Save");
+        }
+    </script>
+}
+
+
+

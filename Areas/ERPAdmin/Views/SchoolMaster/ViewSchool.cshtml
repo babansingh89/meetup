@@ -1,0 +1,521 @@
+﻿
+@{
+    ViewBag.Title = "View School";
+    Layout = "~/Areas/ERPAdmin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<style>
+
+
+    .imagePreview {
+        width: 100%;
+        height: 180px;
+        background-position: center center;
+        background: url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg);
+        background-color: #fff;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: inline-block;
+        box-shadow: 0px -3px 6px 2px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary1 {
+        display: block;
+        border-radius: 0px;
+        box-shadow: 0px 4px 6px 2px rgba(0,0,0,0.2);
+        margin-top: -5px;
+        background-color: bisque;
+    }
+
+    .imgUp {
+        margin-bottom: 15px;
+    }
+
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View School</span>
+                <button class="btn btn-default pull-right openModal m-t-10">Add School</button>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                            <thead>
+                                <tr>
+                                    <th>School Name</th>
+                                    <th>Address</th>
+                                    <th>Contact</th>
+                                    <th>EmailID</th>
+                                    <th>Licence From</th>
+                                    <th>Licence To</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    @*<th>Logo</th>*@
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdnId" value="0" />
+<div class="modal fade" id="Modal" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Add/Update School:</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Shared/Modal_SuccessError.cshtml")
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>School Name<span style="color:red;">*</span></label>
+                            <input type="text" id="txtSCName" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Address<span style="color:red;">*</span></label>
+                            <input type="text" id="txtAddress" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Contact<span style="color:red;">*</span></label>
+                            <input type="text" id="txtcontact" maxlength="10" class="form-control Numeric" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Email<span style="color:red;">*</span></label>
+                            <input type="text" id="txtemail" class="form-control Email" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Licence From<span style="color:red;">*</span></label>
+                            <input type="text" id="txtfrom" class="form-control dateFormat" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Licence To<span style="color:red;">*</span></label>
+                            <input type="text" id="txtTo" class="form-control dateFormat" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>User ID<span style="color:red;">*</span></label>
+                            <input type="text" id="txtuserid" maxlength="10" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Password<span style="color:red;">*</span></label>
+                            <input type="text" id="txtpassword" maxlength="10" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+              
+                <div class="row">
+                    @*<div class="col-md-6">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-2 imgUp">
+                                    <div class="imagePreview"></div>
+                                    <label class="btn btn-primary1">
+                                        Upload Logo <input type="file" name="Imagefile" accept="image/*" id="FileUpload1" class="uploadFile img" style="display:none;width: 0px;height: 0px;overflow: hidden;">
+                                       
+                                    </label>
+                                </div><!-- col-2 -->
+
+                            </div><!-- row -->
+                        </div><!-- container -->
+                    </div>*@
+                    <div class="col-md-6">
+                        <label class="container">
+                            Is Present SMS
+                            <input type="checkbox" id="chkPresent" value="">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container">
+                            Is Absent SMS
+                            <input type="checkbox" id="chkAbsent">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                
+
+
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+
+
+    <script type="text/javascript">
+        $("input#txtuserid").on({
+            keydown: function (e) {
+                if (e.which === 32)
+                    return false;
+            },
+            change: function () {
+                this.value = this.value.replace(/\s/g, "");
+            }
+        });
+        $(function () {
+            $(document).on("change", ".uploadFile", function () {
+                var uploadFile = $(this);
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+                if (/^image/.test(files[0].type)) { // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+
+                    reader.onloadend = function () { // set image data as background of div
+                        //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+                        uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
+                    }
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+
+            fn_Bindtbl("0", "Select");
+        });
+
+        $(document).on("click", ".openModal", function () {
+            HideSuccErrDiv();
+            ModalHideSuccErrDiv();
+            fn_resetform();
+            $("#Modal").modal();
+        });
+
+        $(document).on("click", ".Iconedit", function () {
+            var _Id = $(this).attr('data-ID');
+            $("#hdnId").val(_Id);
+            fn_Bindtbl(_Id, "SelectByID");
+        });
+
+        $(document).on("click", ".Icondel", function () {
+            if (confirm("Are you sure want to delete?")) {
+                var _Id = $(this).attr('data-ID');
+                fn_del(_Id);
+            }
+        });
+        function validateEmail(email) {
+            var emailReg =  /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+            return emailReg.test(email);
+        }
+        $(document).on("click", "#btnSave", function () {
+            ModalHideSuccErrDiv();
+            var _Id = $.trim($("#hdnId").val());
+
+            var _txtSCName = $('#txtSCName').val();
+            var _txtAddress = $('#txtAddress').val();
+            var _txtcontact = $('#txtcontact').val();
+            var _txtemail = $('#txtemail').val();
+            var _txtfrom = $('#txtfrom').val();
+            var _txtTo = $('#txtTo').val();
+            var _txtuserid = $('#txtuserid').val();
+            var _txtpassword = $('#txtpassword').val();
+            var _chkPresent = $('#chkPresent').is(":checked");
+            var _chkAbsent = $('#chkAbsentt').is(":checked");
+            var _schoollogo = '2';//$('#schoollogo').val();
+
+            if (_txtSCName == '') {
+                ModalPopupError("Please enter School Name.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtAddress == '') {
+                ModalPopupError("Please enter Address.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtcontact == '') {
+                ModalPopupError("Please enter contact.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtemail == '') {
+                ModalPopupError("Please enter email", "Error", "M_errorBlock");
+                return false;
+            }
+            if (!validateEmail(_txtemail)) {
+                ModalPopupError("Please enter correct email", "Error", "M_errorBlock");
+                return false; }
+
+            if (_txtfrom == '') {
+                ModalPopupError("Please enter From date.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtTo == '') {
+                ModalPopupError("Please enter To date.", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtuserid == '') {
+                ModalPopupError("Please enter user ID", "Error", "M_errorBlock");
+                return false;
+            }
+            if (_txtpassword == '') {
+                ModalPopupError("Please enter password", "Error", "M_errorBlock");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveSchool", "SchoolMaster")',
+                data: JSON.stringify({ AppID: _Id, SchName: _txtSCName, SchAddress: _txtAddress, Contact: _txtcontact, EmailID: _txtemail, LicenceFrom: _txtfrom, LicenceTo: _txtTo, UserID: _txtuserid, UserPassword: _txtpassword, chkP: _chkPresent, chkA: _chkAbsent, SchoolLogo: _schoollogo }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data Inserted successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        ModalPopupError("Data updated successfully.", "Success", "M_errorBlock");
+                        fn_Bindtbl("0", "Select");
+                    }
+                    else {
+                        alert("Error. " + response);
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewSchoolList", "SchoolMaster")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "Select") {
+                        $('#tblMapping tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.SchName + '</td>';
+                            row += '<td>' + val.SchAddress + '</td>';
+                            row += '<td>' + val.Contact + '</td>';
+                            row += '<td>' + val.EmailID + '</td>';
+                            row += '<td>' + val.LicenceFrom + '</td>';
+                            row += '<td>' + val.LicenceTo + '</td>';
+                            row += '<td>' + val.IsPresentSMS + '</td>';
+                            row += '<td>' + val.IsAbsentSMS + '</td>';
+                            //row += '<td>' + val.SchoolLogo + '</td>';
+                            row += '<td><i class="fa fa-edit Iconedit" data-ID="' + val.AppID + '"></i><i class="fa fa-trash-o Icondel" data-ID="' + val.AppID + '"></i></td>';
+                            row += '</tr>';
+                            $('#tblMapping tbody').append(row);
+                        });
+                        $('#tblMapping').dataTable();
+                    }
+
+                    if (Type == "SelectByID") {
+                        $('#btnSave').text("Update");
+                        $('#txtSCName').val(data[0].SchName);
+                        $('#txtAddress').val(data[0].SchAddress);
+                        $('#txtcontact').val(data[0].Contact);
+                        $('#txtemail').val(data[0].EmailID);
+                        $('#txtTo').val(data[0].LicenceTo);
+                        $('#txtfrom').val(data[0].LicenceFrom);
+                        if (data[0].IsPresentSMS == 'true' || data[0].IsPresentSMS == 'True') {
+                            $('#chkPresent').prop("checked", true);
+                        } else { $('#chkPresent').prop("checked", false); }
+                        if (data[0].IsAbsentSMS == 'true' || data[0].IsAbsentSMS == 'True') {
+                            $('#chkAbsentt').prop("checked", true);
+                        } else { $('#chkAbsentt').prop("checked", false); }
+
+                        $('#schoollogo').val(data[0].SchoolLogo);
+                        $('#txtuserid').val(data[0].UserID);
+                        $('#txtpassword').val(data[0].UserPassword);
+                       // $('#schoollogo').val('http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg');
+                        $("#Modal").modal();
+                        HideSuccErrDiv();
+                        ModalHideSuccErrDiv();
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_del(Id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("deleteSchool", "SchoolMaster")',
+                data: JSON.stringify({ Id: Id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "deleteSuccessful") {
+                        fn_Bindtbl("0", "Select");
+                        FormSuccessError("Data deleted successfully.", "Success", "errorBlock");
+                        //alert("Class deleted successfully.");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        };
+
+        function fn_resetform() {
+            $("#hdnId").val('0');
+            $('#btnSave').text("Update");
+            $('#txtSCName').val('');
+            $('#txtAddress').val('');
+            $('#txtcontact').val('');
+            $('#txtemail').val('');
+            $('#txtTo').val('');
+            $('#txtfrom').val('');
+            $('#chkPresent').prop("checked", false);
+            $('#chkAbsentt').prop("checked", false);
+            $('#txtuserid').val('');
+            $('#txtpassword').val('');
+           // $('#schoollogo').val('http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg');
+            $('#btnSave').text("Save");
+        }
+    </script>
+}
+
+
+
+

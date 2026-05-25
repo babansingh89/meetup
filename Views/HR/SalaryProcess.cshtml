@@ -1,0 +1,318 @@
+﻿
+@{
+    ViewBag.Title = "Salary Process";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Salary Process</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recipient-name" class="control-label">Month:<span style="color:red;">*</span></label>
+                                <select id="ddlMonthList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value='1'>Janaury</option>
+                                    <option value='2'>February</option>
+                                    <option value='3'>March</option>
+                                    <option value='4'>April</option>
+                                    <option value='5'>May</option>
+                                    <option value='6'>June</option>
+                                    <option value='7'>July</option>
+                                    <option value='8'>August</option>
+                                    <option value='9'>September</option>
+                                    <option value='10'>October</option>
+                                    <option value='11'>November</option>
+                                    <option value='12'>December</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recipient-name" class="control-label">Year:<span style="color:red;">*</span></label>
+                                <select id="ddlYearList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stlist" class="row">
+                        <div class="col-lg-12">
+                            <div class="panel-body">
+                                <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                                    <thead>
+                                        <tr style="background-color: antiquewhite;">
+                                            <th><input type="checkbox" id="chkAll" /></th>
+                                            <th>Employee Name </th>
+                                            <th>Total Sal     </th>
+                                            <th>Loan Amnt     </th>
+                                            <th>Inst.No       </th>
+                                            <th>Inst.Amnt     </th>
+                                            <th>Advance       </th>
+                                            <th>Spcl.Alnce    </th>
+                                            <th>Incentive     </th>
+                                            <th>Oth.Deduc     </th>
+                                            <th>Net Salary    </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btncancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            $('#stlist').hide();
+            $("#ddlMonthList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlYearList").select2({
+                placeholder: "Select"
+            });
+
+
+        });
+
+        $('#tblMapping').find('tbody tr input:checkbox').click(function () {
+          
+            if ($(".chkRow").length == $(".chkRow:checked").length) {
+                $("#chkAll").prop("checked", true);
+            } else {
+                $("#chkAll").prop("checked", false);
+            }
+        });
+        $("#chkAll").click(function () {
+            var checkAll = $("#chkAll").prop('checked');
+            if (checkAll) {
+                $(".chkRow").prop("checked", true);
+            } else {
+                $(".chkRow").prop("checked", false);
+            }
+        });
+        $(document).on('keyup', 'input.expenses', function () {
+
+            var v1 = $(this).parents('tr').find('td:eq(2)').text();
+            var vi = $(this).parents('tr').find('td:eq(5)').text();
+            var va = $(this).parents('tr').find('td:eq(6)').text();
+            var v2 = $(this).parents('tr').find('#expenses_sum1').val();
+            var v3 = $(this).parents('tr').find('#expenses_sum2').val();
+            var v4 = $(this).parents('tr').find('#expenses_sum3').val();
+
+            if (v2.length == 0)
+                v2 = 0;
+            if (v3.length == 0)
+                v3 = 0;
+            if (v4.length == 0)
+                v4 = 0;
+
+            var v5 = (parseInt(v1) - (parseInt(vi) + parseInt(va)) + (parseInt(v2) + parseInt(v3)) - parseInt(v4));
+            $(this).parents('tr').find('td:eq(10)').text(v5);
+
+
+        });
+        $("#ddlMonthList").change(function () {
+            $('#ddlYearList').select2("val", '');
+        });
+        $(document).on('click', '#btncancel', function () {
+            var url = '@Url.Action("SalaryProcess", "HR")';
+            window.location.href = url;
+        });
+        $("#ddlYearList").change(function () {
+            hideAlert();
+            $("#chkAll").prop("checked", false);
+            var _ddl1 = $('#ddlMonthList').val();
+            var ID = $('option:selected', this).val();
+            if (ID == null || ID == 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/HR/viewSalaryProcess',
+                data: JSON.stringify({ Month: _ddl1, Year: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+
+                    $('#tblMapping tbody').empty();
+                    $.each(data, function (rowIndex, val) {
+                        var tot = (parseInt(val.TotalSal) - (parseInt(val.InstAmnt) + parseInt(val.Advance)) +
+                                    (parseInt(val.SpclAllnce) + parseInt(val.Inecentive)) - parseInt(val.OthDeduction));
+                        var row = '';
+                        row += '<tr id=' + val.EM_ID + '>';
+                        row += '<td><input type="checkbox" class="chkRow" /></td>';
+                        row += '<td>' + val.EM_EmpName + '</td>';
+                        row += '<td>' + val.TotalSal + '</td>';
+                        row += '<td>' + val.LM_Amount + '</td>';
+                        row += '<td>' + val.InstNo + '</td>';
+                        row += '<td>' + val.InstAmnt + '</td>';
+                        row += '<td>' + val.Advance + '</td>';
+                        row += '<td><input type="textbox" id="expenses_sum1" class="form-control Numeric expenses" value=' + val.SpclAllnce + ' ></td>';
+                        row += '<td><input type="textbox" id="expenses_sum2" class="form-control Numeric expenses" value=' + val.Inecentive + ' ></td>';
+                        row += '<td><input type="textbox" id="expenses_sum3" class="form-control Numeric expenses" value=' + val.OthDeduction + ' ></td>';
+                        row += '<td>' + tot + '</td>';
+                        row += '</tr>';
+                        $('#tblMapping tbody').append(row);
+                    });
+                    $('#stlist').show();
+                    if ($.fn.dataTable.isDataTable('#tblMapping')) {
+                        table = $('#tblMapping').DataTable();
+                    }
+                    else {
+                        table = $('#tblMapping').DataTable({
+                            paging: false
+                        });
+                    }
+                    //$('#tblMapping').dataTable({ paging: false });
+                }
+
+            });
+        });
+        function fn_resetform() {
+
+            $('#ddlMonthList').select2("val", '');
+            $('#ddlYearList').select2("val", '');
+            $('#tblMapping tbody').empty();
+            $('#stlist').hide();
+        }
+
+        $(document).on("click", "#btnSave", function () {
+            var _ddl1 = $('#ddlMonthList').val();
+            var _ddl2 = $('#ddlYearList').val();
+
+            var rowCount1 = $('#tblMapping >tbody >tr').length;
+
+            if (_ddl1 == '' || _ddl1 == '-1') {
+                FormSuccessError1("Please select Month.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl2 == '' || _ddl2 == '-1') {
+                FormSuccessError1("Please select Year.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+
+            var StdData = [];
+
+            $('#tblMapping > tbody > tr').each(function () {
+
+                var tr_id = $(this).attr('id');
+                var v1 = $(this).find('td:eq(2)').text();
+                var v2 = $(this).find('td:eq(3)').text();
+                var v3 = $(this).find('td:eq(4)').text();
+                var v4 = $(this).find('td:eq(5)').text();
+                var v5 = $(this).find('td:eq(6)').text();
+                var v6 = $(this).find('td:eq(7)').find("#expenses_sum1").val();
+                var v7 = $(this).find('td:eq(8)').find("#expenses_sum2").val();
+                var v8 = $(this).find('td:eq(9)').find("#expenses_sum3").val();
+                var v9 = $(this).find('td:eq(10)').text();
+
+                if (v2.length == 0)
+                    v2 = 0;
+                if (v3.length == 0)
+                    v3 = 0;
+                if (v4.length == 0)
+                    v4 = 0;
+                if (v5.length == 0)
+                    v5 = 0;
+
+                if ($(this).find('td input[type=checkbox]').prop('checked') == true)
+                    StdData.push({ 'EM_ID': tr_id, 'TotalSal': v1, 'LM_Amount': v2, 'InstNo': v3, 'InstAmnt': v4
+                    , 'Advance': v5, 'OthDeduction': v8, 'NetAmnt': v9, 'SpclAllnce': v6, 'Inecentive': v7
+                    });
+             
+            });
+
+            if (StdData.length == 0) {
+                FormSuccessError1("Please select Employee.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveSalaryProcess", "HR")',
+                data: JSON.stringify({ Emp: StdData, strMonth: _ddl1, strYear: _ddl2 }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+
+                        FormSuccessError1("Salary generate Successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+    </script>
+}
+
+

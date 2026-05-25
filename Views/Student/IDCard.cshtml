@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "IDCard";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">ID Card</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Class:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Section:<span style="color:red;">*</span></label>
+                                <select id="ddlSectionList" class="form-control"> </select>
+                            </div>
+                        </div>
+                       
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @{
+                                    string AppID = Convert.ToString(HttpContext.Current.Session["AppID"]).ToString();
+                                }
+                                <button class="btn btn-primary pull-left" style="margin-top: 20px;" id="btnSave" AppId="@AppID">Print</button>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+           
+        });
+
+        $("#ddlClassList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Student/BindStream',
+                data: JSON.stringify({ ID: ID, Type: "Se" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlSectionList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlSectionList").append($("<option/>").val(this.SectionID).text(this.SectionName));
+                        });
+                    }
+                }
+            });
+        });
+       
+        function fn_resetform() {
+
+            $('#ddlClassList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+        }
+
+        $(document).on("click", "#btnSave", function () {
+            var _ddl1 = $('#ddlClassList').val();
+            var _ddl3 = $('#ddlSectionList').val();
+
+            if (_ddl1 == '' || _ddl1 == '-1') {
+                FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl3 == '' || _ddl3 <= 0) {
+                FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+           
+
+            @*$.ajax({
+                type: "POST",
+                url: '@Url.Action("PrintIDCard", "Student")',
+                data: JSON.stringify({ ClassID: _ddl1, SectionID: _ddl3 }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (data == "Error") {
+                        alert("Error! Try again later.");
+                    }
+                    else {
+                        window.open(data);
+                        //previewPdfDocument(data);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    //alert("Error! Try again later.");
+                    window.location.href = "/Error";
+                }
+            });*@
+
+            var AppID = $("#btnSave").attr('AppId'); 
+            Print(AppID);
+        });
+
+        function Print(AppID) {
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "StudentIDCard.rpt",
+                FileName: "Student_IDCard",
+                AppID: AppID
+            });
+
+            detail.push({
+                ClassID: $('#ddlClassList').val(),
+                SectionID: $('#ddlSectionList').val(),
+                AppID: AppID
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+    </script>
+}

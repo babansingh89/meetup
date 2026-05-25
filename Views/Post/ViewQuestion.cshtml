@@ -1,0 +1,338 @@
+﻿
+@{
+    ViewBag.Title = "View Question";
+}
+<style>
+    table-responsive {
+        width: 100%;
+        margin-top: 25px;
+    }
+
+    .viewticketleftcolumn {
+        background-color: #eee;
+        vertical-align: top;
+        border-bottom: 2px solid #C5C5EC;
+    }
+
+    .viewticketrightcolumn {
+        border-bottom: 2px solid #C5C5EC;
+    }
+
+    .table-responsive tr {
+        border-color: #f2f9fd;
+    }
+
+    .note-toolbar {
+        padding: 5px 15px !important;
+        border-bottom: 1px solid transparent !important;
+        border-top-left-radius: 3px !important;
+        border-top-right-radius: 3px !important;
+        line-height: 30px !important;
+        text-transform: none !important;
+        text-align: center !important;
+        position: relative !important;
+        height: 100% !important;
+        letter-spacing: 1.2px !important;
+    }
+
+    .panel-heading {
+        line-height: 40px !important;
+    }
+</style>
+<div id="div_Scroll">
+    <div id="dvcnt" class="panel panel-primary">
+        <div class="panel-heading"><span class="pull-left" id="spheading"></span></div>
+        <div class="panel-body">
+            @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="form-group">
+                        <textarea id="txtDescription" class="form-control textarea-editor" placeholder="What do you want to share?"></textarea>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+
+                    <button type="submit" class="btn btn-primary pull-right" id="btnSave">Send</button>
+                    <button class="btn btn-grey pull-right" onclick="location.href='@Url.Action("RetrunView", "Post")'" id="clear">Back</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <table class="table table-responsive table-bordered table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-sm" id="tblData">
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdId" value="0" />
+@section body_scripts{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+    <script src="~/Content/assets/js/summernote.js"></script>
+    <script src="~/Content/assets/js/summernote-file.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/pbkdf2.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.fileUrl').hide();
+            $('.textarea-editor').summernote({
+                height: 200, // set editor height
+                minHeight: null, // set minimum height of editor
+                maxHeight: null, // set maximum height of editor
+                focus: true // set focus to editable area after initializing summernote
+               , toolbar: [
+
+    ['font', ['bold', 'italic', 'underline', 'clear']],
+
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['table', ['table']],
+    ['insert', ['link', 'picture', 'video', 'file']],
+               ],
+
+                callbacks: {
+                    onFileUpload: function (file) {
+                        var sizeKB = file[0]['size'] / 1000;
+                        //  alert(sizeKB)
+                        if (sizeKB > 5000) {
+                            alert('Please select Less than 5MB File!');
+                            $('.note-icon-file').click();
+                            return false;
+                        }
+                        sendFile(file[0], "Doc");
+                    },
+                    onImageUpload: function (files) {
+
+                        var sizeKB = files[0]['size'] / 1000;
+                        //   alert(sizeKB)
+                        if (sizeKB > 5000) {
+                            alert('Please select Less than 5MB Image!');
+                            $('.note-icon-picture').click();
+                            return false;
+                        }
+                        sendFile(files[0], "img");
+                    },
+                },
+            });
+            var query_event_id = getParameterByName('_Id');
+            if (query_event_id) {
+
+                var plaintext = decrypt(query_event_id);
+                $("#hdId").val(plaintext.toString(CryptoJS.enc.Utf8));
+                //alert(plaintext.toString(CryptoJS.enc.Utf8))
+                fn_Bindtbl(plaintext.toString(CryptoJS.enc.Utf8), "SelectByBoth");
+            }
+
+        });
+        $(document).on("click", "#btnSave", function () {
+            ModalHideSuccErrDiv();
+            var _Id = $.trim($("#hdId").val());
+            var _txtPost = $.trim($('#txtDescription').val());
+
+            if (_txtPost == '') {
+                FormSuccessError("Please enter Post.", "Error", "errorBlock");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateOpenQuestion", "Post")',
+                data: JSON.stringify({ Id: _Id, PostData: _txtPost }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "UpdateSuccessful") {
+                        $('#txtDescription').summernote('reset');
+                        FormSuccessError("Reply updated successfully.", "Success", "errorBlock");
+                        fn_Bindtbl($("#hdId").val(), "SelectByBoth");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        function sendFile(file, type) {
+            //  alert(type)
+            let data = new FormData();
+            data.append("file", file);
+            data.append("Type", type);
+            $.ajax({
+                data: data,
+                type: "POST",
+                url: "@Url.Action("UploadImage","Post")",
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (url) {
+                    //alert(url)
+                    //alert(type)
+                    if (type == 'img') {
+                        $('.textarea-editor').summernote("editor.insertImage", url, function ($image) {
+                            $image.css('width', '100%');
+                            $image.attr('data-filename', 'retriever');
+                            $image.attr('target', '_blank');
+                        });
+                    }
+                    else {
+                        let listMimeImg = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/svg'];
+                        let listMimeAudio = ['audio/mpeg', 'audio/ogg', 'audio/mpeg3', 'audio/x-mpeg-3', 'audio/mp3'];
+                        let listMimeVideo = ['video/mpeg', 'video/mp4', 'video/webm', 'video/x-mpeg'];
+                        let elem;
+                        let elemImg;
+                        // alert(file.name)
+                        if (listMimeImg.indexOf(file.type) > -1) {
+                            //Picture
+                            //$('.textarea-editor').summernote('editor.insertImage', url);
+                            $('.textarea-editor').summernote("editor.insertImage", url, function ($image) {
+                                $image.css('width', '100%');
+                                $image.attr('data-filename', 'retriever');
+                                $image.attr('target', '_blank');
+                            });
+                        } else if (listMimeAudio.indexOf(file.type) > -1) {
+                            //Audio
+                            elem = document.createElement("audio");
+                            elem.setAttribute("src", url);
+                            elem.setAttribute("controls", "controls");
+                            elem.setAttribute("preload", "metadata");
+                            elem.setAttribute('style', "width: 100%;");
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        } else if (listMimeVideo.indexOf(file.type) > -1) {
+                            //Video
+                            elem = document.createElement("video");
+                            elem.setAttribute("src", url);
+                            elem.setAttribute("controls", "controls");
+                            elem.setAttribute("preload", "metadata");
+                            elem.setAttribute('style', "width: 100%;");
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        } else {
+                            //Other file type
+                            elem = document.createElement("a");
+                            elem.download = 'download';
+                            elem.href = url;// alert(elem)
+                            elem.target = "_blank";
+                            var extension = file.name.substr((file.name.lastIndexOf('.') + 1));
+                            // alert(extension);
+                            var img = $('<img id="dynamic">');
+                            img.attr('src', 'http://www.meetupschool.com/Content/assets/images/other.png');
+                            if (extension.toLowerCase() == 'pdf') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/pdf.png');
+                            }
+                            if (extension.toLowerCase() == 'doc' || extension.toLowerCase() == 'docx') {
+
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/word.png');
+                            }
+                            if (extension.toLowerCase() == 'xlsx' || extension.toLowerCase() == 'xls' || extension.toLowerCase() == 'csv') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/exce.png');
+                            } if (extension.toLowerCase() == 'txt') {
+                                img.attr('src', 'http://www.meetupschool.com/Content/assets/images/text.png');
+                            }
+                            //else {
+                            //    img.attr('src', "/Content/assets/images/other.png");
+                            //}
+                            img.attr('style', "width: 30px; height: 30px;");
+                            img.appendTo(elem);
+                            $('.textarea-editor').summernote('editor.insertNode', elem);
+                        }
+                    }
+
+                }
+            });
+        }
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewOpenQuestionByID", "Post")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    $('#spheading').text('[Ticket# : ' + data[0][0].TicketNo + '] -  ' + data[0][0].Subject);
+                    if (data[0][0].OPStatus == 'Closed') {
+                        $('#dvcnt').hide();
+                    }
+                    $('#tblData tbody').empty();
+                    $.each(data[1], function (rowIndex, r) {
+                        var row = '';
+                        row += '<tr>';
+                        row += '<td class="viewticketleftcolumn"> Posted by : ' + r.UserType + '</br></br> at : ' + r.CreatedDate + '</td>';
+                        row += '<td class="viewticketrightcolumn">' + r.PostData + '</td>';
+                        row += '</tr>';
+                        $('#tblData tbody').append(row);
+                    });
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function encrypt(msg) {
+            var salt = CryptoJS.lib.WordArray.random(128 / 8);
+
+            var key = CryptoJS.PBKDF2('meetup', salt, {
+                keySize: 256 / 32,
+                iterations: 100
+            });
+
+            var iv = CryptoJS.lib.WordArray.random(128 / 8);
+
+            var encrypted = CryptoJS.AES.encrypt(msg, key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC
+
+            });
+
+            // salt, iv will be hex 32 in length
+            // append them to the ciphertext for use  in decryption
+            var transitmessage = salt.toString() + iv.toString() + encrypted.toString();
+            return transitmessage;
+        }
+
+        function decrypt(transitmessage) {
+            var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+            var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+            var encrypted = transitmessage.substring(64);
+
+            var key = CryptoJS.PBKDF2('meetup', salt, {
+                keySize: 256 / 32,
+                iterations: 100
+            });
+
+            var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC
+
+            })
+            return decrypted;
+        }
+    </script>
+}

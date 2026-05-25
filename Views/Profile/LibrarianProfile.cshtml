@@ -1,0 +1,447 @@
+﻿
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_LibrarianLayout.cshtml";
+}
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    hr.style2 {
+        border-top: 3.5px double #8c8b8b;
+    }
+
+    .imagePreview {
+        width: 100%;
+        height: 180px;
+        background-position: center center;
+        background: url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg);
+        background-color: #fff;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: inline-block;
+        box-shadow: 0px -3px 6px 2px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary1 {
+        display: block;
+        border-radius: 0px;
+        box-shadow: 0px 4px 6px 2px rgba(0,0,0,0.2);
+        margin-top: -5px;
+        background-color: bisque;
+    }
+
+    .imgUp {
+        margin-bottom: 15px;
+    }
+
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Profile</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Emp Code:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" disabled id="txtEmpCode">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Reg.Date:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control dateFormat" id="txtRegDate">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>User Type:<span style="color:red;"></span></label>
+                                <select id="ddlUserTypeList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="Teacher">Teacher</option>
+                                    <option value="Accountant">Accountant</option>
+                                    <option value="Librarian">Librarian</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Employee Name:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="txEmployeeName">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Gender:<span style="color:red;">*</span></label>
+                                <select id="ddlGenderList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>DOB:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control dateFormat" id="txtDOB">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Fathers Name:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txFathersName">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Phone:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control Numeric" id="txtPhone" disabled maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Adhar No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txAdharNo" maxlength="16">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>PAN No:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txPanNo" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Email:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtEmail">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Address:<span style="color:red;"></span></label>
+                                <input type="text" class="form-control" id="txtAddress">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Department:<span style="color:red;"></span></label>
+                                <select id="ddlDepartmentList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="1">Event</option>
+                                    <option value="2">Academic</option>
+                                    <option value="3">Support</option>
+                                    <option value="4">IT</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Designation:<span style="color:red;"></span></label>
+                                @Html.DropDownList("ddlDesignationList", (IList<SelectListItem>)ViewBag.DesignationList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Password:<span style="color:red;">*</span></label>
+                                <input type="password" class="form-control" id="txtpassword">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-2 imgUp">
+                                        <div id="img1" class="imagePreview"></div>
+                                        <label class="btn btn-primary1">
+                                            Upload Photo <input type="file" name="Imagefile" accept="image/*" id="FileUpload1" class="uploadFile img" style="display:none;width: 0px;height: 0px;overflow: hidden;">
+
+                                        </label>
+                                    </div><!-- col-2 -->
+
+                                </div><!-- row -->
+                            </div><!-- container -->
+                        </div>
+
+                    </div>
+
+                    <hr class="style2" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+
+        $(function () {
+            $(document).on("change", ".uploadFile", function () {
+                var uploadFile = $(this);
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+                if (/^image/.test(files[0].type)) { // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+
+                    reader.onloadend = function () { // set image data as background of div
+                        //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+                        uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
+                    }
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+
+            $("#ddlDesignationList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlDepartmentList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlGenderList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlUserTypeList").select2({
+                placeholder: "Select"
+            });
+            fn_Bindtbl("Profile");
+        });
+        $(document).on("click", "#btn-clear", function () {
+            var url = '@Url.Action("Librarian", "Dashboard")'
+            window.location.href = url;
+        });
+
+        $(document).on("click", "#btnSave", function () {
+
+            var _Id = $.trim($("#hdId").val());
+            var _txEmployeeName = $('#txEmployeeName').val();
+            var _ddlGenderList = $('#ddlGenderList').select2('data')[0]['text'];
+            var _txtDOB = $('#txtDOB').val();
+            var _txFathersName = $('#txFathersName').val();
+            var _txAdharNo = $('#txAdharNo').val();
+            var _txPanNo = $('#txPanNo').val();
+            var _txtEmail = $('#txtEmail').val();
+            var _txtAddress = $('#txtAddress').val();
+            var _txtpassword = $('#txtpassword').val();
+            var fileUpload = $("#FileUpload1").get(0).files;
+
+
+            if (_txEmployeeName == '') {
+                FormSuccessError1("Please enter Employee Name.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddlGenderList == '' || _ddlGenderList == 'Select' || _ddlGenderList <= 0) {
+                FormSuccessError1("Please select Gender.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtDOB == '') {
+                FormSuccessError1("Please enter DOB.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            
+            if (_txtpassword == '') {
+                FormSuccessError1("Please enter Password.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (window.FormData !== undefined) {
+                var fileData = new FormData();
+
+                fileData.append("EM_EmpId", _Id);
+                fileData.append("EM_EmpName", _txEmployeeName);
+                fileData.append("EM_DOB", _txtDOB);
+                fileData.append("EM_Gender", _ddlGenderList);
+                fileData.append("EM_EmpFathers", _txFathersName);
+                fileData.append("EM_EmpAddress", _txtAddress);
+                fileData.append("EM_Password", _txtpassword);
+                fileData.append("EM_PanNo", _txPanNo);
+                fileData.append("EM_AdharNo", _txAdharNo);
+                fileData.append("EM_Email", _txtEmail);
+                fileData.append("EM_ProfilePic", fileUpload[0]);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveEmployee", "Profile")',
+                contentType: false,
+                processData: false,
+                data: fileData,
+                success: function (response) {
+                    if (response == "resetSuccessful") {
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+
+        function fn_Bindtbl(Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ViewEmployee", "Profile")',
+                data: JSON.stringify({ Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == 'Profile') {
+                        $('#btnSave').text("Update");
+                        $("#hdId").val(data[0].EM_EmpId);
+                        $('#txtEmpCode').val(data[0].EM_EmpCode);
+                        $('#txtRegDate').val(data[0].EM_EmpDOJ);
+                        $('#txtRegDate').attr("disabled", "disabled");
+                        $('#ddlUserTypeList').select2('val', data[0].EM_UserType);
+                        $('#ddlUserTypeList').attr("disabled", "disabled");
+                        $('#txEmployeeName').val(data[0].EM_EmpName);
+                        $('#ddlGenderList').select2('val', data[0].EM_Gender);
+                        $('#txtDOB').val(data[0].EM_DOB);
+                        $('#txFathersName').val(data[0].EM_EmpFathers);
+                        $('#txtPhone').val(data[0].EM_EmpContactNo);
+                        $('#txtPhone').attr("disabled", "disabled");
+                        $('#txAdharNo').val(data[0].EM_AdharNo);
+                        $('#txPanNo').val(data[0].EM_PanNo);
+                        $('#txtEmail').val(data[0].EM_Email);
+                        $('#txtAddress').val(data[0].EM_EmpAddress);
+                        $('#ddlDesignationList').select2('val', data[0].EM_EmpDesignationId);
+                        $('#ddlDepartmentList').select2('val', data[0].EM_DepartmentID);
+                        $('#ddlDesignationList').attr("disabled", "disabled");
+                        $('#ddlDepartmentList').attr("disabled", "disabled");
+                        $('#txtpassword').val(data[0].Password);
+
+                        $("#img1").css("background-image", "url(../EmpImage/" + data[0].EM_ProfilePic + ")");
+
+                    }
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+    </script>
+}
+
+
+
+

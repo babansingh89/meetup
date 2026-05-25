@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewBag.Title = "Fees Payment";
+    Layout = "~/Views/Shared/_ParentsLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <!-- Form Wizard -->
+        <div class="form-wizard form-body-classic form-header-modarn">
+            <!-- Form progress -->
+            <div class="form-wizard-steps form-wizard-tolal-steps-4">
+                <div class="form-wizard-progress">
+                    <div class="form-wizard-progress-line" data-now-value="12.25" data-number-of-steps="4" style="width: 87.25%;"></div>
+                </div>
+                <!-- Step 1 -->
+                <div class="form-wizard-step active">
+                    <div class="form-wizard-step-icon"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+                    <p>Account</p>
+                </div>
+                <!-- Step 1 -->
+                <!-- Step 2 -->
+                <div class="form-wizard-step">
+                    <div class="form-wizard-step-icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                    <p>Personal</p>
+                </div>
+                <!-- Step 2 -->
+                <!-- Step 3 -->
+                <div class="form-wizard-step">
+                    <div class="form-wizard-step-icon"><i class="fa fa-university" aria-hidden="true"></i></div>
+                    <p>Bank</p>
+                </div>
+                <!-- Step 3 -->
+                <!-- Step 4 -->
+                <div class="form-wizard-step">
+                    <div class="form-wizard-step-icon"><i class="fa fa-file-text" aria-hidden="true"></i></div>
+                    <p>Confirm</p>
+                </div>
+                <!-- Step 4 -->
+            </div>
+            <!-- Form progress -->
+            <!-- Form Step 1 -->
+            <fieldset style="display: none;">
+                <!-- Progress Bar -->
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <h4>Account Information: <span>Step 1 - 4</span></h4>
+
+                <div class="form-group">
+                    <label>User Name: <span>*</span></label>
+                    <input type="text" name="Username" placeholder="" class="form-control">
+                </div>
+
+                <div class="form-wizard-buttons">
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <!-- Form Step 1 -->
+            <!-- Form Step 2 -->
+            <fieldset style="display: none;">
+                <!-- Progress Bar -->
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <h4>Personal Information : <span>Step 2 - 4</span></h4>
+                <div class="form-group">
+                    <label>First Name: <span>*</span></label>
+                    <input type="text" name="First Name" placeholder="" class="form-control">
+                </div>
+
+
+                <div class="form-wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <!-- Form Step 2 -->
+            <!-- Form Step 3 -->
+            <fieldset style="display: none;">
+                <!-- Progress Bar -->
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <h4>Bank Information: <span>Step 3 - 4</span></h4>
+                <div class="form-group">
+                    <label>Bank Name: <span>*</span></label>
+                    <input type="text" name="Bank Name" placeholder="" class="form-control">
+                </div>
+
+                <br>
+                <div class="form-wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <!-- Form Step 3 -->
+            <!-- Form Step 4 -->
+            <fieldset style="display: none;">
+                <!-- Progress Bar -->
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <h4>Confirm Details: <span>Step 4 - 4</span></h4>
+                <div style="clear:both;"></div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr><th>Name</th><td>Abdul Kuddus</td></tr>
+                            <tr><th>Email</th><td>some@ex.com</td></tr>
+                            <tr><th>Phone</th><td>0123456789</td></tr>
+                            <tr><th>User</th><td>Abdulkuddus99</td></tr>
+                            <tr><th>Gender</th><td>Male</td></tr>
+                            <tr><th>Address</th><td>House #06 kallayanpur, Dhaka</td></tr>
+                            <tr><th>Zip Code</th><td>1207</td></tr>
+                            <tr><th>Country</th><td>Bangladesh</td></tr>
+                            <tr><th>Bank Name</th><td>Dhaka city Bank</td></tr>
+                            <tr><th>Branch Name</th><td>Dhaka city Branch</td></tr>
+                            <tr><th>Account Number</th><td>456974542514</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="submit" class="btn btn-submit">Submit</button>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary" id="btnAdd" style="margin-top: 25px;margin-right: -10px;float: right; display:none;">Add</button>
+
+@section body_scripts{
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link href="~/Content/vendor/form-wizard-blue.css" rel="stylesheet" />
+    <script src="~/Content/vendor/form-wizard.js"></script>
+    <script>
+
+
+        $(document).on("click", "#btnAdd", function () {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("getOrderID", "Transaction")',
+                data: JSON.stringify({ type: "Orders" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    var options = {
+                        "key": "rzp_test_Y86weqwoCtzTe6", // Enter the Key ID generated from the Dashboard
+                        "amount": "1000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Acme Corp",
+                        "description": "Test Transaction",
+                        "image": "https://i.imgur.com/n5tjHFD.png",
+                        "order_id": data, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "handler": function (response) {
+
+                            alert(response.razorpay_payment_id);
+                            alert(response.razorpay_order_id);
+                            alert(response.razorpay_signature)
+                            SaveIDS(response, response.razorpay_order_id, response.razorpay_payment_id, response.razorpay_signature);
+                        },
+                        "prefill": {
+                            
+                        },
+                        "notes": {
+                            "address": "kolkata Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#F37254"
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open(); //e.preventDefault();
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        function SaveIDS(response, _order_id, _payment_id, _signature) {
+            console.log(response);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("VerifyRazorpaySignature", "Transaction")',
+                data: JSON.stringify({ razorpay_order_id: _order_id, razorpay_payment_id: _payment_id, razorpay_signature: _signature }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+    </script>
+
+
+}

@@ -1,0 +1,236 @@
+﻿
+@{
+    ViewBag.Title = "Teacher SMS";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Teacher SMS</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                       
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Messege Type:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlMSGList", (IList<SelectListItem>)ViewBag.MSGList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Messege:<span style="color:red;">*</span></label>
+                                <textarea id="txtmsg" class="form-control" cols="5" maxlength="160"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stlist" class="row">
+                        <div class="col-lg-12">
+                            <div class="panel-body">
+                                <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblMapping">
+                                    <thead>
+                                        <tr style="background-color: antiquewhite;">
+                                            <th><input type="checkbox" id="chkAll" /></th>
+                                            <th>Emp Code</th>
+                                            <th>Emp Name</th>
+                                            <th>Ph.No</th>
+                                            <td>Designation</td>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Send</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+          
+            binddata();
+            $("#ddlMSGList").select2({
+                placeholder: "Select"
+            });
+        });
+
+        $('#tblMapping').find('tbody tr input:checkbox').click(function () {
+            alert($(".chkRow").length);
+            alert($(".chkRow:checked").length);
+            if ($(".chkRow").length == $(".chkRow:checked").length) {
+                $("#chkAll").prop("checked", true);
+            } else {
+                $("#chkAll").prop("checked", false);
+            }
+        });
+        $("#chkAll").click(function () {
+            var checkAll = $("#chkAll").prop('checked');
+            if (checkAll) {
+                $(".chkRow").prop("checked", true);
+            } else {
+                $(".chkRow").prop("checked", false);
+            }
+        });
+        $("#ddlMSGList").change(function () {
+            $('#txtmsg').val('');
+
+            var ID = $('option:selected', this).val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Messaging/viewSTMaster',
+                data: JSON.stringify({ STID: ID, Type: "SelectByID" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#txtmsg').val(data[0].STDesc);
+                    }
+                }
+            });
+        });
+        function binddata() {
+            hideAlert();
+            $("#chkAll").prop("checked", false);
+           
+            $.ajax({
+                type: "POST",
+                url: '/Messaging/viewTeacherSMSMaster',
+                data: JSON.stringify({ Type: "Select" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+
+                    $('#tblMapping tbody').empty();
+                    $.each(data, function (rowIndex, val) {
+
+                        var markup = '<tr id=' + val.EM_EmpId + '><td><input type="checkbox" class="chkRow" /></td><td>' + val.EM_EmpCode + '</td><td>' + val.EM_EmpName + '</td><td>' + val.EM_EmpContactNo + '</td><td>' + val.DesName + '</td></tr>';
+
+                        $("#tblMapping >tbody").append(markup);
+                    });
+                    $('#stlist').show();
+                    if ($.fn.dataTable.isDataTable('#tblMapping')) {
+                        table = $('#tblMapping').DataTable();
+                    }
+                    else {
+                        table = $('#tblMapping').DataTable({
+                            paging: false
+                        });
+                    }
+                }
+
+            });
+        }
+        function fn_resetform() {
+
+           
+            $('#ddlMSGList').select2("val", '');
+            $('#txtmsg').val('');
+            $('#tblMapping tbody').empty();
+ 
+        }
+
+        $(document).on("click", "#btnSave", function () {
+         
+            var _ddl2 = $('#ddlMSGList').val();
+            var msg = $('#txtmsg').val();
+            var rowCount1 = $('#tblMapping >tbody >tr').length;
+
+            if (_ddl2 == '' || _ddl2 == '-1') {
+                FormSuccessError1("Please select Message.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (msg == '') {
+                FormSuccessError1("Please Enter Message.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+           
+            var StdData = [];
+
+            $('#tblMapping > tbody > tr').each(function () {
+
+                var tr_id = $(this).attr('id');
+                var number = $(this).find('td:eq(3)').text();
+                if ($(this).find('td input[type=checkbox]').prop('checked') == true)
+                    StdData.push({ 'EMPID': tr_id, 'Mobile': number });
+            });
+
+            if (StdData.length == 0) {
+                FormSuccessError1("Please select Employee.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveTeacherSMSMaster", "Messaging")',
+                data: JSON.stringify({ StudentID: StdData, SMSText: msg, SMSType: "TS" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        fn_resetform();
+
+                        FormSuccessError1("SMS Sent successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+    </script>
+}
+

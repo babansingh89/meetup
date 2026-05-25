@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "Employee Attendance";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Employee Attendance</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">From:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtFrom">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">To:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtTo">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Designation Type:</label>
+                                    @Html.DropDownList("ddlDesignationList", (IList<SelectListItem>)ViewBag.DesignationList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Teacher Name:</label>
+                                    @*@Html.DropDownList("ddlTeacherList", (IList<SelectListItem>)ViewBag.TeacherList, new { @class = "form-control" })*@
+                                    <select class="form-control" id="ddlTeacherList">
+                                        <option value="0">Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @{
+                                        string AppID = Convert.ToString(HttpContext.Current.Session["AppID"]).ToString();
+                                    }
+                                    <button class="btn btn-primary" style="margin-top: 20px;" id="btnSave" AppId="@AppID">Generate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+        });
+
+        function fn_resetform() {
+            $('#ddlClassList').select2("val", '');
+            $('#ddlSectionList').select2("val", '');
+
+        }
+        $("#ddlDesignationList").change(function () {
+            var ID = $('option:selected', this).val();
+            if (ID == '' || ID <= 0) {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Report/BindTeacher',
+                data: JSON.stringify({ ID: ID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $("#ddlTeacherList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (data.length > 0) {
+                        $.each(data, function () {
+                            $("#ddlTeacherList").append($("<option/>").val(this.EM_EmpId).text(this.EM_EmpName));
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on("click", "#btnSave", function () {
+            var _ddlTachrList = $('#ddlTeacherList').val();
+            var _From = $('#txtFrom').val();
+            var _To = $('#txtTo').val();
+            //if (_ddlClassList == '' || _ddlClassList <= 0) {
+            //    FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
+            //    return false;
+            //}
+            //if (_ddlSectionList == '' || _ddlSectionList <= 0) {
+            //    FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
+            //    return false;
+            //}
+
+            @*$.ajax({
+                type: "POST",
+                url: '@Url.Action("PrintStudentRegistration", "Report")',
+                data: JSON.stringify({ Class: _ddlClassList, Section: _ddlSectionList}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (data == "Error") {
+                        alert("Error! Try again later.");
+                    }
+                    else {
+                        window.open(data);
+                        //previewPdfDocument(data);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    //alert("Error! Try again later.");
+                    window.location.href = "/Error";
+                }
+            });*@
+
+            var AppID = $("#btnSave").attr('AppId');
+            Print(AppID);
+        });
+
+        function Print(AppID) {
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "EmployeeAttendance.rpt",
+                FileName: "Employee_Attendance_Report",
+                AppID: AppID
+            });
+
+            detail.push({
+                EmpID: $('#ddlTeacherList').val(),
+                From: $('#txtFrom').val(),
+                To: $('#txtTo').val(),
+                DesigID: $('#ddlDesignationList').val(),
+                AppID: AppID
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+    </script>
+}
+
+
+
+

@@ -1,0 +1,682 @@
+﻿@{
+    ViewBag.Title = "Student Fee Collection";
+    //Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<input type="hidden" id="hdId" value="0" />
+<input type="hidden" id="hdPrintId" value="0" />
+
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Student Fee Collection</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="row" style="display:none;">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input type="radio" name="RadioFees" id="Radio1" class="custom-radio" value="1">Admission
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input type="radio" name="RadioFees" id="Radio2" class="custom-radio" value="2">Collection
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Reg.No:<span style="color:red;">*</span></label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" id="txtRegNo" autocomplete="off" value="@ViewBag.RegNo" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" id="btnsearch" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Name:</label>
+                                    <input type="text" class="form-control" id="txtName" autocomplete="off" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Class:</label>
+                                    <input type="text" class="form-control" id="txtclassName" autocomplete="off" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Section:</label>
+                                    <input type="text" class="form-control" id="txtSectionName" autocomplete="off" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Roll No:</label>
+                                    <input type="text" class="form-control" id="txtrollno" autocomplete="off" disabled />
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        @{
+                            // Initialize the list of months statically in the view
+                            var months = new List<dynamic>
+                                                                                                                                                                                                    {
+                        new { Id = 1, Name = "January" },
+                        new { Id = 2, Name = "February" },
+                        new { Id = 3, Name = "March" },
+                        new { Id = 4, Name = "April" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "June" },
+                        new { Id = 7, Name = "July" },
+                        new { Id = 8, Name = "August" },
+                        new { Id = 9, Name = "September" },
+                        new { Id = 10, Name = "October" },
+                        new { Id = 11, Name = "November" },
+                        new { Id = 12, Name = "December" }
+                    };
+
+                            <div class="horizontal-checkbox-list" style="font-family: fantasy;font-size: 18px;color: darkslategray; padding-bottom:10px;">
+                                <div id="monthlst"></div>
+                                @*@foreach (var month in months)
+                                    {
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="months" class="chkMonth" value="@month.Id" /> @month.Name
+                                            </label>
+
+                                    }*@
+
+                            </div>
+                        }
+                        <div class="col-md-12" style="display:none;">
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary" id="btnGenerateFee">Generate Fee</button>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblfee" style="width:100% !important; border-bottom:none;">
+                            <thead>
+                                <tr style="background-color: ghostwhite; height:30px;">
+                                    <th>SlNo(#)</th>
+                                    <th style="text-align:center">Fee Particulars</th>
+                                    <th style="text-align:center">Fee Amount (&#x20b9;)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" style="text-align:right; font-weight:bold"><strong>Total (&#x20b9;)</strong></td>
+                                    <td style="text-align: right; font-weight: bold;" id="totalAmount">0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Net Amount:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtNetAmount" autocomplete="off" disabled value="0.00" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Late Fee:</label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtLateFee" autocomplete="off" value="0.00" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Discount:</label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtDiscount" autocomplete="off" value="0.00" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Other Amount:</label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtOtherAmount" autocomplete="off" value="0.00" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Gross Amount:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtGrossAmt" autocomplete="off" disabled value="0.00" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Pay mode:</label> <span style="color:red;">*</span>
+                                    <select class="form-control" id="ddlPayMode">
+                                        <option value="0">Select</option>
+                                        <option value="C" selected>Cash</option>
+                                        <option value="D">Draft</option>
+                                        <option value="Q">Cheque</option>
+                                        <option value="O">Online</option>
+                                        <option value="N">Neft</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Transaction No.:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control" id="txtTransactionno" autocomplete="off" disabled value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Transaction Date:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtTransactiondate" autocomplete="off" disabled value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Remarks:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control" id="txtRemarks" autocomplete="off" value="" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group text-right">
+                                @*<input type="checkbox" class="custom-control-input" id="chkSMS">
+        <label class="custom-control-label" for="customControlInline">Send SMS</label>*@
+                                @*<button class="btn btn-primary" id="btnSubmit">SUBMIT</button>*@
+
+                                <button class="btn btn-success" id="btnSubmitPrint">
+                                    <i class="bi bi-save" style="margin-right: 4px;"></i>Submit & Print
+                                </button>
+
+                                <button class="btn btn-danger" id="btncancel">
+                                    <i class="bi bi-x-circle" style="margin-right: 3px;"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="conModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width:650px;height:300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Payment Confirmation..</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12" style="text-align:center; font-weight:bold; font-size:20px;">
+                        <p style="color:cadetblue">Your Payment collection has been done.</p>
+                        <p class="clsReceiptno" style="color:darkgray"></p><br />
+                        <p style="color:crimson">Thank you !!</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-success clsconfPrint" >
+                    <i class="bi bi-printer" style="margin-right: 3px;"></i> Print
+                </button>
+                <button type="button" class="btn btn-default clsconfClose" data-dismiss="modal">
+                    <i class="bi bi-x-circle" style="margin-right: 3px;"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .horizontal-checkbox-list label.checkbox-inline {
+        display: inline-block;
+        margin-right: 15px; /* Add space between checkboxes */
+    }
+</style>
+
+
+
+@section body_scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(document).on('change', '#ddlPayMode', function () {
+                var payMode = $('#ddlPayMode').val();
+                    if (payMode == "C" || payMode == "0") {
+                        $('#txtTransactionno').val('');
+                        $('#txtTransactiondate').val('');
+                        $('#txtTransactionno').prop('disabled', true);
+                        $('#txtTransactiondate').prop('disabled', true);
+                    }
+                    else {
+                        $('#txtTransactionno').prop('disabled', false);
+                        $('#txtTransactiondate').prop('disabled', false);
+
+                    }
+            });
+
+        $(document).on('click', '#btnGenerateFee', function () {
+                hideAlert();
+                var selectedMonths = [];
+
+                var _RegNo = $('#txtRegNo').val();
+                if (_RegNo == '') {
+                    FormSuccessError1("Please enter Reg No.", "Error", "errorBlock", "div_Scroll");
+                    $('#txtRegNo').focus();
+                    return false;
+                }
+
+
+                // Get all checked checkboxes with name 'months' that are not disabled
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+
+            if (selectedMonths.length == 0) {
+
+                alert('Please select month !');
+                $('#tblfee tbody').empty();
+                updateTotal(selectedMonths.length);
+                return false;
+                }
+
+
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("GetStudentFee", "Transaction")',
+        data: JSON.stringify({ SR_No: _RegNo, OptedMonth: selectedMonths.join(',')  }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+
+            if (data.length > 0) {
+                $('#tblfee tbody').empty();
+                var cnt = 0;
+                $.each(data[1], function (rowIndex, val) {
+                    cnt++;
+                    var row = '';
+                    row += '<tr id=' + val.FeeHeadID + '>';
+                    row += '<td style="vertical-align: middle; width:30px; text-align:center; font-weight:bold;">' + cnt + '</td>';
+                    row += '<td style="vertical-align: middle; text-align:right; font-weight:bold;">' + val.FeeHeadName + '</td>';
+                    row += '<td class="amount" style="vertical-align: middle; text-align:right; font-weight:bold; ">' + val.Ins_Amt + '</td>';
+                    row += '</tr>';
+                    $('#tblfee tbody').append(row);
+                });
+                if (selectedMonths.length > 0) {
+                    updateTotal(selectedMonths.length);
+                }
+            } else {
+                FormSuccessError1("Please enter correct Reg No.", "Error", "errorBlock", "div_Scroll");
+                $('#txtRegNo').focus();
+                return false;
+            }
+        },
+        error: function (error) {
+            console.error(error);
+            //FormSuccessError(error, "Error", "errorBlock");
+            return false;
+        }
+    });
+
+
+
+
+
+
+});
+
+        $(document).on('click', '#btnsearch', function () {
+        hideAlert();
+        var _RegNo = $('#txtRegNo').val();
+        if (_RegNo == '') {
+            FormSuccessError1("Please enter Reg No.", "Error", "errorBlock", "div_Scroll");
+            $('#txtRegNo').focus();
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetStudentFee", "Transaction")',
+            data: JSON.stringify({ SR_No: _RegNo, OptedMonth: "" }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $("#hdId").val(data[0][0].SR_ID);
+                    $('#txtRegNo').val(data[0][0].SR_RegNo);
+                    $('#txtName').val(data[0][0].SR_StudentName);
+                    $('#txtclassName').val(data[0][0].ClassName);
+                    $('#txtrollno').val(data[0][0].SR_CurrentRollNo);
+                    $('#txtSectionName').val(data[0][0].SectionName);
+                    $('#txtStreamName').val(data[0][0].StreamName);
+                    $('#txtPhNo').val(data[0][0].SR_PhNo);
+                    $('#tblfee tbody').empty();
+
+                    BindMonth(data[0][0].Session_ActiveMonth, data[0][0].PayMonth);
+
+                } else {
+                    FormSuccessError1("Please enter correct Reg No.", "Error", "errorBlock", "div_Scroll");
+                    $('#txtRegNo').focus();
+                    return false;
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                //FormSuccessError(error, "Error", "errorBlock");
+                return false;
+            }
+        });
+
+
+        });
+
+            $(document).on('click', '.clsconfPrint', function () {
+                var selectedMonths = [];
+
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+
+                Print(selectedMonths);
+            });
+
+        $(document).on('click', '#btnSubmitPrint', function () {
+            hideAlert();
+            var selectedMonths = [];
+
+            var rowCount = $('#tblfee tbody tr').length;
+
+            // Get all checked checkboxes with name 'months' that are not disabled
+            $('input[name="months"]:checked:not(:disabled)').each(function () {
+                selectedMonths.push($(this).val());
+            });
+
+            if (selectedMonths.length == 0) {
+                alert('Please select month !'); return false;
+            }
+            if (rowCount == 0) {
+                alert('Please add fee details !'); return false;
+            }
+
+            if ($('#txtGrossAmt').val() <= 0) {
+                alert('Please calculate Gross Amount fee !');
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveStudentFeesCollection", "Transaction")',
+                data: JSON.stringify({
+                    SR_ID: $("#hdId").val(), TotalNetPayable: $('#txtNetAmount').val(), TotalLateFee: $('#txtLateFee').val(), TotalDiscount: $('#txtDiscount').val(),
+                    OtherAmount: $('#txtOtherAmount').val(), GrossPaymentAmount: $('#txtGrossAmt').val(),
+                    PayMode: $('#ddlPayMode').val(), PayMonth: selectedMonths.join(','),
+                    TransactionNo: $('#txtTransactionno').val(), TransactionDate: $('#txtTransactiondate').val(), Remarks: $('#txtRemarks').val()
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+
+                    if (data != '') {
+                        $(".clsReceiptno").text('Receipt No. : ' + data);
+                        $("#conModel").modal();
+
+                        
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+
+        });
+
+        $(document).on('click', '#btncancel', function () {
+            location.reload();
+        });
+        $(document).on('click', '.clsconfClose', function () {
+            location.reload();
+        });
+
+        $(document).ready(function () {
+        $('.clsfeeamt').on('keypress', function (event) {
+            // Allow only numbers (0-9)
+            if (event.which < 48 || event.which > 57) {
+                event.preventDefault(); // Prevent non-numeric characters
+            }
+        });
+
+        $('.clsfeeamt').on('keyup', function () {
+            updateGrossTotal();
+        });
+
+
+    });
+            $(document).ready(function () {
+                $('#txtRegNo').autocomplete({
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: '@Url.Action("Auto_RegNo", "Transaction")',
+                            data: { SR_No: $("#txtRegNo").val() },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            cache: false,
+                            success: function (serverResponse) {
+                                var AutoComplete = [];
+                                console.log(serverResponse[0]);
+
+                                if ((serverResponse[0]).length > 0) {
+
+                                    $.each(serverResponse[0], function (index, item) {
+                                        AutoComplete.push({
+                                            label: item.SR_RegNo,
+                                            SR_ID: item.SR_ID
+                                        });
+                                    });
+
+                                    response(AutoComplete);
+                                }
+                            }
+                        });
+                    },
+                    select: function (e, i) {
+                        $('#hdId').val(i.item.SR_ID);
+
+                    },
+                    minLength: 1
+                }).click(function () {
+                    $(this).autocomplete('search', ($(this).val()));
+                });
+            });
+        $(document).on('click', '.chkMonth', function () {
+            //$('.chkMonth').click(function () {
+
+
+
+                var currentCheckbox = $(this);   // Get the current checkbox
+                var currentIndex = $('input.chkMonth').index(currentCheckbox); // Get index of the current checkbox
+
+                // If current checkbox is checked, ensure previous checkbox is checked
+                if (currentCheckbox.is(':checked') && currentIndex > 0) {
+                    var previousCheckbox = $('input.chkMonth').eq(currentIndex - 1);
+                    var previousLabel = previousCheckbox.closest('label').text(); // Get the text of the previous label
+
+                    // If the previous checkbox is not checked, uncheck the current one and alert the user
+                    if (!previousCheckbox.is(':checked')) {
+                        currentCheckbox.prop('checked', false); // Uncheck the current checkbox
+                        alert('Please select the previous month first : ' + previousLabel.trim());
+                    }
+                }
+
+                // Prevent deselecting if there's a checkbox after this one that is selected
+                if (!currentCheckbox.is(':checked')) {
+                    var nextCheckbox = $('input.chkMonth').slice(currentIndex + 1);
+
+                    // Check if any subsequent checkbox is checked
+                    var hasCheckedNext = nextCheckbox.is(':checked');
+
+                    if (hasCheckedNext) {
+                        currentCheckbox.prop('checked', true); // Recheck the checkbox
+                        alert('You cannot unselect this month because a later month is selected.');
+                    }
+                }
+
+
+
+                //return false;
+                //-------------------------------------------------------------------------------------------------------------
+                var selectedMonths = [];
+
+                // Get all checked checkboxes with name 'months' that are not disabled
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+
+
+            jQuery("#btnGenerateFee").trigger("click");
+
+            //if (selectedMonths.length > 0) {
+            //    updateTotal(selectedMonths.length);
+            //}
+                // Display the selected months in the paragraph
+                //$('#selectedMonths').text("Selected months: " + selectedMonths.join(", "));
+            //});
+        });
+
+        function updateTotal(CntMonth) {
+            var total = 0;
+            // Calculate total amount by summing up all amounts in the table
+            $('#tblfee tbody tr').each(function () {
+                var amount = parseFloat($(this).find('.amount').text());
+                var tamount = amount;// * CntMonth;
+                total += tamount;
+            });
+
+            // Update total in the footer
+            $('#totalAmount, #txtNetAmount').text(total.toFixed(2));
+
+            $('#txtNetAmount').val(total.toFixed(2));
+
+            updateGrossTotal();
+        }
+        function updateGrossTotal() {
+        var netAmt = $('#txtNetAmount').val() == "" ? 0.00 : parseFloat($('#txtNetAmount').val());
+        var letAmt = $('#txtLateFee').val() == "" ? 0.00 : parseFloat($('#txtLateFee').val());
+        var disAmt = $('#txtDiscount').val() == "" ? 0.00 : parseFloat($('#txtDiscount').val());
+        var otherAmt = $('#txtOtherAmount').val() == "" ? 0.00 : parseFloat($('#txtOtherAmount').val());
+
+            var tAmt = parseFloat(netAmt) + parseFloat(letAmt) + parseFloat(otherAmt);
+        $('#txtGrossAmt').val((tAmt - disAmt).toFixed(2));
+        }
+        function BindMonth(Session_ActiveMonth, PayMonth) {
+
+                var array = PayMonth.split(',');
+
+            $('#monthlst').empty();
+            if (Session_ActiveMonth == "1") {
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="1" />January</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="2" />February</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="3" />March</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="4" />April</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="5" />May</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="6" />June</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="7" />July</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="8" />August</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="9" />September</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="10" />October</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="11" />November</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="12" />December</label>');
+
+
+            }
+            else {
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="4" />April</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="5" />May</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="6" />June</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="7" />July</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="8" />August</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="9" />September</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="10" />October</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="11" />November</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="12" />December</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="1" />January</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="2" />February</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="3" />March</label>');
+                }
+
+                // Disable checkboxes whose values are in the array
+                $('#monthlst input[type="checkbox"]').each(function () {
+                    var checkboxValue = $(this).val();
+                    if (array.includes(checkboxValue)) {
+                        $(this).prop('checked', true);
+                        $(this).prop('disabled', true);  // Disable the checkbox if its value is in the array
+                    }
+                });
+
+            }
+            function Print(selectedMonths) {
+
+                var final = {}; var master = []; var detail = [];
+
+                master.push({
+                    ReportName: "FeeCollection.rpt",
+                    FileName: "FeeCollection",
+                    AppID: ""
+                });
+
+                detail.push({
+                    Class: "", //$('#ddlClassList').val(),
+                    Section: "", // $('#ddlSectionList').val(),
+                    RegNo: $('#txtRegNo').val(),
+                    PayMonth: selectedMonths.join(','),
+                    AppID: "" // 18
+                });
+
+                final = {
+                    Master: master,
+                    Detail: detail
+                }
+
+                var left = ($(window).width() / 2) - (950 / 2),
+                    top = ($(window).height() / 2) - (650 / 2),
+                    popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+                popup.focus();
+            }
+    });
+
+
+
+    </script>
+
+    <style>
+        .ui-autocomplete {
+            max-height: 150px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1000;
+        }
+    </style>
+}

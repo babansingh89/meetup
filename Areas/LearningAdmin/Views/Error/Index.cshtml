@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Error</title>
+    <link href="https://p.w3layouts.com/demos/ohh/web/css/style.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+<body>
+    <div class="wrap">
+        <div class="header">
+            <div class="logo">
+                <h1><a href="#">Ohh</a></h1>
+            </div>
+        </div>
+        <div class="content">
+            <img src="http://p.w3layouts.com/demos/ohh/web/images/error-img.png" title="error" />
+            <p><span><label>O</label>hh.....</span>You Requested the page that is no longer There.</p>
+            <a href="@Url.Action("LoginAdmin", "Login")">Back To Home</a>
+            <div class="copy-right">
+                <p>&copy; 2018... Attendance Portal.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

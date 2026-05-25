@@ -1,0 +1,549 @@
+﻿
+@{
+    ViewBag.Title = "Add Class wise Fees";
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<style>
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+<div id="page-wrapper">
+    <div class="row" id="div_Scroll">
+        <div class="col-lg-12" style="margin-top: 1%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Add Class Wise Fee</div>
+                <div class="panel-body">
+                    @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Fees Head:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlFeeHeadList", (IList<SelectListItem>)ViewBag.FeeHeadList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Class:<span style="color:red;">*</span></label>
+                                @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Category:<span style="color:red;">*</span></label>
+                                <select id="ddlCategoryList" class="form-control">
+                                    <option value="0">Select</option>
+                                    <option value="1">General</option>
+                                    <option value="2">Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-md-2">
+            <div class="form-group">
+                <label>Stream:</label>
+                <select id="ddlStreamList" class="form-control"> </select>
+            </div>
+        </div>*@
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Amount:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtAmount">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Late Fees:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtLateFees">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label>Active:<span style="color:red;"></span></label>
+                                <select id="ddlActive" class="form-control">
+                                    <option value="1" selected>Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @*<button class="btn btn-warning" style="margin-top: 20px; width: 90px;" id="btnAdd">Add</button>*@
+                                <button class="btn btn-warning" style="margin-top: 20px; width: 90px;" id="btnSave">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+
+                        @*<div class="col-md-2">
+                            <div class="form-group">
+                                <label>No. of Installment:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" disabled id="txtFeeInstallment">
+                            </div>
+                        </div>*@
+
+                        @*<div class="col-md-2">
+                            <div class="form-group">
+                                <label>Install.Amount:<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control Numeric" id="txtInstallAmount">
+                            </div>
+                        </div>*@
+
+                  
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover table-condensed" style="width:100% !important" id="tblMapping">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:100px">Fees Head</th>
+                                                <th style="width:100px">Class Name</th>
+                                                <td style="width:100px">Category</td>
+                                                <th style="width:100px">Amount</th>
+                                                <th style="width:100px">Late Fees</th>
+                                                <th style="width:100px">Active</th>
+                                                <th style="width:30px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+</div>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-primary pull-right" id="btnSave">Save</button>
+                            <button class="btn btn-grey pull-right" id="btn-clear">Cancel</button>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdId" value="0" />
+@section body_scripts{
+    <script type="text/javascript">
+        var ErrorDiv = $("#errorBlock").find(".alert.alert-danger.display-none");
+        var SuccessDiv = $("#errorBlock").find(".alert.alert-success.display-none");
+        function hideAlert() {
+            SuccessDiv.hide();
+            ErrorDiv.hide();
+        }
+        $(document).ready(function () {
+            fn_Bindtbl("0", "Select");
+        });
+
+        $("#txtAmount").keyup(function () {
+            var budget = parseFloat($("#txtFeeInstallment").val()) || 0;
+            var ppc = parseFloat($("#txtAmount").val()) || 0;
+            var value = ppc / budget;
+            if (!isNaN(value) && value !== Infinity) {
+                $("#txtInstallAmount").val(value.toFixed(2));
+            }
+        });
+        $("#txtInstallAmount").keyup(function () {
+            $('#txtAmount').val(Math.floor($('#txtInstallAmount').val() * $('#txtFeeInstallment').val()));
+        });
+        $(document).ready(function () {
+            $("#ddlClassList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlCategoryList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlStreamList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlFeeHeadList").select2({
+                placeholder: "Select"
+            });
+            var query_event_id = getParameterByName('_Id');
+            if (query_event_id) {
+                $("#hdId").val(query_event_id);
+                fn_Bindtbl(query_event_id, "SelectByID");
+            }
+        });
+        $("#ddlFeeHeadList").change(function () {
+            //$('#txtAmount').val('');
+            //$('#txtInstallAmount').val('');
+            //$('#txtLateFees').val('');
+            //$('#txtFeeInstallment').val('');
+            //var ID = $('option:selected', this).val();
+
+            //$.ajax({
+            //    type: "POST",
+            //    url: '/FeeSettingsERP/BindInstallment',
+            //    data: JSON.stringify({ ID: ID }),
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    async: false,
+            //    cache: false,
+            //    success: function (data) {
+            //        if (data.length > 0) {
+            //            $('#txtFeeInstallment').val(data[0].Total_of_Installment);
+            //        }
+            //    }
+            //});
+        });
+        $("#ddlClassList").change(function () {
+            //var ID = $('option:selected', this).val();
+
+            //$.ajax({
+            //    type: "POST",
+            //    url: '/FeeSettingsERP/BindStream',
+            //    data: JSON.stringify({ ID: ID }),
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    async: false,
+            //    cache: false,
+            //    success: function (data) {
+            //        $("#ddlStreamList").empty().append('<option selected="selected" value="0">Select</option>');
+            //        if (data.length > 0) {
+            //            $.each(data, function () {
+            //                $("#ddlStreamList").append($("<option/>").val(this.StreamID).text(this.StreamName));
+            //            });
+            //        }
+            //    }
+            //});
+        });
+        $(document).on("click", "#btn-clear", function () {
+            var url = '@Url.Action("ClasswiseFees", "FeeSettingsERP")'
+            window.location.href = url;
+        });
+        $(document).on("click", ".Icondelclass", function () {
+            if (confirm("Are you sure want to delete Fee head?")) {
+                var _Id = $(this).attr('data-ID');
+
+                $('#tblMapping tr').each(function () {
+                    if (_Id == this.id) {
+                        $(this).remove();
+                    }
+                })
+            }
+        });
+        $(document).on("click", ".Iconeditclass", function () {
+            if (confirm("Are you sure you want to Edit this row?")) {
+                fn_Edit($(this));
+
+            }
+
+        });
+        $(document).on("click", "#btnSave", function () {
+
+            var _ddl1 = $('#ddlFeeHeadList').val();
+            var _ddl2 = $('#ddlClassList').val();
+            var _ddl3 = $('#ddlCategoryList').val();
+            var _txtAmount = $('#txtAmount').val();
+            var _txtLateFees = $('#txtLateFees').val();
+            var _ddl4 = $('#ddlActive').val();
+
+            if (_ddl1 == '' || _ddl1 <= 0) {
+                FormSuccessError1("Please select FeeHead.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl2 == '' || _ddl2 <= 0) {
+                FormSuccessError1("Please select Class Name.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_ddl3 == '' || _ddl3 <= 0) {
+                FormSuccessError1("Please select Category.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtAmount == '') {
+                FormSuccessError1("Please enter Amount.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            if (_txtLateFees == '') {
+                FormSuccessError1("Please enter Late Fees.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            //var exists = false;
+            //$('#tblMapping tr').each(function () {
+            //    if (_ddl1 == this.id) {
+            //        exists = true;
+            //    }
+            //})
+            //if (exists) {
+            //    FormSuccessError1("Fee Head Already Added!", "Error", "errorBlock", "div_Scroll");
+            //    return false;
+            //}
+            var feeHead = $('#ddlFeeHeadList').select2('data')[0]['text']; //alert(data);
+            var className = $('#ddlClassList').select2('data')[0]['text'];
+            var category = $('#ddlCategoryList').select2('data')[0]['text'];
+            var active = $("#ddlActive option:selected").text();
+
+            //    var markup = '<tr id=' + 0 + '>' +
+            //        '<td>' + feeHead + '</td>' +
+            //        '<td class="clsFeedid" style="display:none;">' + _ddl1 + '</td>' +
+            //        '<td>' + className + '</td>' +
+            //        '<td class="clsClassid" style="display:none;">' + _ddl2 + '</td>' +
+            //        '<td>' + category + '</td>' +
+            //        '<td class="clsCatgid" style="display:none;">' + _ddl3 + '</td>' +
+            //        '<td>' + _txtAmount + '</td >' +
+            //        '<td>' + _txtLateFees + '</td>' +
+            //        '<td>' + active + '</td >' +
+            //        '<td class="clsActive" style="display:none;">' + _ddl4 + '</td>' +
+            //        '<td style="text-align:center;"> <i class="fa fa-trash-o Icondelclass" style="color:red" data-ID="' + _ddl1 + '"></i></td > ' +
+            //        '</tr>';
+
+            //    $("#tblMapping >tbody").append(markup);
+
+            //fn_add();
+
+            var Datadt = [];
+                Datadt.push({
+                    'FeeHeadID': _ddl1, 'ClassID': _ddl2, 'CategoryID': _ddl3, 'Ins_Amt': _txtAmount, 'Late_Fee': _txtLateFees, 'Active': _ddl4
+                });
+
+            console.log(Datadt);
+           /* return false;*/
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveClasswiseFees", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: 0, Datadt }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        //fn_resetform();
+                        //fn_add();
+                        FormSuccessError1("Data Inserted successfully.", "Success", "errorBlock", "div_Scroll");
+                        //$('#tblMapping tbody').empty();
+                        fn_resetform();
+                        fn_Bindtbl("0", "Select");
+
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        fn_add();
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+
+        });
+
+        $(document).on("click", "#btnSave1", function () {
+
+            var rowCount = $('#tblMapping tr').length;
+            var rowCount1 = $('#tblMapping >tbody >tr').length;
+            if (rowCount1 == 0) {
+                FormSuccessError1("Please Add class wise fee.", "Error", "errorBlock", "div_Scroll");
+                return false;
+            }
+            var Datadt = [];
+            $('#tblMapping > tbody > tr').each(function () {
+                var v1 = $(this).closest('tr').find('.clsFeedid').text();
+                var v2 = $(this).closest('tr').find('.clsClassid').text();
+                var v3 = $(this).closest('tr').find('.clsCatgid').text();
+                var v4 = $(this).find('td:eq(6)').text();
+                var v5 = $(this).find('td:eq(7)').text();
+                var v6 = $(this).closest('tr').find('.clsActive').text();
+
+                Datadt.push({
+                    'FeeHeadID': v1, 'ClassID': v2, 'CategoryID': v3, 'Ins_Amt': v4, 'Late_Fee': v5, 'Active': v6
+                });
+            });
+            console.log(Datadt);
+            //return false;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("saveClasswiseFees", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: 0, Datadt }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    if (response == "InsertSuccessful") {
+                        //fn_resetform();
+                        //fn_add();
+                        FormSuccessError1("Data Inserted successfully.", "Success", "errorBlock", "div_Scroll");
+                        $('#tblMapping tbody').empty();
+                    }
+                    else if (response == "UpdateSuccessful") {
+                        fn_resetform();
+                        fn_add();
+                        FormSuccessError1("Data updated successfully.", "Success", "errorBlock", "div_Scroll");
+
+                    }
+                    else {
+                        alert("Error. Try again latet.");
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        });
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function fn_Bindtbl(_Id, Type) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewClasswiseFee", "FeeSettingsERP")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+
+
+                    $('#tblMapping tbody').empty();
+                    $.each(data, function (rowIndex, val) {
+                        var row = '';
+                        row += '<tr>';
+                        row += '<td style="width:100px">' + val.FeeHeadName + '</td>';
+                        row += '<td style="width:100px">' + val.ClassName + '</td>';
+                        row += '<td style="width:100px">' + val.Category + '</td>';
+                        row += '<td style="width:100px">' + val.Ins_Amt + '</td>';
+                        row += '<td style="width:100px">' + val.Late_Fee + '</td>';
+                        row += '<td style="width:100px">' + val.Status + '</td>';
+                        row += '<td style="width:30px; text-align:center"><i class="fa fa-edit Iconeditclass" data-ID="' + val.ClassID + '-' + val.CategoryID + '-' + val.FeeHeadID + '"></i><i class="fa fa-trash-o Icondelclass" style="color:red; display:none;" data-ID="' + val.ClassID + '-' + val.CategoryID + '-' + val.FeeHeadID + '"></i></td>';
+                        row += '</tr>';
+                        $('#tblMapping tbody').append(row);
+
+                    });
+                    $('#tblMapping').dataTable();
+
+
+
+                    //$('#btnSave').text("Update");
+
+                    //var rowId = 0;
+                    //for (var i = 0; i < data.length; i++) {
+
+                        //rowId++;
+                        //var markup = '<tr id=' + 'row_' + rowId + '>' +
+                        //    '<td>' + data[i].FeeHeadName + '</td>' +
+                        //    '<td class="clsFeedid" style="display:none;">' + data[i].FeeHeadID + '</td>' +
+                        //    '<td>' + data[i].ClassName + '</td>' +
+                        //    '<td class="clsClassid" style="display:none;">' + data[i].ClassID + '</td>' +
+                        //    '<td>' + data[i].Category + '</td>' +
+                        //    '<td class="clsCatgid" style="display:none;">' + data[i].CategoryID + '</td>' +
+                        //    '<td>' + data[i].Ins_Amt + '</td >' +
+                        //    '<td>' + data[i].Late_Fee + '</td>' +
+                        //    '<td>' + data[i].Status + '</td >' +
+                        //    '<td class="clsActive" style="display:none;">' + data[i].isactive + '</td>' +
+                        //    '<td style="text-align:center;"> <i class="fa fa-edit Iconeditclass"  data-ID="' + data[i].FeeHeadID + '"></i></td > ' +
+                        //    '</tr>';
+
+                        //$("#tblMapping >tbody").append(markup);
+                        //$("#txtdate" + data[i].FeeHeadID + i + 1).datepicker({
+                        //    language: 'en',
+                        //    format: 'dd-M-yyyy',
+                        //    todayHighlight: true,
+                        //    autoclose: true
+                        //});
+                    //}
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+        function fn_add() {
+            $('#ddlFeeHeadList').select2("val", '-1');
+            $('#ddlClassList').select2("val", '-1');
+            $('#ddlCategoryList').select2("val", '0');
+            $('#ddlActive').val('1');
+            $('#txtAmount').val('');
+            $('#txtLateFees').val('');
+        }
+        function fn_resetform() {
+            $("#hdId").val('0');
+            $('#ddlFeeHeadList').select2("val", '-1');
+            $('#ddlClassList').select2("val", '-1');
+            $('#ddlCategoryList').select2("val", '0');
+            $('#txtAmount').val('');
+            $('#txtLateFees').val('');
+            $('#ddlActive').val('1');
+
+            $('#ddlFeeHeadList').attr('disabled', false);
+            $('#ddlClassList').attr('disabled', false);
+            $('#ddlCategoryList').attr('disabled', false);
+        }
+        function fn_Edit(ID) {
+            var _Id = ID.attr('data-ID');
+
+             $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewClasswiseFeesEdit", "FeeSettingsERP")',
+                 data: JSON.stringify({ Id: _Id, Type: "SelectByID" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+
+                    var v1 = data[0].FeeHeadID;
+                    var v2 = data[0].ClassID;
+                    var v3 = data[0].CategoryID;
+                    var v4 = data[0].Ins_Amt;
+                    var v5 = data[0].Late_Fee;
+                    var v6 = data[0].isactive;
+
+                    $('#ddlFeeHeadList').select2("val", v1);
+                    $('#ddlClassList').select2("val", v2);
+                    $('#ddlCategoryList').select2("val", v3);
+                    $('#txtAmount').val(v4);
+                    $('#txtLateFees').val(v5);
+                    $('#ddlActive').val(v6);
+
+                    $('#ddlFeeHeadList').attr('disabled', true);
+                    $('#ddlClassList').attr('disabled', true);
+                    $('#ddlCategoryList').attr('disabled', true);
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+        }
+    </script>
+}
+
+
+
+

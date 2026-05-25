@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "Book Retrun";
+    //Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+
+<style>
+    .dot {
+        height: 10px;
+        width: 15px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .dotG {
+        height: 10px;
+        width: 15px;
+        background-color: green;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .modal-header {
+        background: rgb(240, 188, 180);
+    }
+
+    i.fa {
+        color: black;
+        font-size: 16px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">View Book Retrun</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblData">
+                            <thead>
+                                <tr>
+                                    <th>Book Name</th>
+                                    <th>Author</th>
+                                    <th>Issue Date</th>
+                                    <th>Student Name</th>
+                                    <th>Class</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section body_scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+           
+            fn_Bindtbl("0", "SelectStudent");
+        });
+       
+
+        function fn_Bindtbl(_Id, Type) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewBookIssueMaster", "Library")',
+                data: JSON.stringify({ Id: _Id, Type: Type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if (Type == "SelectStudent") {
+                        $('#tblData tbody').empty();
+                        $.each(data, function (rowIndex, val) {
+                            var row = '';
+                            row += '<tr>';
+                            row += '<td>' + val.BookName + '</td>';
+                            row += '<td>' + val.BookAuthor + '</td>';
+                            row += '<td>' + val.IssueDate + '</td>';
+                            row += '<td>' + val.SR_StudentName + '<br> <small style="font-size: 10px; color: #9E9E9E;">Reg No.:' + val.SR_RegNo + '</small></td>';
+                            row += '<td>' + val.ClassName + '</td>';
+
+                            if (val.BookStatus == 'Returned') {
+                                row += '<td><i class="dotG"></i> ' + val.BookStatus + '</td>';
+                                //row += '<td><i class="fa fa-edit" style="cursor: not-allowed;" data-ID="' + val.IssueID + '"></i><i class="fa fa-truck" style="cursor: not-allowed;" data-ID="' + val.IssueID + '"></i><i class="fa fa-trash-o" style="cursor: not-allowed;" data-ID="' + val.IssueID + '"></i></td>';
+                            }
+                            else {
+                                row += '<td><i class="dot"></i> ' + val.BookStatus + '</td>';
+                                //row += '<td><i class="fa fa-edit Iconeditclass" data-ID="' + val.IssueID + '"></i><i class="fa fa-truck Iconretclass" data-ID="' + val.IssueID + '"></i><i class="fa fa-trash-o Icondelclass" data-ID="' + val.IssueID + '"></i></td>';
+                            }
+                                row += '</tr>';
+                            $('#tblData tbody').append(row);
+                        });
+                        $('#tblData').dataTable();
+                    }
+
+                   
+                },
+                error: function (error) {
+                    console.error(error);
+                    //FormSuccessError(error, "Error", "errorBlock");
+                    return false;
+                }
+            });
+        }
+
+    </script>
+}
+
+
+
+
+
