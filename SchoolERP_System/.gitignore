@@ -1,0 +1,61 @@
+## Ignore Visual Studio temporary files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+
+## ASP.NET cache
+*.cache
+
+## IIS Express
+/.vs
+applicationhost.config
+
+## NuGet Packages
+packages/
+!packages/build/
+
+## Logs
+*.log
+
+## Publish output
+publish/
+*.publishsettings
+
+## Resharper
+_ReSharper*/
+*.DotSettings.user
+
+## Node modules (if using Angular/React inside MVC)
+node_modules/
+
+## Windows files
+Thumbs.db
+Desktop.ini
+
+## SQL Server files
+*.mdf
+*.ldf
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## Environment files
+.env
+
+## Large files
+UploadedImage/
+EmpImage/
+ParentsImage/
+SchlImage/
+DocPost/
+ImagesPost/
+SyllabusDoc/

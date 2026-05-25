@@ -12,8 +12,41 @@ namespace SchoolERP_System.Helper
 {
     public class SQLHelper
     {
+        private readonly SqlConnection con;
+
+        public SQLHelper()
+        {
+            // Get base connection string from config
+            string strConnectionString = ConfigurationManager.AppSettings["ConStrERPAdmin"];
+
+            // Parse connection string
+            var builder = new SqlConnectionStringBuilder(strConnectionString);
+
+            // Replace only Initial Catalog dynamically
+            builder.InitialCatalog = "SchoolERP_" + ((loggedInAdmin)HttpContext.Current.Session["loggedInAdmin"]).AppID + "_DB";
+
+            // Store connection object
+            con = new SqlConnection(builder.ConnectionString);
+        }
+
         //SqlConnection con = new SqlConnection("Password=sa@123;Persist Security Info=True;User ID=sa;Initial Catalog=SchoolERP_" + ((loggedInAdmin)System.Web.HttpContext.Current.Session["loggedInAdmin"]).AppID + "_DB;Data Source=HP");
-        SqlConnection con = new SqlConnection("Password=school@123;Persist Security Info=True;User ID=schoollogin;Initial Catalog=SchoolERP_" + ((loggedInAdmin)System.Web.HttpContext.Current.Session["loggedInAdmin"]).AppID + "_DB;Data Source=198.38.81.242,1232");
+        //SqlConnection con = new SqlConnection("Password=school@123;Persist Security Info=True;User ID=schoollogin;Initial Catalog=SchoolERP_" + ((loggedInAdmin)System.Web.HttpContext.Current.Session["loggedInAdmin"]).AppID + "_DB;Data Source=198.38.81.242,1232");
+        //public string strConnectionString = ConfigurationManager.AppSettings["ConStrERPAdmin"];
+
+        //// Parse connection string to extract Data Source
+        //SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(strConnectionString);
+        //string dataSource = builder.DataSource;
+
+        //// Build new connection string dynamically
+        //SqlConnection con = new SqlConnection(
+        //    "Password=school@123;Persist Security Info=True;User ID=schoollogin;" +
+        //    "Initial Catalog=SchoolERP_" + ((loggedInAdmin)System.Web.HttpContext.Current.Session["loggedInAdmin"]).AppID + "_DB;" +
+        //    "Data Source=" + dataSource
+        //);
+
+
+
+        //SqlConnection con = new SqlConnection("Password=school@123;Persist Security Info=True;User ID=schoollogin;Initial Catalog=SchoolERP_" + ((loggedInAdmin)System.Web.HttpContext.Current.Session["loggedInAdmin"]).AppID + "_DB;Data Source=" + strConnectionString + "");
 
         public DataTable ExecuteDataTable(string sql, SqlParameter[] p, CommandType _CommandType)
         {

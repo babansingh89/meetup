@@ -9,7 +9,7 @@ using SchoolERP_System.Models;
 using SchoolERP_System.Helper;
 using System.IO;
 using System.Configuration;
-using SelectPdf;
+//using SelectPdf;
 using System.Drawing;
 
 

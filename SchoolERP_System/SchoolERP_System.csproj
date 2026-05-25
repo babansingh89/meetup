@@ -194,9 +194,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\SchoolERP_System.dll</HintPath>
     </Reference>
-    <Reference Include="Select.HtmlToPdf, Version=24.1.0.0, Culture=neutral, PublicKeyToken=e0ae9f6e27a97018, processorArchitecture=MSIL">
-      <HintPath>..\packages\Select.HtmlToPdf.24.1.0\lib\net40\Select.HtmlToPdf.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -442,10 +439,22 @@
       <DependentUpon>FeeCollection.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\FeeCollection_Bengali.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FeeCollection_Bengali.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\MarksEntryReport1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MarksEntryReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Report4.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Report4.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\Routine.cs">
@@ -487,6 +496,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="Areas\ERPAdmin\Content\assets\css\bootstrap.min.css" />
     <Content Include="Areas\ERPAdmin\Content\assets\css\font-awesome.css" />
     <Content Include="Areas\ERPAdmin\Content\assets\css\font.css" />
@@ -779,7 +789,6 @@
     <Content Include="bin\roslyn\vbc.exe" />
     <Content Include="bin\roslyn\VBCSCompiler.exe" />
     <Content Include="bin\SchoolERP_System.dll" />
-    <Content Include="bin\Select.HtmlToPdf.dll" />
     <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
     <Content Include="bin\System.Web.Http.dll" />
@@ -990,6 +999,7 @@
     <Content Include="ReferenceDLL\Select.HtmlToPdf.dll" />
     <Content Include="ReferenceDLL\Select.HtmlToPdf.xml" />
     <Content Include="SchImage\1ea641f2_02082022073200.jpeg" />
+    <Content Include="SchImage\3941909e_16112024214657.jpg" />
     <Content Include="SchImage\dea25a23_14012020080036.jpg" />
     <Content Include="SchImage\f2c68b7e_22032020120304.png" />
     <Content Include="SchImage\fc905028_14012020080126.jpg" />
@@ -1214,7 +1224,6 @@
     <Content Include="bin\roslyn\Microsoft.VisualBasic.Core.targets" />
     <Content Include="bin\roslyn\VBCSCompiler.exe.config" />
     <Content Include="bin\SchoolERP_System.dll.config" />
-    <Content Include="bin\Select.Html.dep" />
     <None Include="Project_Readme.html" />
     <Content Include="Views\Account\AdminAuthentication.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
@@ -1354,9 +1363,17 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FeeCollection.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\FeeCollection_Bengali.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FeeCollection_Bengali.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\MarksEntryReport.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>MarksEntryReport1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Report4.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Report4.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\Routine.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

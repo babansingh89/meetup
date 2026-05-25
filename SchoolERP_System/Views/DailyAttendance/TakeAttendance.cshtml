@@ -69,6 +69,9 @@
                                                 <th>Student Name</th>
                                                 <th>Ph.No</th>
                                                 <th>Roll No</th>
+                                                <th>InTime</th>
+                                                <th>OutTime</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -187,13 +190,24 @@
                     if (data[0] == 'Yes') {
                         $('#tblMapping tbody').empty();
                         $.each(data[1], function (rowIndex, val) {
+                            let isPresent = (val.IsPresent == true || val.IsPresent == "True" || val.IsPresent == 1);
+
                             var markup = '<tr id=' + val.SR_ID + '>';
                             if (val.IsPresent == 'True') {
                                 markup += '<td><input type="checkbox" class="chkRow" checked value=' + val.SR_ID + '></td><td style="color: green;font-weight: bold;">' + val.SR_RegNo + '</td>';
                             } else {
                                 markup += '<td><input type="checkbox" class="chkRow" value=' + val.SR_ID + '></td><td>' + val.SR_RegNo + '</td>';
                             }
-                            markup += '<td>' + val.SR_StudentName + '</td><td>' + val.SR_PhNo + '</td><td>' + val.SR_CurrentRollNo + '</td></tr>';
+                            markup += '<td>' + val.SR_StudentName + '</td><td>' + val.SR_PhNo + '</td><td>' + val.SR_CurrentRollNo + '</td>';
+                            markup += '<td><input type="time" class="form-control intime" value="' + val.InTime + '" /></td>';
+                            markup += '<td><input type="time" class="form-control outtime" value="' + val.OutTime + '" /></td>';
+                            markup += '<td>';
+                            markup += '<select class="form-control clsstatus">';
+                            markup += '<option value="Present"' + (val.IsPresent == "True" ? ' selected' : '') + '>Present</option>';
+                            markup += '<option value="Absent"' + (val.IsPresent == "False" ? ' selected' : '') + '>Absent</option>';
+                            markup += '</select>';
+                            markup += '</td>';
+                            markup += '</tr>';
                             $('#tblMapping tbody').append(markup);
                         });
                         $('#stlist').show();
@@ -243,15 +257,15 @@
             $('#tblMapping > tbody > tr').each(function () {
 
                 var tr_id = $(this).attr('id');
-                //var number = $(this).find('td:eq(3)').text();
+                var Intime = $(this).find('.intime').val();
+                var Outtime = $(this).find('.outtime').val();
+                var pstatus = $(this).find('.clsstatus').val();
                 if ($(this).find('td input[type=checkbox]').prop('checked') == true) {
-                    //StdData.push({ 'StudentID': tr_id, 'Mobile': number, 'IsPresent': '1' });
-                    StdData.push({ 'StudentID': tr_id, 'IsPresent': '1' });
+                    StdData.push({ 'StudentID': tr_id, 'IsPresent': (pstatus == "Present" ? '1' : '0'), 'InTime': Intime, 'OutTime': Outtime });
                     strSelect = 1;
                 }
-                else
-                    //StdData.push({ 'StudentID': tr_id, 'Mobile': number, 'IsPresent': '0' });
-                    StdData.push({ 'StudentID': tr_id, 'IsPresent': '0' });
+                //else
+                //    StdData.push({ 'StudentID': tr_id, 'IsPresent': '0', 'InTime': Intime, 'OutTime': Outtime });
             });
 
             if (_ddl1 >= 1 && StdData.length == 0 || strSelect == 0) {
@@ -283,6 +297,25 @@
                 }
             });
         });
+
+        $(document).on('input change', '.intime, .outtime', function () {
+            let row = $(this).closest('tr');
+
+            let intime = row.find('.intime').val();
+            let outInput = row.find('.outtime');
+            let outtime = outInput.val();
+
+            // Always update min for picker
+            if (intime) {
+                outInput.attr('min', intime);
+            }
+
+            // Prevent less value immediately
+            if (intime && outtime && outtime <= intime) {
+                outInput.val(''); // remove invalid instantly
+            }
+        });
+
     </script>
 }
 

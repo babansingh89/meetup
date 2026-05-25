@@ -139,19 +139,20 @@ namespace SchoolERP_System.Controllers
             return RedirectToAction("AdminAuthentication", "Account");
         }
         [HttpPost]
-        public ActionResult CheckAdminAuthentication_App(string userType, string Email, string Password, string Domain)
+        public ActionResult CheckAdminAuthentication_App(string userType, string Email, string Password, string AppID, string Domain)
         {
             try
             {
                 string Output = string.Empty;
                 loggedInAdmin smc = new loggedInAdmin();
                 SqlConnection con = new SqlConnection(strConnectionString);
-                using (SqlCommand cmd = new SqlCommand("SP_MasterLogin"))
+                using (SqlCommand cmd = new SqlCommand("SP_MasterLogin_APP"))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserType", userType);
                     cmd.Parameters.AddWithValue("@UserID", Email);
                     cmd.Parameters.AddWithValue("@UserPassword", Password);
+                    cmd.Parameters.AddWithValue("@UserAppID", AppID);
                     cmd.Parameters.AddWithValue("@Domain", Domain);
                     cmd.Connection = con;
                     con.Open();
@@ -192,6 +193,12 @@ namespace SchoolERP_System.Controllers
                                 smc.SR_PhNo = Convert.ToString(dtdtl.Rows[0]["SR_PhNo"]);
                                 smc.SR_ID = Convert.ToString(dtdtl.Rows[0]["SR_ID"]);
                                 smc.SR_Gender = Convert.ToString(dtdtl.Rows[0]["SR_Gender"]);
+                                smc.DOB = Convert.ToString(dtdtl.Rows[0]["DOB"]);
+                                smc.SName = Convert.ToString(dtdtl.Rows[0]["SName"]);
+                                smc.ClassName = Convert.ToString(dtdtl.Rows[0]["ClassName"]);
+                                smc.SectionName = Convert.ToString(dtdtl.Rows[0]["SectionName"]);
+                                smc.Session_ActiveMonth = Convert.ToString(dtdtl.Rows[0]["Session_ActiveMonth"]);
+                                smc.School_MediumType = Convert.ToString(dtdtl.Rows[0]["School_MediumType"]);
                             }
                             catch (Exception ex)
                             {

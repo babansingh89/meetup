@@ -91,7 +91,7 @@ namespace SchoolERP_System.Controllers
             return View();
         }
 
-        public ActionResult saveFeesHeadMaster(string Id, string FeeHeadName,  string Is_Bus_Fees, string Is_Admission_Fees, string Is_Session_Fees, string Is_Hostel_Fees, string Is_Other_Fees, string Otherfees_Month, string Is_Bengali_Fees, string Active)
+        public ActionResult saveFeesHeadMaster(string Id, string FeeHeadName,  string Is_Bus_Fees, string Is_Admission_Fees, string Is_ReAdmission_Fees, string Is_Session_Fees, string Is_Hostel_Fees, string Is_Other_Fees, string Otherfees_Month, string Is_Bengali_Fees, string Active)
         {
             try
             {
@@ -109,6 +109,7 @@ namespace SchoolERP_System.Controllers
                     //new SqlParameter("Installment_TOA", Installment_TOA),
                     new SqlParameter("Is_Bus_Fees", Is_Bus_Fees),
                     new SqlParameter("Is_Admission_Fees", Is_Admission_Fees),
+                    new SqlParameter("Is_ReAdmission_Fees", Is_ReAdmission_Fees),
                     new SqlParameter("Is_Session_Fees", Is_Session_Fees),
                     new SqlParameter("Is_Other_Fees", Is_Other_Fees),
                     new SqlParameter("Other_Fees_Month", Otherfees_Month),

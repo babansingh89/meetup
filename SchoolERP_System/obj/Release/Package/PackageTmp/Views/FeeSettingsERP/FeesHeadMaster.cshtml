@@ -97,12 +97,13 @@
                 </div>*@
 
             <div class="form-group">
-                <label class="radio-inline"><input type="radio" name="optradio" value="Admission">Is Admission Fees</label>
-                <label class="radio-inline"><input type="radio" name="optradio" value="Session">Is Monthly Fees</label>
-                <label class="radio-inline"><input type="radio" name="optradio" value="Bus">Is Bus Fees</label>
-                <label class="radio-inline"><input type="radio" name="optradio" value="Hostel">Is Hostel Fees</label>
-                <label class="radio-inline"><input type="radio" name="optradio" value="Other">Is Other Fees</label>
-                <label class="radio-inline"><input type="radio" name="optradio" value="Bengali">Is Bengali Fees</label>
+                <label class="radio-inline"><input type="radio" name="optradio" value="Admission">Admission Fees</label><br />
+                <label class="radio-inline"><input type="radio" name="optradio" value="ReAdmission">Re-Admission Fees</label><br />
+                <label class="radio-inline"><input type="radio" name="optradio" value="Session">Monthly Fees</label><br />
+                <label class="radio-inline"><input type="radio" name="optradio" value="Bus">Bus Fees</label><br />
+                <label class="radio-inline"><input type="radio" name="optradio" value="Hostel">Hostel Fees</label><br />
+                <label class="radio-inline"><input type="radio" name="optradio" value="Bengali">Bengali Fees</label><br />
+                <label class="radio-inline"><input type="radio" name="optradio" value="Other">Other Fees</label>
             </div>
                 <div class="row">
                     <div class="col-md-4">
@@ -112,26 +113,26 @@
                                 // Initialize the list of months statically in the view
                                 var months = new List<dynamic>
                                                                                                                                                                                                                         {
-                        new { Id = 1, Name = "January" },
-                        new { Id = 2, Name = "February" },
-                        new { Id = 3, Name = "March" },
-                        new { Id = 4, Name = "April" },
-                        new { Id = 5, Name = "May" },
-                        new { Id = 6, Name = "June" },
-                        new { Id = 7, Name = "July" },
-                        new { Id = 8, Name = "August" },
-                        new { Id = 9, Name = "September" },
-                        new { Id = 10, Name = "October" },
-                        new { Id = 11, Name = "November" },
-                        new { Id = 12, Name = "December" }
-                    };
-                                                        <select class="form-control" id="ddlOtherfeeMonth" disabled>
-                                                            <option value="0">Select</option>
-                                                            @foreach (var month in months)
-                                                            {
-                                                                <option value="@month.Id">@month.Name</option>
-                                                            }
-                                                        </select>
+                                new { Id = 1, Name = "January" },
+                                new { Id = 2, Name = "February" },
+                                new { Id = 3, Name = "March" },
+                                new { Id = 4, Name = "April" },
+                                new { Id = 5, Name = "May" },
+                                new { Id = 6, Name = "June" },
+                                new { Id = 7, Name = "July" },
+                                new { Id = 8, Name = "August" },
+                                new { Id = 9, Name = "September" },
+                                new { Id = 10, Name = "October" },
+                                new { Id = 11, Name = "November" },
+                                new { Id = 12, Name = "December" }
+                            };
+                                <select class="form-control" id="ddlOtherfeeMonth" disabled>
+                                    <option value="0">Select</option>
+                                    @foreach (var month in months)
+                                    {
+                                        <option value="@month.Id">@month.Name</option>
+                                    }
+                                </select>
                             }
                         </div>
                     </div>
@@ -203,6 +204,7 @@
             //var _txtFeeInstallmentAtAdmission = $.trim($('#txtFeeInstallmentAtAdmission').val());
             var chk_Bus = false;
             var chk_Admission = false;
+            var chk_ReAdmission = false;
             var chk_Session = false;
             var chk_Other = false;
             var chk_Hostel = false;
@@ -241,6 +243,8 @@
                     chk_Bus = true;
                 if (radioValue == "Admission")
                     chk_Admission = true;
+                if (radioValue == "ReAdmission")
+                    chk_ReAdmission = true;
                 if (radioValue == "Session")
                     chk_Session = true;
                 if (radioValue == "Other")
@@ -254,7 +258,7 @@
                 type: "POST",
                 url: '@Url.Action("saveFeesHeadMaster", "FeeSettingsERP")',
                 data: JSON.stringify({
-                    Id: _Id, FeeHeadName: _txtFeeHead, Is_Bus_Fees: chk_Bus, Is_Admission_Fees: chk_Admission, Is_Session_Fees: chk_Session, Is_Hostel_Fees: chk_Hostel, Is_Other_Fees: chk_Other, Otherfees_Month: $('#ddlOtherfeeMonth').val(), Is_Bengali_Fees: chk_Bengali, Active: $('#ddlActive').val() 
+                    Id: _Id, FeeHeadName: _txtFeeHead, Is_Bus_Fees: chk_Bus, Is_Admission_Fees: chk_Admission, Is_ReAdmission_Fees: chk_ReAdmission, Is_Session_Fees: chk_Session, Is_Hostel_Fees: chk_Hostel, Is_Other_Fees: chk_Other, Otherfees_Month: $('#ddlOtherfeeMonth').val(), Is_Bengali_Fees: chk_Bengali, Active: $('#ddlActive').val() 
                 }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -330,15 +334,24 @@
                             RadionButtonSelectedValueSet('optradio', 'Bus');
                         if (data[0].Is_Admission_Fees == 'True')
                             RadionButtonSelectedValueSet('optradio', 'Admission');
+
+                        if (data[0].Is_ReAdmission_Fees == 'True')
+                            RadionButtonSelectedValueSet('optradio', 'ReAdmission');
+
                         if (data[0].Is_Session_Fees == 'True')
                             RadionButtonSelectedValueSet('optradio', 'Session');
+
                         if (data[0].Is_Others_Fees == 'True') {
                             RadionButtonSelectedValueSet('optradio', 'Other');
                             $('#ddlOtherfeeMonth').val(data[0].Others_Fees_Month);
                             $("#ddlOtherfeeMonth").removeAttr("disabled");
                         }
+
                         if (data[0].Is_Bengali_Fees == 'True')
                             RadionButtonSelectedValueSet('optradio', 'Bengali');
+
+                        if (data[0].Is_Hostel_Fees == 'True')
+                            RadionButtonSelectedValueSet('optradio', 'Hostel');
 
                         $("#Modal").modal();
                         HideSuccErrDiv();

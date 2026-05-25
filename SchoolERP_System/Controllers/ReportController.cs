@@ -9,7 +9,7 @@ using SchoolERP_System.Models;
 using SchoolERP_System.Helper;
 using System.IO;
 using System.Configuration;
-using SelectPdf;
+//using SelectPdf;
 using System.Drawing;
 
 namespace SchoolERP_System.Controllers
@@ -142,7 +142,7 @@ namespace SchoolERP_System.Controllers
 
 
                 string OuterHTML = PrintMonthWiseCollection(List);
-                string PDFpath = GenerateLoanPDF(OuterHTML);
+                string PDFpath = "";// GenerateLoanPDF(OuterHTML);
                 return Json(PDFpath, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -232,7 +232,7 @@ namespace SchoolERP_System.Controllers
                 if (dt.Rows.Count > 0)
                 {
                     string OuterHTML = PrintHeadWiseCollection(dt);
-                    string PDFpath = GenerateLoanPDF(OuterHTML);
+                    string PDFpath = "";// GenerateLoanPDF(OuterHTML);
                     return Json(PDFpath, JsonRequestBehavior.AllowGet);
                 }
                 return Json("", JsonRequestBehavior.AllowGet);
@@ -368,7 +368,7 @@ namespace SchoolERP_System.Controllers
 
 
                 string OuterHTML = StudentDueWise(List);
-                string PDFpath = GenerateLoanPDF(OuterHTML);
+                string PDFpath = "";// GenerateLoanPDF(OuterHTML);
                 return Json(PDFpath, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -470,7 +470,7 @@ namespace SchoolERP_System.Controllers
 
 
                 string OuterHTML = PrintStudentRegistration(List);
-                string PDFpath = GenerateLoanPDF(OuterHTML);
+                string PDFpath = "";// GenerateLoanPDF(OuterHTML);
                 return Json(PDFpath, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -567,87 +567,87 @@ namespace SchoolERP_System.Controllers
         }
         #endregion
 
-        public string GenerateLoanPDF(string OuterHTML)
-        {
-            string htmlString = OuterHTML;
-            bool canAssembleDocument = true;
-            bool canCopyContent = true;
-            bool canEditAnnotations = true;
-            bool canEditContent = true;
-            bool canFillFormFields = true;
-            bool canPrint = true;
-            string pdf_page_size = "A4";
-            PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize), pdf_page_size, true);
+        //public string GenerateLoanPDF(string OuterHTML)
+        //{
+        //    string htmlString = OuterHTML;
+        //    bool canAssembleDocument = true;
+        //    bool canCopyContent = true;
+        //    bool canEditAnnotations = true;
+        //    bool canEditContent = true;
+        //    bool canFillFormFields = true;
+        //    bool canPrint = true;
+        //    string pdf_page_size = "A4";
+        //    PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize), pdf_page_size, true);
 
-            string pdf_orientation = "Portrait";
-            PdfPageOrientation pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), pdf_orientation, true);
+        //    string pdf_orientation = "Portrait";
+        //    PdfPageOrientation pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), pdf_orientation, true);
 
-            int webPageWidth = 1024;
-            int webPageHeight = 0;
+        //    int webPageWidth = 1024;
+        //    int webPageHeight = 0;
 
-            // instantiate a html to pdf converter object
-            HtmlToPdf converter = new HtmlToPdf();
+        //    // instantiate a html to pdf converter object
+        //    HtmlToPdf converter = new HtmlToPdf();
 
-            // set converter options
-            converter.Options.PdfPageSize = pageSize;
-            converter.Options.PdfPageOrientation = pdfOrientation;
-            converter.Options.WebPageWidth = webPageWidth;
-            converter.Options.WebPageHeight = webPageHeight;
-            converter.Options.SecurityOptions.CanAssembleDocument = canAssembleDocument;
-            converter.Options.SecurityOptions.CanCopyContent = canCopyContent;
-            converter.Options.SecurityOptions.CanEditAnnotations = canEditAnnotations;
-            converter.Options.SecurityOptions.CanEditContent = canEditContent;
-            converter.Options.SecurityOptions.CanFillFormFields = canFillFormFields;
-            converter.Options.SecurityOptions.CanPrint = canPrint;
+        //    // set converter options
+        //    converter.Options.PdfPageSize = pageSize;
+        //    converter.Options.PdfPageOrientation = pdfOrientation;
+        //    converter.Options.WebPageWidth = webPageWidth;
+        //    converter.Options.WebPageHeight = webPageHeight;
+        //    converter.Options.SecurityOptions.CanAssembleDocument = canAssembleDocument;
+        //    converter.Options.SecurityOptions.CanCopyContent = canCopyContent;
+        //    converter.Options.SecurityOptions.CanEditAnnotations = canEditAnnotations;
+        //    converter.Options.SecurityOptions.CanEditContent = canEditContent;
+        //    converter.Options.SecurityOptions.CanFillFormFields = canFillFormFields;
+        //    converter.Options.SecurityOptions.CanPrint = canPrint;
 
-            #region Header and Footer
-            string headerUrl = Server.MapPath("/Content/Image/Lhead_Head.png");
-            bool showHeaderOnFirstPage = true;
-            bool showHeaderOnOddPages = true;
-            bool showHeaderOnEvenPages = true;
-            int headerHeight = 80;
-            bool showFooterOnFirstPage = true;
-            bool showFooterOnOddPages = true;
-            bool showFooterOnEvenPages = true;
-            // header settings
-            converter.Options.DisplayHeader = showHeaderOnFirstPage ||
-                showHeaderOnOddPages || showHeaderOnEvenPages;
-            converter.Header.DisplayOnFirstPage = showHeaderOnFirstPage;
-            converter.Header.DisplayOnOddPages = showHeaderOnOddPages;
-            converter.Header.DisplayOnEvenPages = showHeaderOnEvenPages;
-            converter.Header.Height = headerHeight;
+        //    #region Header and Footer
+        //    string headerUrl = Server.MapPath("/Content/Image/Lhead_Head.png");
+        //    bool showHeaderOnFirstPage = true;
+        //    bool showHeaderOnOddPages = true;
+        //    bool showHeaderOnEvenPages = true;
+        //    int headerHeight = 80;
+        //    bool showFooterOnFirstPage = true;
+        //    bool showFooterOnOddPages = true;
+        //    bool showFooterOnEvenPages = true;
+        //    // header settings
+        //    converter.Options.DisplayHeader = showHeaderOnFirstPage ||
+        //        showHeaderOnOddPages || showHeaderOnEvenPages;
+        //    converter.Header.DisplayOnFirstPage = showHeaderOnFirstPage;
+        //    converter.Header.DisplayOnOddPages = showHeaderOnOddPages;
+        //    converter.Header.DisplayOnEvenPages = showHeaderOnEvenPages;
+        //    converter.Header.Height = headerHeight;
 
-            PdfHtmlSection headerHtml = new PdfHtmlSection(headerUrl);
-            headerHtml.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
-            converter.Header.Add(headerHtml);
+        //    PdfHtmlSection headerHtml = new PdfHtmlSection(headerUrl);
+        //    headerHtml.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
+        //    converter.Header.Add(headerHtml);
 
-            // footer settings
-            converter.Options.DisplayFooter = showFooterOnFirstPage ||
-                showFooterOnOddPages || showFooterOnEvenPages;
-            converter.Footer.DisplayOnFirstPage = showFooterOnFirstPage;
-            converter.Footer.DisplayOnOddPages = showFooterOnOddPages;
-            converter.Footer.DisplayOnEvenPages = showFooterOnEvenPages;
+        //    // footer settings
+        //    converter.Options.DisplayFooter = showFooterOnFirstPage ||
+        //        showFooterOnOddPages || showFooterOnEvenPages;
+        //    converter.Footer.DisplayOnFirstPage = showFooterOnFirstPage;
+        //    converter.Footer.DisplayOnOddPages = showFooterOnOddPages;
+        //    converter.Footer.DisplayOnEvenPages = showFooterOnEvenPages;
 
-            PdfTextSection text = new PdfTextSection(0, 10,
-                "Page: {page_number} of {total_pages}  ",
-                new System.Drawing.Font("Arial", 8));
-            text.HorizontalAlign = PdfTextHorizontalAlign.Right;
-            converter.Footer.Add(text);
-            #endregion
-            // create a new pdf document converting an url
-            PdfDocument doc = converter.ConvertHtmlString(htmlString, "");
-            // save pdf document
-            byte[] pdf = doc.Save();
-            doc.Close();
+        //    PdfTextSection text = new PdfTextSection(0, 10,
+        //        "Page: {page_number} of {total_pages}  ",
+        //        new System.Drawing.Font("Arial", 8));
+        //    text.HorizontalAlign = PdfTextHorizontalAlign.Right;
+        //    converter.Footer.Add(text);
+        //    #endregion
+        //    // create a new pdf document converting an url
+        //    PdfDocument doc = converter.ConvertHtmlString(htmlString, "");
+        //    // save pdf document
+        //    byte[] pdf = doc.Save();
+        //    doc.Close();
 
-            string FolderPath = ConfigurationManager.AppSettings["stdDetailsPDF"];
-            string LocalFileNameWithPath = (FolderPath + "Preview.pdf");
-            string FileNameWithPath = Server.MapPath(LocalFileNameWithPath);
-            if (System.IO.File.Exists(FileNameWithPath))
-                System.IO.File.Delete(FileNameWithPath);
-            System.IO.File.WriteAllBytes(FileNameWithPath, pdf);
-            return LocalFileNameWithPath;
-        }
+        //    string FolderPath = ConfigurationManager.AppSettings["stdDetailsPDF"];
+        //    string LocalFileNameWithPath = (FolderPath + "Preview.pdf");
+        //    string FileNameWithPath = Server.MapPath(LocalFileNameWithPath);
+        //    if (System.IO.File.Exists(FileNameWithPath))
+        //        System.IO.File.Delete(FileNameWithPath);
+        //    System.IO.File.WriteAllBytes(FileNameWithPath, pdf);
+        //    return LocalFileNameWithPath;
+        //}
         private byte[] GetBytesFromImage(String imageFile)
         {
             MemoryStream ms = new MemoryStream();

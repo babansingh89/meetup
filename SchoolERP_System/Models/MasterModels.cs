@@ -84,10 +84,12 @@ namespace SchoolERP_System.Models
         public string Installment_TOA { get; set; }
         public string Is_Bus_Fees { get; set; }
         public string Is_Admission_Fees { get; set; }
+        public string Is_ReAdmission_Fees { get; set; }
         public string Is_Session_Fees { get; set; }
         public string Is_Others_Fees { get; set; }
         public string Others_Fees_Month { get; set; }
         public string Is_Bengali_Fees { get; set; }
+        public string Is_Hostel_Fees { get; set; }
         public string IsActive { get; set; }
         public string FeesType { get; set; }
     }
@@ -226,6 +228,9 @@ namespace SchoolERP_System.Models
         public string SectionName { get; set; }
         public string Due { get; set; }
         public string IsPresent { get; set; }
+        public string InTime { get; set; }
+        public string OutTime { get; set; }
+        public string SR_Pic { get; set; }
     }
     public class MonthList
     {
@@ -237,6 +242,8 @@ namespace SchoolERP_System.Models
         // public string Mobile { get; set; }
         public string StudentID { get; set; }
         public string IsPresent { get; set; }
+        public string InTime { get; set; }
+        public string OutTime { get; set; }
     }
     public class SMSStudent
     {
@@ -840,6 +847,7 @@ namespace SchoolERP_System.Models
         public string PostMode { get; set; }
         public string PostData { get; set; }
         public string SectionID { get; set; }
+        public string CreatedDate { get; set; }
     }
     public class ExamTimetable
     {
@@ -909,6 +917,49 @@ namespace SchoolERP_System.Models
         public string _TotalWorkingDays { get; set; }
     }
 
+    public class TeacherReportModel
+    {
+        public string _ID { get; set; }
+        public string _EmpID { get; set; }
+        public string _EmpCode { get; set; }
+        public string _EmpName { get; set; }
+        public string _PDays { get; set; }
+        public string _1 { get; set; }
+        public string _2 { get; set; }
+        public string _3 { get; set; }
+        public string _4 { get; set; }
+        public string _5 { get; set; }
+        public string _6 { get; set; }
+        public string _7 { get; set; }
+        public string _8 { get; set; }
+        public string _9 { get; set; }
+        public string _10 { get; set; }
+        public string _11 { get; set; }
+        public string _12 { get; set; }
+        public string _13 { get; set; }
+        public string _14 { get; set; }
+        public string _15 { get; set; }
+        public string _16 { get; set; }
+        public string _17 { get; set; }
+        public string _18 { get; set; }
+        public string _19 { get; set; }
+        public string _20 { get; set; }
+        public string _21 { get; set; }
+        public string _22 { get; set; }
+        public string _23 { get; set; }
+        public string _24 { get; set; }
+        public string _25 { get; set; }
+        public string _26 { get; set; }
+        public string _27 { get; set; }
+        public string _28 { get; set; }
+        public string _29 { get; set; }
+        public string _30 { get; set; }
+        public string _31 { get; set; }
+        public string _DaysInMonth { get; set; }
+        public string _SunDayCount { get; set; }
+        public string _HolidayCount { get; set; }
+        public string _TotalWorkingDays { get; set; }
+    }
     public class FaceIdentification
     {
         public string deviceID { get; set; }
@@ -919,5 +970,24 @@ namespace SchoolERP_System.Models
         public string modeofAttn { get; set; }
         public string time { get; set; }
         public string ip { get; set; }
+    }
+
+
+    public class FcmTokenRequest
+    {
+        public string UserId { get; set; }
+        public string AppId { get; set; }
+        public string Token { get; set; }
+        public string DeviceType { get; set; }
+        public bool IsEnabled { get; set; }
+    }
+
+    public class AppRequest
+    {
+        public string UserId { get; set; }
+        public string AppId { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public string UserType { get; set; }
     }
 }

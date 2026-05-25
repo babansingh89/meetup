@@ -21,6 +21,13 @@ namespace SchoolERP_System.Models
         public string SR_PhNo { get; set; }
         public string SR_ID { get; set; }
         public string SR_Gender { get; set; }
+        public string SName { get; set; }
+        public string DOB { get; set; }
+        public string ClassName { get; set; }
+        public string SectionName { get; set; }
+
+        public string Session_ActiveMonth { get; set; }
+        public string School_MediumType { get; set; }
     }
     public class loggedInParents
     {
