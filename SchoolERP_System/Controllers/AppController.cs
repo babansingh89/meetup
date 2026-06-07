@@ -546,15 +546,22 @@ namespace SchoolERP_System.Controllers
                     new SqlParameter("SectionID", SectionID),
                 };
                 DataTable dt = new SQLHelper().ExecuteDataTable("SP_AttendanceSave", prm1, CommandType.StoredProcedure);
-                List<SelectStudent> STList = Utility.ConvertDataTableToClassObjectList<SelectStudent>(dt);
-
-                if(STList.Count > 0)
+                if (dt.Columns.Contains("ErrorMsg"))
                 {
-                    return Json(new { Output = "success", Data = STList, Message = "Record Found!" });
+                    string errorMsg = dt.Rows[0]["ErrorMsg"].ToString();
+                    return Json(new { Output = "error", Data = "", Message = errorMsg });
                 }
                 else
                 {
-                    return Json(new { Output = "fail", Data = STList, Message = "No Record Found!" });
+                    List<SelectStudent> STList = Utility.ConvertDataTableToClassObjectList<SelectStudent>(dt);
+                    if (STList.Count > 0)
+                    {
+                        return Json(new { Output = "success", Data = STList, Message = "Record Found!" });
+                    }
+                    else
+                    {
+                        return Json(new { Output = "fail", Data = STList, Message = "No Record Found!" });
+                    }
                 }
             }
             catch (Exception ex)

@@ -989,7 +989,6 @@
     <Content Include="Content\vendor\select2\select2.min.css" />
     <Content Include="Content\vendor\select2\select2.min.js" />
     <Content Include="Content\vendor\TermsofService.html" />
-    <Content Include="EmpImage\loginbanner.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="ApplicationInsights.config">
@@ -1004,8 +1003,6 @@
     <Content Include="SchImage\f2c68b7e_22032020120304.png" />
     <Content Include="SchImage\fc905028_14012020080126.jpg" />
     <Content Include="SchImage\fd19b44c_22032020191227.png" />
-    <Content Include="UploadedImage\72b000cf_06032021143816.jpg" />
-    <Content Include="UploadedImage\teststudent.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1026,9 +1023,11 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\Upload\PrintPDF\" />
     <Folder Include="DocPost\" />
+    <Folder Include="EmpImage\" />
     <Folder Include="ImagesPost\" />
     <Folder Include="ParentsImage\" />
     <Folder Include="SyllabusDoc\" />
+    <Folder Include="UploadedImage\" />
     <Folder Include="Views\App\" />
     <Folder Include="Views\test\" />
   </ItemGroup>
