@@ -3,7 +3,7 @@ name: Deploy .NET App to IIS
 on:
   push:
     branches:
-      - main        # ✅ Trigger on push to main branch
+      - master        # ✅ Trigger on push to main branch
   workflow_dispatch: # ✅ Manual trigger option
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '4.8.x'  # ✅ Change to your .NET version
+        dotnet-version: '4.8'  # ✅ Change to your .NET version
 
     # Step 3 - Restore packages
     - name: Restore NuGet Packages
