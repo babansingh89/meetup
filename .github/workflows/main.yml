@@ -1,35 +1,44 @@
-name: Build and Deploy to Local IIS
+name: Deploy .NET App to IIS
 
 on:
   push:
-    branches: [ master ]  # Trigger on push to master branch
+    branches:
+      - main        # ✅ Trigger on push to main branch
+  workflow_dispatch: # ✅ Manual trigger option
 
 jobs:
-  build:
-    runs-on: self-hosted  # Use your local IIS server as a runner
+  build-and-deploy:
+    runs-on: windows-latest  # ✅ Windows for IIS
 
     steps:
-    - name: Checkout code
+    # Step 1 - Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v3
 
+    # Step 2 - Setup .NET
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0.x' # Or your version
+        dotnet-version: '4.8.x'  # ✅ Change to your .NET version
 
-    - name: Restore dependencies
+    # Step 3 - Restore packages
+    - name: Restore NuGet Packages
       run: dotnet restore
 
-    - name: Build
-      run: dotnet build --configuration Release
+    # Step 4 - Build application
+    - name: Build Application
+      run: dotnet build --configuration Release --no-restore
 
-    - name: Publish
-      run: dotnet publish -c Release -o ./publish
+    # Step 5 - Publish application
+    - name: Publish Application
+      run: dotnet publish --configuration Release --output ./publish --no-build
 
-    - name: Deploy to IIS folder
-      run: |
-        $target = "C:\inetpub\wwwroot\meetup"
-        if (Test-Path $target) { Remove-Item -Recurse -Force $target }
-        New-Item -ItemType Directory -Path $target
-        Copy-Item -Path ./publish/* -Destination $target -Recurse
-      shell: pwsh
+    # Step 6 - Deploy to IIS using Web Deploy
+    - name: Deploy to IIS
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: D:\CSG_PROJECT\Others\publishfile
+        server-dir: /wwwroot/gitaction/
