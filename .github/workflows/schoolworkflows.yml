@@ -1,44 +1,51 @@
-name: Deploy .NET App to IIS
+name: Build and Deploy .NET Framework 4.8
 
 on:
   push:
     branches:
-      - master        # ✅ Trigger on push to main branch
-  workflow_dispatch: # ✅ Manual trigger option
+      - master
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest  # ✅ Windows for IIS
+    runs-on: windows-latest
 
     steps:
-    # Step 1 - Checkout code
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      # Checkout source
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    # Step 2 - Setup .NET
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '4.8'  # ✅ Change to your .NET version
+      # Setup NuGet
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
 
-    # Step 3 - Restore packages
-    - name: Restore NuGet Packages
-      run: dotnet restore
+      # Setup MSBuild
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
 
-    # Step 4 - Build application
-    - name: Build Application
-      run: dotnet build --configuration Release --no-restore
+      # Restore NuGet packages
+      - name: Restore Packages
+        run: nuget restore SchoolERP_System.sln
 
-    # Step 5 - Publish application
-    - name: Publish Application
-      run: dotnet publish --configuration Release --output ./publish --no-build
+      # Build solution
+      - name: Build Solution
+        run: |
+          msbuild SchoolERP_System.sln ^
+          /p:Configuration=Release ^
+          /p:DeployOnBuild=true ^
+          /p:WebPublishMethod=FileSystem ^
+          /p:publishUrl="${{ github.workspace }}\publish"
 
-    # Step 6 - Deploy to IIS using Web Deploy
-    - name: Deploy to IIS
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: D:\CSG_PROJECT\Others\publishfile
-        server-dir: /wwwroot/gitaction/
+      # Verify publish output
+      - name: List Published Files
+        run: dir "${{ github.workspace }}\publish"
+
+      # Deploy via FTP
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: /wwwroot/gitaction/
