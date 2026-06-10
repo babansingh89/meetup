@@ -11,11 +11,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Checkout source
+      # Checkout repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Setup NuGet
+      # Install NuGet
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
@@ -29,19 +29,18 @@ jobs:
 
       # Build solution
       - name: Build Solution
-        run: |
-          msbuild SchoolERP_System.sln ^
-          /p:Configuration=Release ^
-          /p:DeployOnBuild=true ^
-          /p:WebPublishMethod=FileSystem ^
-          /p:publishUrl="${{ github.workspace }}\publish"
+        run: msbuild SchoolERP_System.sln /p:Configuration=Release
 
-      # Verify publish output
-      - name: List Published Files
-        run: dir "${{ github.workspace }}\publish"
+      # Publish website to local publish folder
+      - name: Publish Website
+        run: msbuild SchoolERP_System.sln /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
 
-      # Deploy via FTP
-      - name: FTP Deploy
+      # Verify output
+      - name: Show Published Files
+        run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+
+      # FTP Deploy
+      - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
