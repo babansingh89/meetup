@@ -33,22 +33,22 @@ jobs:
           Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
         }
 
-    # Build Solution
-    - name: Build Solution
+    # Combined Build & Publish (FIXED: Uses the Solution with explicit pipeline targets)
+    - name: Build and Publish Solution
       shell: powershell
       run: |
-        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU"
-
-    # Publish (FIXED: Targets the solution while specifying the target project)
-    - name: Publish Website
-      shell: powershell
-      run: |
-        msbuild "SchoolERP_System/SchoolERP_System.csproj" /p:Configuration=Release /p:Platform=AnyCPU /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
+        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build /p:DeployOnBuild=true /p:DeployTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
 
     # Verify output
     - name: Show Published Files
       shell: powershell
-      run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+      run: |
+        if (Test-Path "${{ github.workspace }}\publish") {
+          Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+        } else {
+          Write-Error "Publish directory does not exist!"
+          exit 1
+        }
 
     # Deploy FTP
     - name: Deploy to FTP
