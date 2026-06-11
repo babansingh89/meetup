@@ -56,7 +56,8 @@ jobs:
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
-          /p:publishUrl="${{ github.workspace }}\publish"
+          /p:publishUrl="${{ github.workspace }}\publish" `
+          /p:UseShortNameDirectory=True
       shell: powershell
 
     - name: Show Published Files
