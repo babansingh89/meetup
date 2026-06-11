@@ -33,17 +33,18 @@ jobs:
           Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
         }
 
-    # Build (IMPORTANT FIX HERE)
+    # Build Solution
     - name: Build Solution
       shell: powershell
       run: |
         msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU"
 
-    # Publish FIXED (DO NOT auto-detect csproj)
+    # Publish (FIXED: Targets the solution while specifying the target project)
     - name: Publish Website
       shell: powershell
       run: |
-        msbuild "SchoolERP_System/SchoolERP_System.csproj" `
+        msbuild "SchoolERP_System.sln" `
+          /t:SchoolERP_System `
           /p:Configuration=Release `
           /p:Platform="Any CPU" `
           /p:DeployOnBuild=true `
