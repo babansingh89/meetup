@@ -42,7 +42,7 @@ jobs:
       shell: powershell
       run: |
         $sln = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        msbuild "$sln" /p:Configuration=Release /p:Platform="Any CPU"
+        msbuild "$sln" /p:Configuration=Release /p:Platform="AnyCPU"
 
     # 🔥 CRITICAL CHECK (THIS WILL SHOW REAL ISSUE)
     - name: Check Bin DLLs
@@ -65,7 +65,7 @@ jobs:
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
-          /p:Platform="Any CPU" `
+          /p:Platform="AnyCPU" `
           /p:publishUrl="${{ github.workspace }}\publish"
 
     - name: Show Published Files
