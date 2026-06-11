@@ -17,15 +17,18 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # ✅ Debug - Check folder structure
     - name: Check Folder Structure
       run: |
-        Write-Host "Current directory:"
+        Write-Host "=== Current directory ==="
         Get-Location
-        Write-Host "Files in root:"
+        Write-Host "=== Root files ==="
         Get-ChildItem -Force
-        Write-Host "Looking for .sln files:"
+        Write-Host "=== All .sln files ==="
         Get-ChildItem -Recurse -Filter "*.sln"
+        Write-Host "=== All .csproj files ==="
+        Get-ChildItem -Recurse -Filter "*.csproj"
+        Write-Host "=== All packages.config files ==="
+        Get-ChildItem -Recurse -Filter "packages.config"
       shell: powershell
 
     - name: Setup NuGet
@@ -34,44 +37,40 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # ✅ Restore with full path
     - name: Restore Packages
       run: |
         $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        Write-Host "Found .sln at: $slnPath"
+        Write-Host "Restoring: $slnPath"
         nuget restore "$slnPath"
       shell: powershell
 
     - name: Build Solution
       run: |
-        msbuild SchoolERP_System.sln `
-          /p:Configuration=Release `
-          /p:Platform="Any CPU"
+        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
+        Write-Host "Building: $slnPath"
+        msbuild "$slnPath" /p:Configuration=Release /p:Platform="Any CPU"
       shell: powershell
 
     - name: Publish Website
       run: |
-        msbuild SchoolERP_System\SchoolERP_System.csproj `
+        $csprojPath = Get-ChildItem -Recurse -Filter "*.csproj" | Select-Object -First 1 -ExpandProperty FullName
+        Write-Host "Publishing: $csprojPath"
+        msbuild "$csprojPath" `
           /p:Configuration=Release `
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
-          /p:publishUrl="${{ github.workspace }}\publish" `
-          /p:UseShortNameDirectory=True
+          /p:publishUrl="${{ github.workspace }}\publish"
       shell: powershell
 
     - name: Show Published Files
-      run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
-      shell: powershell
-
-    - name: Verify Publish Output
       run: |
-        if (!(Test-Path "${{ github.workspace }}\publish")) {
+        if (Test-Path "${{ github.workspace }}\publish") {
+          Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+        } else {
           Write-Host "Publish folder not found!"
           exit 1
         }
-        $files = Get-ChildItem "${{ github.workspace }}\publish" -Recurse
-        Write-Host "Total files published: $($files.Count)"
       shell: powershell
 
     - name: Deploy to FTP
