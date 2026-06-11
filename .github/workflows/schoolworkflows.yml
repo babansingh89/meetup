@@ -11,40 +11,64 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Checkout repository
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    # Step 1 - Checkout
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      # Install NuGet
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
+    # Step 2 - Setup NuGet
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
 
-      # Setup MSBuild
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+    # Step 3 - Setup MSBuild
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
 
-      # Restore NuGet packages
-      - name: Restore Packages
-        run: nuget restore SchoolERP_System.sln
+    # Step 4 - Restore NuGet packages
+    - name: Restore Packages
+      run: nuget restore SchoolERP_System.sln  # ✅ Fixed path
 
-      # Build solution
-      - name: Build Solution
-        run: msbuild SchoolERP_System.sln /p:Configuration=Release
+    # Step 5 - Build solution
+    - name: Build Solution
+      run: |
+        msbuild SchoolERP_System.sln `
+          /p:Configuration=Release `
+          /p:Platform="Any CPU"    # ✅ Added platform
 
-      # Publish website to local publish folder
-      - name: Publish Website
-        run: msbuild SchoolERP_System.sln /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
+    # Step 6 - Publish
+    - name: Publish Website
+      run: |
+        msbuild SchoolERP_System.sln `
+          /p:Configuration=Release `
+          /p:Platform="Any CPU" `
+          /p:DeployOnBuild=true `
+          /p:WebPublishMethod=FileSystem `
+          /p:DeleteExistingFiles=True `
+          /p:publishUrl="${{ github.workspace }}\publish"
 
-      # Verify output
-      - name: Show Published Files
-        run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+    # Step 7 - Verify output
+    - name: Show Published Files
+      run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+      shell: powershell
 
-      # FTP Deploy
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./publish/
-          server-dir: /wwwroot/gitaction/
+    # Step 8 - Check publish folder has files
+    - name: Verify Publish Output
+      run: |
+        if (!(Test-Path "${{ github.workspace }}\publish")) {
+          Write-Host "❌ Publish folder not found!"
+          exit 1
+        }
+        $files = Get-ChildItem "${{ github.workspace }}\publish" -Recurse
+        Write-Host "✅ Total files published: $($files.Count)"
+      shell: powershell
+
+    # Step 9 - FTP Deploy
+    - name: Deploy to FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./publish/
+        server-dir: /wwwroot/gitaction/
+        timeout: 60000     # ✅ Added timeout
+        log-level: verbose # ✅ Added logging
