@@ -37,9 +37,8 @@ jobs:
     # Step 6 - Publish
     - name: Publish Website
       run: |
-        msbuild SchoolERP_System.sln `
+        msbuild SchoolERP_System\SchoolERP_System.csproj `
           /p:Configuration=Release `
-          /p:Platform="Any CPU" `
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
