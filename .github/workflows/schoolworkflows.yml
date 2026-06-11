@@ -20,58 +20,43 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # ✅ Restore with detailed log
+    # Restore
     - name: Restore Packages
       shell: powershell
-      run: |
-        $sln = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        nuget restore "$sln" -Verbosity detailed
+      run: nuget restore SchoolERP_System.sln -Verbosity detailed
 
-    # 🔥 IMPORTANT: Verify Crystal packages restored
-    - name: Verify Crystal Packages
+    # Verify Crystal Packages
+    - name: Verify Packages
       shell: powershell
       run: |
         if (Test-Path ".\packages") {
           Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
-        } else {
-          Write-Host "Packages folder missing!"
-          exit 1
         }
 
+    # Build (IMPORTANT FIX HERE)
     - name: Build Solution
       shell: powershell
       run: |
-        $sln = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        msbuild "$sln" /p:Configuration=Release
+        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU"
 
-    # 🔥 CRITICAL CHECK (THIS WILL SHOW REAL ISSUE)
-    - name: Check Bin DLLs
-      shell: powershell
-      run: |
-        $bin = Get-ChildItem -Recurse -Directory | Where-Object { $_.Name -eq "bin" } | Select-Object -First 1
-        if ($bin) {
-          Get-ChildItem $bin.FullName -Filter "CrystalDecisions*.dll"
-        } else {
-          Write-Host "BIN folder not found"
-        }
-
+    # Publish FIXED (DO NOT auto-detect csproj)
     - name: Publish Website
       shell: powershell
       run: |
-        $csproj = Get-ChildItem -Recurse -Filter "*.csproj" | Select-Object -First 1 -ExpandProperty FullName
-
-        msbuild "$csproj" `
+        msbuild "SchoolERP_System/SchoolERP_System.csproj" `
           /p:Configuration=Release `
+          /p:Platform="Any CPU" `
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
           /p:publishUrl="${{ github.workspace }}\publish"
 
+    # Verify output
     - name: Show Published Files
       shell: powershell
-      run: |
-        Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+      run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
 
+    # Deploy FTP
     - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
