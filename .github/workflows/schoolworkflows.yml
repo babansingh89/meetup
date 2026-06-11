@@ -20,12 +20,12 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # Restore
+    # Step 1: Restore Packages
     - name: Restore Packages
       shell: powershell
       run: nuget restore SchoolERP_System.sln -Verbosity detailed
 
-    # Verify Crystal Packages
+    # Step 2: Verify Crystal Packages
     - name: Verify Packages
       shell: powershell
       run: |
@@ -33,13 +33,28 @@ jobs:
           Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
         }
 
-    # Combined Build & Publish (FIXED: Uses the Solution with explicit pipeline targets)
+    # Step 3: Inject Crystal DLLs into the project's bin folder to satisfy legacy msbuild publishing target paths
+    - name: Copy Missing DLLs to Bin
+      shell: powershell
+      run: |
+        # Create the bin folder if it doesn't exist
+        if (!(Test-Path "SchoolERP_System\bin")) {
+            New-Item -ItemType Directory -Force -Path "SchoolERP_System\bin"
+        }
+        
+        # Find all Crystal DLLs in the packages folder and mirror them to project bin
+        Get-ChildItem -Path ".\packages" -Filter "*.dll" -Recurse | Where-Object { $_.Name -like "*Crystal*" } | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination "SchoolERP_System\bin\" -Force
+            Write-Host "Injected into bin: $_.Name"
+        }
+
+    # Step 4: Combined Build & Publish (Targets the Solution with explicit pipeline targets)
     - name: Build and Publish Solution
       shell: powershell
       run: |
         msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build /p:DeployOnBuild=true /p:DeployTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
 
-    # Verify output
+    # Step 5: Verify Artifact Collection
     - name: Show Published Files
       shell: powershell
       run: |
@@ -50,7 +65,7 @@ jobs:
           exit 1
         }
 
-    # Deploy FTP
+    # Step 6: Deploy FTP
     - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
