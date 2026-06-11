@@ -72,7 +72,7 @@ jobs:
         Write-Host "Publishing: $csprojPath"
         msbuild "$csprojPath" `
           /p:Configuration=Release `
-          /p:Platform="Any CPU" `
+          /p:Platform="AnyCPU" `
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
