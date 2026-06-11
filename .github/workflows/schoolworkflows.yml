@@ -11,30 +11,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # Step 1 - Checkout
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # Step 2 - Setup NuGet
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
-    # Step 3 - Setup MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # Step 4 - Restore NuGet packages
     - name: Restore Packages
-      run: nuget restore SchoolERP_System.sln  # ✅ Fixed path
+      run: nuget restore SchoolERP_System\SchoolERP_System.sln
+      shell: powershell
 
-    # Step 5 - Build solution
     - name: Build Solution
       run: |
-        msbuild SchoolERP_System.sln `
+        msbuild SchoolERP_System\SchoolERP_System.sln `
           /p:Configuration=Release `
-          /p:Platform="Any CPU"    # ✅ Added platform
+          /p:Platform="Any CPU"
+      shell: powershell
 
-    # Step 6 - Publish
     - name: Publish Website
       run: |
         msbuild SchoolERP_System\SchoolERP_System.csproj `
@@ -43,24 +39,22 @@ jobs:
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
           /p:publishUrl="${{ github.workspace }}\publish"
+      shell: powershell
 
-    # Step 7 - Verify output
     - name: Show Published Files
       run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
       shell: powershell
 
-    # Step 8 - Check publish folder has files
     - name: Verify Publish Output
       run: |
         if (!(Test-Path "${{ github.workspace }}\publish")) {
-          Write-Host "❌ Publish folder not found!"
+          Write-Host "Publish folder not found!"
           exit 1
         }
         $files = Get-ChildItem "${{ github.workspace }}\publish" -Recurse
-        Write-Host "✅ Total files published: $($files.Count)"
+        Write-Host "Total files published: $($files.Count)"
       shell: powershell
 
-    # Step 9 - FTP Deploy
     - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -69,5 +63,5 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./publish/
         server-dir: /wwwroot/gitaction/
-        timeout: 60000     # ✅ Added timeout
-        log-level: verbose # ✅ Added logging
+        timeout: 60000
+        log-level: verbose
