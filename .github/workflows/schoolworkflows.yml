@@ -17,15 +17,29 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
+    # ✅ Debug - Check folder structure
+    - name: Check Folder Structure
+      run: |
+        Write-Host "Current directory:"
+        Get-Location
+        Write-Host "Files in root:"
+        Get-ChildItem -Force
+        Write-Host "Looking for .sln files:"
+        Get-ChildItem -Recurse -Filter "*.sln"
+      shell: powershell
+
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # ✅ .sln is in ROOT - no subfolder needed
+    # ✅ Restore with full path
     - name: Restore Packages
-      run: nuget restore SchoolERP_System.sln
+      run: |
+        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
+        Write-Host "Found .sln at: $slnPath"
+        nuget restore "$slnPath"
       shell: powershell
 
     - name: Build Solution
