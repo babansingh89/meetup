@@ -37,6 +37,13 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
+    - name: Clean Solution
+      run: |
+        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
+        Write-Host "Cleaning: $slnPath"
+        msbuild "$slnPath" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean
+      shell: powershell
+
     - name: Restore Packages
       run: |
         $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
@@ -51,12 +58,21 @@ jobs:
         msbuild "$slnPath" /p:Configuration=Release /p:Platform="Any CPU"
       shell: powershell
 
+    - name: Clean Publish Directory
+      run: |
+        $publishPath = "${{ github.workspace }}\publish"
+        if (Test-Path $publishPath) {
+          Remove-Item -Recurse -Force $publishPath
+        }
+      shell: powershell
+
     - name: Publish Website
       run: |
         $csprojPath = Get-ChildItem -Recurse -Filter "*.csproj" | Select-Object -First 1 -ExpandProperty FullName
         Write-Host "Publishing: $csprojPath"
         msbuild "$csprojPath" `
           /p:Configuration=Release `
+          /p:Platform="Any CPU" `
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
