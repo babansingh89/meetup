@@ -6,9 +6,6 @@ on:
       - master
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build-and-deploy:
     runs-on: windows-2025
@@ -17,77 +14,64 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Check Folder Structure
-      run: |
-        Write-Host "=== Current directory ==="
-        Get-Location
-        Write-Host "=== Root files ==="
-        Get-ChildItem -Force
-        Write-Host "=== All .sln files ==="
-        Get-ChildItem -Recurse -Filter "*.sln"
-        Write-Host "=== All .csproj files ==="
-        Get-ChildItem -Recurse -Filter "*.csproj"
-        Write-Host "=== All packages.config files ==="
-        Get-ChildItem -Recurse -Filter "packages.config"
-      shell: powershell
-
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Clean Solution
-      run: |
-        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        Write-Host "Cleaning: $slnPath"
-        msbuild "$slnPath" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean
-      shell: powershell
-
+    # ✅ Restore with detailed log
     - name: Restore Packages
-      run: |
-        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        Write-Host "Restoring: $slnPath"
-        nuget restore "$slnPath"
       shell: powershell
+      run: |
+        $sln = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
+        nuget restore "$sln" -Verbosity detailed
+
+    # 🔥 IMPORTANT: Verify Crystal packages restored
+    - name: Verify Crystal Packages
+      shell: powershell
+      run: |
+        if (Test-Path ".\packages") {
+          Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
+        } else {
+          Write-Host "Packages folder missing!"
+          exit 1
+        }
 
     - name: Build Solution
-      run: |
-        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        Write-Host "Building: $slnPath"
-        msbuild "$slnPath" /p:Configuration=Release /p:Platform="Any CPU"
       shell: powershell
+      run: |
+        $sln = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
+        msbuild "$sln" /p:Configuration=Release /p:Platform="Any CPU"
 
-    - name: Clean Publish Directory
-      run: |
-        $publishPath = "${{ github.workspace }}\publish"
-        if (Test-Path $publishPath) {
-          Remove-Item -Recurse -Force $publishPath
-        }
+    # 🔥 CRITICAL CHECK (THIS WILL SHOW REAL ISSUE)
+    - name: Check Bin DLLs
       shell: powershell
+      run: |
+        $bin = Get-ChildItem -Recurse -Directory | Where-Object { $_.Name -eq "bin" } | Select-Object -First 1
+        if ($bin) {
+          Get-ChildItem $bin.FullName -Filter "CrystalDecisions*.dll"
+        } else {
+          Write-Host "BIN folder not found"
+        }
 
     - name: Publish Website
+      shell: powershell
       run: |
-        $csprojPath = Get-ChildItem -Recurse -Filter "*.csproj" | Select-Object -First 1 -ExpandProperty FullName
-        Write-Host "Publishing: $csprojPath"
-        msbuild "$csprojPath" `
+        $csproj = Get-ChildItem -Recurse -Filter "*.csproj" | Select-Object -First 1 -ExpandProperty FullName
+
+        msbuild "$csproj" `
           /p:Configuration=Release `
-          /p:Platform="AnyCPU" `
           /p:DeployOnBuild=true `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
+          /p:Platform="Any CPU" `
           /p:publishUrl="${{ github.workspace }}\publish"
-      shell: powershell
 
     - name: Show Published Files
-      run: |
-        if (Test-Path "${{ github.workspace }}\publish") {
-          Get-ChildItem -Recurse "${{ github.workspace }}\publish"
-        } else {
-          Write-Host "Publish folder not found!"
-          exit 1
-        }
       shell: powershell
+      run: |
+        Get-ChildItem -Recurse "${{ github.workspace }}\publish"
 
     - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -97,5 +81,3 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./publish/
         server-dir: /wwwroot/gitaction/
-        timeout: 60000
-        log-level: verbose
