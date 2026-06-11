@@ -6,9 +6,12 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # ✅ Fix Node.js deprecation
+
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: windows-2025  # ✅ Fix windows-latest deprecation
 
     steps:
     - name: Checkout Code
@@ -20,6 +23,7 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
+    # ✅ Fix Step 5 - correct .sln path
     - name: Restore Packages
       run: nuget restore SchoolERP_System\SchoolERP_System.sln
       shell: powershell
