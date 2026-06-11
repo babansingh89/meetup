@@ -43,14 +43,7 @@ jobs:
     - name: Publish Website
       shell: powershell
       run: |
-        msbuild "SchoolERP_System.sln" `
-          /t:SchoolERP_System `
-          /p:Configuration=Release `
-          /p:Platform="Any CPU" `
-          /p:DeployOnBuild=true `
-          /p:WebPublishMethod=FileSystem `
-          /p:DeleteExistingFiles=True `
-          /p:publishUrl="${{ github.workspace }}\publish"
+        msbuild "SchoolERP_System/SchoolERP_System.csproj" /p:Configuration=Release /p:Platform=AnyCPU /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
 
     # Verify output
     - name: Show Published Files
