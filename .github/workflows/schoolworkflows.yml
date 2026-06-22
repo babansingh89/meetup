@@ -52,14 +52,13 @@ jobs:
         msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build
 
     # Step 5: Verify the specific Project DLL exists
-    - name: Show Compiled DLL
+    - name: Show Published Files
       shell: powershell
       run: |
-        $dllPath = "SchoolERP_System\bin\Release\SchoolERP_System.dll"
-        if (Test-Path $dllPath) {
-          Get-Item $dllPath
+        if (Test-Path "${{ github.workspace }}\publish") {
+          Get-ChildItem -Recurse "${{ github.workspace }}\publish"
         } else {
-          Write-Error "Project DLL not found at $dllPath!"
+          Write-Error "Publish directory does not exist!"
           exit 1
         }
 
