@@ -51,7 +51,7 @@ jobs:
       shell: powershell
       run: |
         # Create a clean deployment source folder
-        New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\deploy_drop"
+        New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\publish"
         
         # Look for your compiled DLL across common build locations
         $foundDll = Get-ChildItem -Path "." -Recurse -Filter "*.dll" | 
@@ -61,7 +61,7 @@ jobs:
         if ($foundDll) {
             Write-Host "Found your project DLL at: $($foundDll.FullName)"
             Write-Host "Copying to deployment drop folder as target asset..."
-            Copy-Item -Path $foundDll.FullName -Destination "${{ github.workspace }}\deploy_drop\SchoolERP_System.dll" -Force
+            Copy-Item -Path $foundDll.FullName -Destination "${{ github.workspace }}\publish\SchoolERP_System.dll" -Force
         } else {
             Write-Error "Could not isolate your project's compiled DLL in any bin/Release folder!"
             Write-Host "Here is everything found in the workspace to help debug:"
@@ -76,7 +76,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./deploy_drop/
+        local-dir: ./publish/
         server-dir: ./gitaction/
         dangerous-clean-slate: false 
         # Since we renamed it to target_assembly.dll in Step 4, we only let this file pass through
