@@ -71,7 +71,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         # Point directly to the folder containing your compiled DLLs
-        local-dir: ./SchoolERP_System/bin/Release/
+        local-dir: ./publish/
         server-dir: ./gitaction/
         dangerous-clean-slate: false 
         # Filter syntax: '!' means exclude, so we exclude everything EXCEPT SchoolERP_System.dll
