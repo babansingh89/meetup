@@ -6,9 +6,6 @@ on:
       - master
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build-and-deploy:
     runs-on: windows-2025
@@ -17,62 +14,58 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # ✅ Debug - Check folder structure
-    - name: Check Folder Structure
-      run: |
-        Write-Host "Current directory:"
-        Get-Location
-        Write-Host "Files in root:"
-        Get-ChildItem -Force
-        Write-Host "Looking for .sln files:"
-        Get-ChildItem -Recurse -Filter "*.sln"
-      shell: powershell
-
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # ✅ Restore with full path
+    # Step 1: Restore Packages
     - name: Restore Packages
-      run: |
-        $slnPath = Get-ChildItem -Recurse -Filter "*.sln" | Select-Object -First 1 -ExpandProperty FullName
-        Write-Host "Found .sln at: $slnPath"
-        nuget restore "$slnPath"
       shell: powershell
+      run: nuget restore SchoolERP_System.sln -Verbosity detailed
 
-    - name: Build Solution
-      run: |
-        msbuild SchoolERP_System.sln `
-          /p:Configuration=Release `
-          /p:Platform="Any CPU"
+    # Step 2: Verify Crystal Packages
+    - name: Verify Packages
       shell: powershell
-
-    - name: Publish Website
       run: |
-        msbuild SchoolERP_System\SchoolERP_System.csproj `
-          /p:Configuration=Release `
-          /p:DeployOnBuild=true `
-          /p:WebPublishMethod=FileSystem `
-          /p:DeleteExistingFiles=True `
-          /p:publishUrl="${{ github.workspace }}\publish"
-      shell: powershell
+        if (Test-Path ".\packages") {
+          Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
+        }
 
+    # Step 3: Inject Crystal DLLs into the project's bin folder to satisfy legacy msbuild publishing target paths
+    - name: Copy Missing DLLs to Bin
+      shell: powershell
+      run: |
+        # Create the bin folder if it doesn't exist
+        if (!(Test-Path "SchoolERP_System\bin")) {
+            New-Item -ItemType Directory -Force -Path "SchoolERP_System\bin"
+        }
+        
+        # Find all Crystal DLLs in the packages folder and mirror them to project bin
+        Get-ChildItem -Path ".\packages" -Filter "*.dll" -Recurse | Where-Object { $_.Name -like "*Crystal*" } | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination "SchoolERP_System\bin\" -Force
+            Write-Host "Injected into bin: $_.Name"
+        }
+
+    # Step 4: Combined Build & Publish (Targets the Solution with explicit pipeline targets)
+    - name: Build and Publish Solution
+      shell: powershell
+      run: |
+        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build /p:DeployOnBuild=true /p:DeployTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
+
+    # Step 5: Verify Artifact Collection
     - name: Show Published Files
-      run: Get-ChildItem -Recurse "${{ github.workspace }}\publish"
       shell: powershell
-
-    - name: Verify Publish Output
       run: |
-        if (!(Test-Path "${{ github.workspace }}\publish")) {
-          Write-Host "Publish folder not found!"
+        if (Test-Path "${{ github.workspace }}\publish") {
+          Get-ChildItem -Recurse "${{ github.workspace }}\publish"
+        } else {
+          Write-Error "Publish directory does not exist!"
           exit 1
         }
-        $files = Get-ChildItem "${{ github.workspace }}\publish" -Recurse
-        Write-Host "Total files published: $($files.Count)"
-      shell: powershell
 
+    # Step 6: Deploy FTP
     - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -80,6 +73,5 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./publish/
-        server-dir: /wwwroot/gitaction/
-        timeout: 60000
-        log-level: verbose
+        server-dir: ./gitaction/
+        ngerous-clean-slate: false # <-- CRITICAL: Prevents deleting the remote folder before uploading
