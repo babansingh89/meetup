@@ -46,26 +46,40 @@ jobs:
         # We compile the solution cleanly without overriding OutDir (avoids MSBuild Web bugs)
         msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build
 
-    # Step 4: Dynamically locate and extract ONLY your main DLL
+    # Step 4: Dynamically locate and extract ONLY your main project DLL
     - name: Isolate Project DLL for Deployment
       shell: powershell
       run: |
         # Create a clean deployment source folder
-        New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\publish"
+        New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\deploy_drop"
         
-        # Look for your compiled DLL across common build locations
+        Write-Host "Searching for your compiled project DLL..."
+        
+        # Look across ALL bin folders (both root bin\ and bin\Release\)
+        # Exclude common system, NuGet, and dependency prefixes
         $foundDll = Get-ChildItem -Path "." -Recurse -Filter "*.dll" | 
-                    Where-Object { $_.DirectoryName -like "*bin\Release*" -and $_.Name -notlike "*Crystal*" -and $_.Name -notlike "*Microsoft*" -and $_.Name -notlike "*System*" } | 
-                    Select-Object -First 1
+                    Where-Object { 
+                        $_.DirectoryName -like "*bin*" -and 
+                        $_.DirectoryName -notlike "*\obj\*" -and
+                        $_.Name -notlike "*Crystal*" -and 
+                        $_.Name -notlike "*Microsoft*" -and 
+                        $_.Name -notlike "*System*" -and
+                        $_.Name -notlike "*WebGrease*" -and
+                        $_.Name -notlike "*Antlr*" -and
+                        $_.Name -notlike "*Newtonsoft*"
+                    } | Select-Object -First 1
 
         if ($foundDll) {
-            Write-Host "Found your project DLL at: $($foundDll.FullName)"
-            Write-Host "Copying to deployment drop folder as target asset..."
-            Copy-Item -Path $foundDll.FullName -Destination "${{ github.workspace }}\publish\SchoolERP_System.dll" -Force
+            Write-Host "Target identified! Found project DLL at: $($foundDll.FullName)"
+            Write-Host "Copying to deployment drop folder..."
+            Copy-Item -Path $foundDll.FullName -Destination "${{ github.workspace }}\deploy_drop\$($foundDll.Name)" -Force
+            
+            # Save the filename into an environment variable for the FTP step
+            echo "TARGET_DLL_NAME=$($foundDll.Name)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         } else {
-            Write-Error "Could not isolate your project's compiled DLL in any bin/Release folder!"
-            Write-Host "Here is everything found in the workspace to help debug:"
-            Get-ChildItem -Recurse -Filter "*.dll" | Select-Object FullName
+            Write-Error "Could not isolate your project's compiled DLL in any bin folder!"
+            Write-Host "=== DEBUG: Printing all DLLs found in the workspace ==="
+            Get-ChildItem -Path "." -Recurse -Filter "*.dll" | Select-Object Name, FullName
             exit 1
         }
 
@@ -76,10 +90,10 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./publish/
+        local-dir: ./deploy_drop/
         server-dir: ./gitaction/
         dangerous-clean-slate: false 
-        # Since we renamed it to target_assembly.dll in Step 4, we only let this file pass through
+        # This dynamically uses the exact filename discovered in Step 4
         filter: |
           !**
           SchoolERP_System.dll
