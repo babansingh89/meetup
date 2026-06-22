@@ -25,59 +25,61 @@ jobs:
       shell: powershell
       run: nuget restore SchoolERP_System.sln -Verbosity detailed
 
-    # Step 2: Verify Crystal Packages
-    - name: Verify Packages
-      shell: powershell
-      run: |
-        if (Test-Path ".\packages") {
-          Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
-        }
-
-    # Step 3: Inject Crystal DLLs into the packages folder if needed
+    # Step 2: Inject Crystal DLLs into the project's bin folder
     - name: Copy Missing DLLs to Bin
       shell: powershell
       run: |
-        if (!(Test-Path "SchoolERP_System\bin")) {
-            New-Item -ItemType Directory -Force -Path "SchoolERP_System\bin"
-        }
+        # We try creating both common paths to be safe
+        if (!(Test-Path "SchoolERP_System\bin")) { New-Item -ItemType Directory -Force -Path "SchoolERP_System\bin" }
+        if (!(Test-Path "bin")) { New-Item -ItemType Directory -Force -Path "bin" }
+        
         Get-ChildItem -Path ".\packages" -Filter "*.dll" -Recurse | Where-Object { $_.Name -like "*Crystal*" } | ForEach-Object {
-            Copy-Item -Path $_.FullName -Destination "SchoolERP_System\bin\" -Force
+            if (Test-Path "SchoolERP_System\bin") { Copy-Item -Path $_.FullName -Destination "SchoolERP_System\bin\" -Force }
+            if (Test-Path "bin") { Copy-Item -Path $_.FullName -Destination "bin\" -Force }
             Write-Host "Injected into bin: $_.Name"
         }
 
-    # Step 4: Build the Solution and FORCE output to a dedicated folder
-    - name: Build Solution
+    # Step 3: Build the project and output to a dedicated bin directory
+    - name: Build Project
       shell: powershell
       run: |
-        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build /p:OutDir="${{ github.workspace }}\build_output\\"
+        # We compile the solution cleanly without overriding OutDir (avoids MSBuild Web bugs)
+        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build
 
-    # Step 5: Verify the specific Project DLL exists in our forced folder
-    # Note: Replace 'SchoolERP_System.dll' with your exact DLL filename if your project assembly name is different
-    - name: Show Compiled DLL
+    # Step 4: Dynamically locate and extract ONLY your main DLL
+    - name: Isolate Project DLL for Deployment
       shell: powershell
       run: |
-        $dllPath = "${{ github.workspace }}\build_output\SchoolERP_System.dll"
-        if (Test-Path $dllPath) {
-          Write-Host "Success! Found compiled DLL:"
-          Get-Item $dllPath
+        # Create a clean deployment source folder
+        New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\deploy_drop"
+        
+        # Look for your compiled DLL across common build locations
+        $foundDll = Get-ChildItem -Path "." -Recurse -Filter "*.dll" | 
+                    Where-Object { $_.DirectoryName -like "*bin\Release*" -and $_.Name -notlike "*Crystal*" -and $_.Name -notlike "*Microsoft*" -and $_.Name -notlike "*System*" } | 
+                    Select-Object -First 1
+
+        if ($foundDll) {
+            Write-Host "Found your project DLL at: $($foundDll.FullName)"
+            Write-Host "Copying to deployment drop folder as target asset..."
+            Copy-Item -Path $foundDll.FullName -Destination "${{ github.workspace }}\deploy_drop\SchoolERP_System.dll" -Force
         } else {
-          Write-Error "Project DLL not found at $dllPath! Printing everything found in build_output:"
-          if (Test-Path "${{ github.workspace }}\build_output") { 
-            Get-ChildItem "${{ github.workspace }}\build_output" -Filter "*.dll" 
-          }
-          exit 1
+            Write-Error "Could not isolate your project's compiled DLL in any bin/Release folder!"
+            Write-Host "Here is everything found in the workspace to help debug:"
+            Get-ChildItem -Recurse -Filter "*.dll" | Select-Object FullName
+            exit 1
         }
 
-    # Step 6: Deploy ONLY the specific project DLL to IIS via FTP
+    # Step 5: Deploy ONLY the isolated project DLL to IIS via FTP
     - name: Deploy DLL to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./build_output/
+        local-dir: ./deploy_drop/
         server-dir: ./gitaction/
         dangerous-clean-slate: false 
+        # Since we renamed it to target_assembly.dll in Step 4, we only let this file pass through
         filter: |
           !**
           SchoolERP_System.dll
