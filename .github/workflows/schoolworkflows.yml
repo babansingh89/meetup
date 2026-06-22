@@ -1,4 +1,4 @@
-name: Build and Deploy .NET Framework 4.8 DLL Only
+name: Build and Deploy .NET Framework 4.8
 
 on:
   push:
@@ -25,75 +25,53 @@ jobs:
       shell: powershell
       run: nuget restore SchoolERP_System.sln -Verbosity detailed
 
-    # Step 2: Inject Crystal DLLs into the project's bin folder
+    # Step 2: Verify Crystal Packages
+    - name: Verify Packages
+      shell: powershell
+      run: |
+        if (Test-Path ".\packages") {
+          Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
+        }
+
+    # Step 3: Inject Crystal DLLs into the project's bin folder to satisfy legacy msbuild publishing target paths
     - name: Copy Missing DLLs to Bin
       shell: powershell
       run: |
-        # We try creating both common paths to be safe
-        if (!(Test-Path "SchoolERP_System\bin")) { New-Item -ItemType Directory -Force -Path "SchoolERP_System\bin" }
-        if (!(Test-Path "bin")) { New-Item -ItemType Directory -Force -Path "bin" }
+        # Create the bin folder if it doesn't exist
+        if (!(Test-Path "SchoolERP_System\bin")) {
+            New-Item -ItemType Directory -Force -Path "SchoolERP_System\bin"
+        }
         
+        # Find all Crystal DLLs in the packages folder and mirror them to project bin
         Get-ChildItem -Path ".\packages" -Filter "*.dll" -Recurse | Where-Object { $_.Name -like "*Crystal*" } | ForEach-Object {
-            if (Test-Path "SchoolERP_System\bin") { Copy-Item -Path $_.FullName -Destination "SchoolERP_System\bin\" -Force }
-            if (Test-Path "bin") { Copy-Item -Path $_.FullName -Destination "bin\" -Force }
+            Copy-Item -Path $_.FullName -Destination "SchoolERP_System\bin\" -Force
             Write-Host "Injected into bin: $_.Name"
         }
 
-    # Step 3: Build the project and output to a dedicated bin directory
-    - name: Build Project
+    # Step 4: Combined Build & Publish (Targets the Solution with explicit pipeline targets)
+    - name: Build and Publish Solution
       shell: powershell
       run: |
-        # We compile the solution cleanly without overriding OutDir (avoids MSBuild Web bugs)
-        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build
+        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build /p:DeployOnBuild=true /p:DeployTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{ github.workspace }}\publish"
 
-    # Step 4: Dynamically locate and extract ONLY your main project DLL
-    - name: Isolate Project DLL for Deployment
+    # Step 5: Verify Artifact Collection
+    - name: Show Published Files
       shell: powershell
       run: |
-        # Create a clean deployment source folder
-        New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\deploy_drop"
-        
-        Write-Host "Searching for your compiled project DLL..."
-        
-        # Look across ALL bin folders (both root bin\ and bin\Release\)
-        # Exclude common system, NuGet, and dependency prefixes
-        $foundDll = Get-ChildItem -Path "." -Recurse -Filter "*.dll" | 
-                    Where-Object { 
-                        $_.DirectoryName -like "*bin*" -and 
-                        $_.DirectoryName -notlike "*\obj\*" -and
-                        $_.Name -notlike "*Crystal*" -and 
-                        $_.Name -notlike "*Microsoft*" -and 
-                        $_.Name -notlike "*System*" -and
-                        $_.Name -notlike "*WebGrease*" -and
-                        $_.Name -notlike "*Antlr*" -and
-                        $_.Name -notlike "*Newtonsoft*"
-                    } | Select-Object -First 1
-
-        if ($foundDll) {
-            Write-Host "Target identified! Found project DLL at: $($foundDll.FullName)"
-            Write-Host "Copying to deployment drop folder..."
-            Copy-Item -Path $foundDll.FullName -Destination "${{ github.workspace }}\deploy_drop\$($foundDll.Name)" -Force
-            
-            # Save the filename into an environment variable for the FTP step
-            echo "TARGET_DLL_NAME=$($foundDll.Name)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        if (Test-Path "${{ github.workspace }}\publish") {
+          Get-ChildItem -Recurse "${{ github.workspace }}\publish"
         } else {
-            Write-Error "Could not isolate your project's compiled DLL in any bin folder!"
-            Write-Host "=== DEBUG: Printing all DLLs found in the workspace ==="
-            Get-ChildItem -Path "." -Recurse -Filter "*.dll" | Select-Object Name, FullName
-            exit 1
+          Write-Error "Publish directory does not exist!"
+          exit 1
         }
 
-    # Step 5: Deploy ONLY the isolated project DLL to IIS via FTP
-    - name: Deploy DLL to FTP
+    # Step 6: Deploy FTP
+    - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./deploy_drop/
+        local-dir: ./publish/
         server-dir: ./gitaction/
-        dangerous-clean-slate: false 
-        # This dynamically uses the exact filename discovered in Step 4
-        filter: |
-          !**
-          SchoolERP_System.dll
+        ngerous-clean-slate: false # <-- CRITICAL: Prevents deleting the remote folder before uploading
