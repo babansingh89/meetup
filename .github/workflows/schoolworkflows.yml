@@ -33,7 +33,7 @@ jobs:
           Get-ChildItem .\packages -Recurse | Where-Object { $_.Name -like "*Crystal*" }
         }
 
-    # Step 3: Inject Crystal DLLs into the project's bin folder
+    # Step 3: Inject Crystal DLLs into the packages folder if needed
     - name: Copy Missing DLLs to Bin
       shell: powershell
       run: |
@@ -45,23 +45,26 @@ jobs:
             Write-Host "Injected into bin: $_.Name"
         }
 
-    # Step 4: Build the Solution (Compiles to bin/Release/)
+    # Step 4: Build the Solution and FORCE output to a dedicated folder
     - name: Build Solution
       shell: powershell
       run: |
-        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build
+        msbuild "SchoolERP_System.sln" /p:Configuration=Release /p:Platform="Any CPU" /t:Clean,Build /p:OutDir="${{ github.workspace }}\build_output\\"
 
-    # Step 5: Verify the specific Project DLL exists (UPDATED PATH)
+    # Step 5: Verify the specific Project DLL exists in our forced folder
+    # Note: Replace 'SchoolERP_System.dll' with your exact DLL filename if your project assembly name is different
     - name: Show Compiled DLL
       shell: powershell
       run: |
-        $dllPath = "SchoolERP_System\bin\Release\SchoolERP_System.dll"
+        $dllPath = "${{ github.workspace }}\build_output\SchoolERP_System.dll"
         if (Test-Path $dllPath) {
           Write-Host "Success! Found compiled DLL:"
           Get-Item $dllPath
         } else {
-          Write-Error "Project DLL not found at $dllPath! Checking what exists instead:"
-          if (Test-Path "SchoolERP_System\bin") { Get-ChildItem "SchoolERP_System\bin" -Recurse }
+          Write-Error "Project DLL not found at $dllPath! Printing everything found in build_output:"
+          if (Test-Path "${{ github.workspace }}\build_output") { 
+            Get-ChildItem "${{ github.workspace }}\build_output" -Filter "*.dll" 
+          }
           exit 1
         }
 
@@ -72,11 +75,9 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        # Point directly to the folder containing your compiled DLLs
-        local-dir: ./publish/
+        local-dir: ./build_output/
         server-dir: ./gitaction/
         dangerous-clean-slate: false 
-        # Filter syntax: '!' means exclude, so we exclude everything EXCEPT SchoolERP_System.dll
         filter: |
           !**
           SchoolERP_System.dll
