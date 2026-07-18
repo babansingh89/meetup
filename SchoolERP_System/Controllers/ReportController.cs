@@ -345,7 +345,40 @@ namespace SchoolERP_System.Controllers
             ViewBag.ClassList = Utility.GetDropDownList("SP_Class", "ClassID", "ClassName", prm1, "", "", "Select");
             return View();
         }
-
+        public ActionResult viewStudentForAttendance(string ClassID, string SectionID)
+        {
+            try
+            {
+                object[] mixArray = new object[2];
+                SqlParameter[] prm1 = new SqlParameter[] {
+                    new SqlParameter("Type", "StudentList"),
+                    new SqlParameter("ClassID", ClassID),
+                    new SqlParameter("SectionID", SectionID),
+                };
+                DataTable dt = new SQLHelper().ExecuteDataTable("SP_AttendanceSave", prm1, CommandType.StoredProcedure);
+                if (dt.Columns.Contains("ErrorMsg"))
+                {
+                    string errorMsg = dt.Rows[0]["ErrorMsg"].ToString();
+                    return Json(new { Output = "error", Data = "", Message = errorMsg });
+                }
+                else
+                {
+                    List<SelectStudent> STList = Utility.ConvertDataTableToClassObjectList<SelectStudent>(dt);
+                    if (STList.Count > 0)
+                    {
+                        return Json(new { Output = "success", Data = STList, Message = "Record Found!" });
+                    }
+                    else
+                    {
+                        return Json(new { Output = "fail", Data = STList, Message = "No Record Found!" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json("Error", JsonRequestBehavior.AllowGet);
+            }
+        }
         public ActionResult StudentDueWise(string Class, string Section)
         {
             if (string.IsNullOrEmpty(Class) || Convert.ToInt32(Class) < 1)
@@ -534,7 +567,6 @@ namespace SchoolERP_System.Controllers
             return str;
         }
         #endregion
-
 
         #region Studence Attendance
         public ActionResult EmployeeAttendance()

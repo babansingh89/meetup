@@ -70,6 +70,54 @@ namespace SchoolERP_System.Controllers
                 return Json("Error", JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult GetStudentFee_Auto(string SR_No, string OptedMonth)
+        {
+            try
+            {
+                SqlParameter[] prm1 = new SqlParameter[] {
+                      new SqlParameter("type", "FeeDetails"),
+                    new SqlParameter("RegNo", SR_No),
+                    new SqlParameter("PayMonth", OptedMonth),
+                    new SqlParameter("AppID", (Convert.ToString( System.Web.HttpContext.Current.Session["AppID"])))
+                };
+                // Initialize the array with a fixed size of 4 to hold your items safely
+                object[] mixArray = new object[4];
+
+                DataSet dt = new SQLHelper().ExecuteDataSet("SP_StudentDetailsPrint", prm1, CommandType.StoredProcedure);
+
+                // Convert standard data tables
+                List<FeeDetails> List = Utility.ConvertDataTableToClassObjectList<FeeDetails>(dt.Tables[0]);
+                List<FeesDetails> Lists = Utility.ConvertDataTableToClassObjectList<FeesDetails>(dt.Tables[1]);
+
+                decimal TotalDueAmount = 0;
+                int ValidationFlag = 0;
+
+                if (dt.Tables.Count > 2 && dt.Tables[2].Rows.Count > 0)
+                {
+                    DataRow dr = dt.Tables[2].Rows[0];
+
+                    TotalDueAmount = dr["TotalDueAmount"] != DBNull.Value
+                        ? Convert.ToDecimal(dr["TotalDueAmount"])
+                        : 0;
+
+                    ValidationFlag = dr["ValidationFlag"] != DBNull.Value
+                        ? Convert.ToInt32(dr["ValidationFlag"])
+                        : 0;
+                }
+
+                // Map variables to array slots
+                mixArray[0] = List;
+                mixArray[1] = Lists;
+                mixArray[2] = TotalDueAmount;
+                mixArray[3] = ValidationFlag;
+
+                return Json(mixArray, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json("Error", JsonRequestBehavior.AllowGet);
+            }
+        }
         public DataTable GetdtFeeTable(List<FeeCollection> stddt)
         {
             GenLib objLib = new GenLib();
@@ -116,6 +164,68 @@ namespace SchoolERP_System.Controllers
                 return Json("Error", JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult SaveStudentFeesCollection_Auto(string SR_ID, string Date, string TotalFeeAmount, string TotalNetPayable, string TotalDueAmount, string TotalNetAmount,
+            string TotalDiscount, string TotalLateFee,  string GrossPaymentAmount, string OtherAmount, string AdvanceAdjustedAmount, string ClosingBalance,  string PayMode, string PayMonth, string TransactionNo, string TransactionDate, string Remarks)
+        {
+            try
+            {
+                string appid = ((loggedInAdmin)System.Web.HttpContext.Current.Session["loggedInAdmin"]).AppID;
+
+                SqlParameter[] prm1 = new SqlParameter[] {
+                    new SqlParameter("Type", "Insert"),
+                    new SqlParameter("SR_ID", SR_ID),
+                     new SqlParameter("TotalFeeAmount", TotalFeeAmount),
+                    new SqlParameter("TotalPaymentAmount", TotalNetPayable),
+                    new SqlParameter("DueAmount", TotalDueAmount),
+                    new SqlParameter("TotalNetAmount", TotalNetAmount),
+                    new SqlParameter("TotalDiscountAmount", TotalDiscount),
+                    new SqlParameter("TotalLateAmount", TotalLateFee),
+                    new SqlParameter("TotalGrossAmount", GrossPaymentAmount),
+                     new SqlParameter("TotalOtherAmount", OtherAmount),
+
+                     new SqlParameter("AdvanceAdjustedAmount", AdvanceAdjustedAmount),
+                     new SqlParameter("ClosingBalance", ClosingBalance),
+
+                    new SqlParameter("PayMode", PayMode),
+                    new SqlParameter("PayMonth", PayMonth),
+
+                    new SqlParameter("TransactionNo", TransactionNo),
+                    new SqlParameter("TransactionDate", TransactionDate),
+                    new SqlParameter("Remarks", Remarks),
+                    new SqlParameter("AppID", (Convert.ToString( System.Web.HttpContext.Current.Session["AppID"])))
+
+                };
+                //string Output = Convert.ToString(new SQLHelper().ExecuteScalar("SP_FeeCollection", prm1, CommandType.StoredProcedure));
+                DataTable dt = new SQLHelper().ExecuteDataTable("SP_FeeCollection", prm1, CommandType.StoredProcedure);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    string firstValue = Convert.ToString(dt.Rows[0][0]);
+                    if (firstValue.StartsWith("-1|"))
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = firstValue.Split('|')[1]
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        success = true,
+                        receiptNo = firstValue,
+                        outId = dt.Columns.Count > 1 ? Convert.ToString(dt.Rows[0][1]) : string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { success = false, message = "No data returned from server." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json("Error", JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult saveStudentFeesCollection1(string SR_ID, string Date, string TotalPayable, string Discount, string PaymentAmount, string DueAmount, List<FeeCollection> DataFee, List<Pay_Mode_Details> Datapay, bool isSMS, string ph)
         {
 
@@ -629,6 +739,19 @@ namespace SchoolERP_System.Controllers
             {
                 return Json("Error", JsonRequestBehavior.AllowGet);
             }
+        }
+        #endregion
+
+
+        #region Fees collection AutoMapper
+        public ActionResult StudentFeesCollection_Automapper()
+        {
+            SqlParameter[] prm1 = new SqlParameter[] {
+                  new SqlParameter("@Type", "Select"),
+            };
+            ViewBag.ClassList = Utility.GetDropDownList("SP_Class", "ClassID", "ClassName", prm1, "", "", "Select");
+
+            return View();
         }
         #endregion
     }
