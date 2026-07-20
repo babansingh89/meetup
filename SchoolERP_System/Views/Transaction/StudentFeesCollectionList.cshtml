@@ -8,7 +8,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <span class="pull-left">Student Fees Collection List</span>
-                <a href="@Url.Action("StudentFeesCollection", "Transaction")" class="btn btn-default pull-right m-t-10">Add New Record</a>
+                <a href="@Url.Action("StudentFeesCollection_Automapper", "Transaction")" class="btn btn-default pull-right m-t-10">Add New Record</a>
             </div>
 
             <div class="row">
@@ -108,7 +108,7 @@
                             <thead>
                                 <tr>
                                     <th style="text-align:center">SlNo.</th>
-                                    <th style="text-align:center">Month Name</th>
+                                    @*<th style="text-align:center">Month Name</th>*@
                                     <th style="text-align:center">Receipt No</th>
                                     <th style="text-align:center">Receipt Date</th>
                                     <th style="text-align:center">Payment Amount</th>
@@ -214,11 +214,11 @@ $.ajax({
                 var row = '';
                 row += '<tr id=' + val.SR_ID + '>';
                 row += '<td style="vertical-align: middle; width:30px; text-align:center; ">' + cnt + '</td>';
-                row += '<td style="vertical-align: middle; text-align:center; ">' + val.PayMonth + '</td>';
+ /*               row += '<td style="vertical-align: middle; text-align:center; ">' + val.PayMonth + '</td>';*/
                 row += '<td style="vertical-align: middle; text-align:center; ">' + val.SFC_ReceiptNo + '</td>';
                 row += '<td style="vertical-align: middle; text-align:center;  ">' + val.SFC_Date + '</td>';
                 row += '<td style="vertical-align: middle; text-align:right;  ">' + val.SFC_PaymentAmount + '</td>';
-                row += '<td style="vertical-align: middle; text-align:center; "><i class="fa fa-print Iconprint" data-RegNo="' + val.SR_RegNo + '" data-MonthID="' + val.PayMonthID + '"></i></td>';
+                row += '<td style="vertical-align: middle; text-align:center; "><i class="fa fa-print Iconprint" data-sfcid="' + val.SFC_Id + '" data-srid="' + val.SR_ID + '"></i></td>';
                 row += '</tr>';
                 $('#tblFeesCollection tbody').append(row);
             });
@@ -309,26 +309,32 @@ $.ajax({
         };
         $(document).on('click', '.Iconprint', function (e) {
             e.preventDefault();
-            var _RegNo = $(this).attr('data-RegNo');
-            var _PayMonth = $(this).attr('data-MonthID');
-            Print(_RegNo, _PayMonth);
+            var Receiptid = $(this).attr('data-sfcid');
+            var Srid = $(this).attr('data-srid');
+            Print(Receiptid, Srid);
         });
-        function Print(_RegNo, _PayMonth) {
+        function Print(Receiptid, Srid) {
 
             var final = {}; var master = []; var detail = [];
 
             master.push({
-                ReportName: "FeeCollection.rpt",
+                ReportName: "FeeCollection_Auto.rpt",
                 FileName: "FeeCollection",
                 AppID: ""
             });
 
+            //detail.push({
+            //    Class: "", //$('#ddlClassList').val(),
+            //    Section: "", // $('#ddlSectionList').val(),
+            //    RegNo: _RegNo,
+            //    PayMonth: _PayMonth,
+            //    AppID: "" // 18
+            //});
+
             detail.push({
-                Class: "", //$('#ddlClassList').val(),
-                Section: "", // $('#ddlSectionList').val(),
-                RegNo: _RegNo,
-                PayMonth: _PayMonth,
-                AppID: "" // 18
+                Receipt_Id: Receiptid,
+                SR_Id: Srid,
+                AppID: ""
             });
 
             final = {
