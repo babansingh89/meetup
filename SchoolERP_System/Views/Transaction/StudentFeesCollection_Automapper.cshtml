@@ -1,0 +1,1005 @@
+﻿@{
+    ViewBag.Title = "StudentFeesCollection_Automapper";
+    //Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+}
+
+
+<input type="hidden" id="hdId" value="0" />
+<input type="hidden" id="hdPrintId" value="0" />
+<input type="hidden" id="hdnReceiptId" value="0" />
+
+<div class="row" id="div_Scroll">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="pull-left">Student Fee Collection</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+                        @Html.Partial("~/Views/Shared/SuccessError.cshtml")
+                        <div class="row" style="display:none;">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input type="radio" name="RadioFees" id="Radio1" class="custom-radio" value="1">Admission
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input type="radio" name="RadioFees" id="Radio2" class="custom-radio" value="2">Collection
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Reg.No:<span style="color:red;">*</span></label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" id="txtRegNo" autocomplete="off" value="@ViewBag.RegNo" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" id="btnsearch" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Name:</label>
+                                    <input type="text" class="form-control" id="txtName" autocomplete="off" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Class:</label>
+                                    <input type="text" class="form-control" id="txtclassName" autocomplete="off" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Section:</label>
+                                    <input type="text" class="form-control" id="txtSectionName" autocomplete="off" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Roll No:</label>
+                                    <input type="text" class="form-control" id="txtrollno" autocomplete="off" disabled />
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        @{
+                            // Initialize the list of months statically in the view
+                            var months = new List<dynamic>
+                                                                                                                                                                                                                                    {
+                        new { Id = 1, Name = "January" },
+                        new { Id = 2, Name = "February" },
+                        new { Id = 3, Name = "March" },
+                        new { Id = 4, Name = "April" },
+                        new { Id = 5, Name = "May" },
+                        new { Id = 6, Name = "June" },
+                        new { Id = 7, Name = "July" },
+                        new { Id = 8, Name = "August" },
+                        new { Id = 9, Name = "September" },
+                        new { Id = 10, Name = "October" },
+                        new { Id = 11, Name = "November" },
+                        new { Id = 12, Name = "December" }
+                    };
+
+                            <div class="horizontal-checkbox-list" style="font-family: fantasy;font-size: 18px;color: darkslategray; padding-bottom:10px;">
+                                <div id="monthlst"></div>
+                                @*@foreach (var month in months)
+                {
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="months" class="chkMonth" value="@month.Id" /> @month.Name
+                        </label>
+
+                }*@
+
+                            </div>
+                        }
+                        <div class="col-md-12" style="display:none;">
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary" id="btnGenerateFee">Generate Fee</button>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped table-bordered table-hover table-condensed dt-responsive" id="tblfee" style="width:100% !important; border-bottom:none;">
+                            <thead>
+                                <tr style="background-color: ghostwhite; height:30px;">
+                                    <th>SlNo(#)</th>
+                                    <th style="text-align:center">Fee Particulars</th>
+                                    <th style="text-align:center">Fee Amount (&#x20b9;)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" style="text-align:right; font-weight:bold"><strong>Total Month Fee (A)</strong></td>
+                                    <td style="text-align: right; font-weight: bold;" id="totalAmount">0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        @*<div class="row" style="display:none">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Net Amount:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtNetAmount" autocomplete="off" disabled value="0.00" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Late Fee:</label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtLateFee" autocomplete="off" value="0.00" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Discount:</label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtDiscount" autocomplete="off" value="0.00" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Other Amount:</label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtOtherAmount" autocomplete="off" value="0.00" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Gross Amount:<span style="color:red;">*</span></label>
+                                    <input type="text" class="form-control clsfeeamt" id="txtGrossAmt" autocomplete="off" disabled value="0.00" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Pay mode:</label> <span style="color:red;">*</span>
+                                    <select class="form-control" id="ddlPayMode">
+                                        <option value="0">Select</option>
+                                        <option value="C" selected>Cash</option>
+                                        <option value="D">Draft</option>
+                                        <option value="Q">Cheque</option>
+                                        <option value="O">Online</option>
+                                        <option value="N">Neft</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Transaction No.:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control" id="txtTransactionno" autocomplete="off" disabled value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Transaction Date:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtTransactiondate" autocomplete="off" disabled value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Remarks:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control" id="txtRemarks" autocomplete="off" value="" />
+                                </div>
+                            </div>
+                        </div>*@
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Pay mode:</label> <span style="color:red;">*</span>
+                                    <select class="form-control" id="ddlPayMode">
+                                        <option value="0">Select</option>
+                                        <option value="C" selected>Cash</option>
+                                        <option value="D">Draft</option>
+                                        <option value="Q">Cheque</option>
+                                        <option value="O">Online</option>
+                                        <option value="N">Neft</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Transaction No.:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control" id="txtTransactionno" autocomplete="off" disabled value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Transaction Date:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control dateFormat" id="txtTransactiondate" autocomplete="off" disabled value="" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Remarks:<span style="color:red;"></span></label>
+                                    <input type="text" class="form-control" id="txtRemarks" autocomplete="off" value="" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group text-right">
+                                @*<input type="checkbox" class="custom-control-input" id="chkSMS">
+                <label class="custom-control-label" for="customControlInline">Send SMS</label>*@
+                                @*<button class="btn btn-primary" id="btnSubmit">SUBMIT</button>*@
+
+                                <button class="btn btn-success" id="btnSubmitPrint">
+                                    <i class="bi bi-save" style="margin-right: 4px;"></i>Submit & Print
+                                </button>
+
+                                <button class="btn btn-danger" id="btncancel">
+                                    <i class="bi bi-x-circle" style="margin-right: 3px;"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="conModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width:650px;height:300px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Payment Confirmation..</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12" style="text-align:center; font-weight:bold; font-size:20px;">
+                        <p style="color:cadetblue">Your Payment collection has been done.</p>
+                        <p class="clsReceiptno" style="color:darkgray"></p><br />
+                        <p style="color:crimson">Thank you !!</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-success clsconfPrint">
+                    <i class="bi bi-printer" style="margin-right: 3px;"></i> Print
+                </button>
+                <button type="button" class="btn btn-default clsconfClose" data-dismiss="modal">
+                    <i class="bi bi-x-circle" style="margin-right: 3px;"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .horizontal-checkbox-list label.checkbox-inline {
+        display: inline-block;
+        margin-right: 15px; /* Add space between checkboxes */
+    }
+</style>
+
+
+
+@section body_scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(document).on('change', '#ddlPayMode', function () {
+                var payMode = $('#ddlPayMode').val();
+                    if (payMode == "C" || payMode == "0") {
+                        $('#txtTransactionno').val('');
+                        $('#txtTransactiondate').val('');
+                        $('#txtTransactionno').prop('disabled', true);
+                        $('#txtTransactiondate').prop('disabled', true);
+                    }
+                    else {
+                        $('#txtTransactionno').prop('disabled', false);
+                        $('#txtTransactiondate').prop('disabled', false);
+
+                    }
+            });
+
+        $(document).on('click', '#btnGenerateFee', function () {
+                hideAlert();
+                var selectedMonths = [];
+
+                var _RegNo = $('#txtRegNo').val();
+                if (_RegNo == '') {
+                    FormSuccessError1("Please enter Reg No.", "Error", "errorBlock", "div_Scroll");
+                    $('#txtRegNo').focus();
+                    return false;
+                }
+
+
+                // Get all checked checkboxes with name 'months' that are not disabled
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+
+            if (selectedMonths.length == 0) {
+
+                alert('Please select month !');
+                $('#tblfee tbody').empty();
+                updateTotal(selectedMonths.length);
+                return false;
+                }
+
+
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("GetStudentFee_Auto", "Transaction")',
+        data: JSON.stringify({ SR_No: _RegNo, OptedMonth: selectedMonths.join(',')  }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+
+            if (data.length > 0) {
+
+                if (parseInt(data[3]) === 1) {
+                    var result = confirm(
+                        "You are about to complete the fee collection for the current academic session.\n\n" +
+                        "Please ensure all previous dues are cleared or advances are adjusted before final payment.\n\n" +
+                        "Do you want to continue?"
+                    );
+
+                    if (!result) {
+                        return false;
+                    }
+                }
+
+                $('#tblfee tbody').empty();
+
+                var cnt = 0;
+
+                $.each(data[1], function (rowIndex, val) {
+
+                    cnt++;
+
+                    var row = `
+            <tr id="${val.FeeHeadID}">
+                <td style="width:30px;text-align:center;font-weight:bold;">${cnt}</td>
+                <td style="text-align:right;font-weight:bold;">${val.FeeHeadName}</td>
+                <td class="amount" style="text-align:right;font-weight:bold;">${parseFloat(val.Ins_Amt).toFixed(2)}</td>
+            </tr>`;
+
+                    $('#tblfee tbody').append(row);
+
+                });
+
+                var balance = parseFloat(data[2]) || 0;
+
+                var previousBalanceRow = `
+        <tr id="previousBalanceRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                ${balance < 0 ? 'Previous Due (B)' : 'Previous Advance (B)'}
+            </td>
+            <td>
+                <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;">
+                    <span id="dueamounts"
+                          dueamt="${balance}"
+                          style="font-style:italic;color:${balance < 0 ? 'red' : 'green'};">
+                        ${Math.abs(balance).toFixed(2)}
+                    </span>
+                </div>
+            </td>
+        </tr>`;
+
+                var netamountRow = `
+        <tr id="netamountRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                Net Amount  (A ${balance < 0 ? '+' : '-'} B)
+            </td>
+            <td>
+                <input type="text"
+                       id="txtnetamountRow"
+                       class="form-control"
+                       style="text-align:right;width:20%;float:right;font-weight:bold;background:#e9e9e9;"
+                       value="0.00"
+                       readonly />
+            </td>
+        </tr>`;
+
+                var lateamountRow = `
+        <tr id="lateamountRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                Late Fee  (+C)
+            </td>
+            <td>
+                <input type="text"
+                       id="txtlateamountRow"
+                       class="form-control clsfeesamt"
+                       style="text-align:right;width:20%;float:right;"
+                       value="0.00" />
+            </td>
+        </tr>`;
+
+                var discountamountRow = `
+        <tr id="discountamountRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                Discount  (-D)
+            </td>
+            <td>
+                <input type="text"
+                       id="txtdiscountamountRow"
+                       class="form-control clsfeesamt"
+                       style="text-align:right;width:20%;float:right;"
+                       value="0.00" />
+            </td>
+        </tr>`;
+
+                var grossamountRow = `
+        <tr id="grossamountRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                Gross Amount  ((A±B)+C-D)
+            </td>
+            <td>
+                <input type="text"
+                       id="txtgrossamountRow"
+                       class="form-control"
+                       style="text-align:right;width:20%;float:right;font-weight:bold;background:#e9e9e9;"
+                       value="0.00"
+                       readonly />
+            </td>
+        </tr>`;
+
+                var payamountRow = `
+        <tr id="payamountRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                Payment Received  (E)
+            </td>
+            <td>
+                <input type="text"
+                       id="txtpayamountRow"
+                       class="form-control clsfeesamt"
+                       style="text-align:right;width:20%;float:right;"
+                       value="0.00" />
+            </td>
+        </tr>`;
+
+                var balanceRow = `
+        <tr id="balanceRow">
+            <td colspan="2" style="text-align:right;font-weight:bold;">
+                Balance  (E - Gross Amount)
+            </td>
+            <td>
+                <input type="text"
+                       id="txtlessormoreRow"
+                       class="form-control"
+                       style="text-align:right;width:20%;float:right;font-weight:bold;background:#e9e9e9;"
+                       value="0.00"
+                       readonly />
+            </td>
+        </tr>`;
+
+                if (selectedMonths.length > 0) {
+
+                    //$('#tblfee tfoot').empty();
+
+                    $('#previousBalanceRow').remove();
+                    $('#netamountRow').remove();
+                    $('#lateamountRow').remove();
+                    $('#discountamountRow').remove();
+                    $('#grossamountRow').remove();
+                    $('#payamountRow').remove();
+                    $('#balanceRow').remove();
+
+                    $('#tblfee tfoot').append(previousBalanceRow);
+                    $('#tblfee tfoot').append(netamountRow);
+                    $('#tblfee tfoot').append(lateamountRow);
+                    $('#tblfee tfoot').append(discountamountRow);
+                    $('#tblfee tfoot').append(grossamountRow);
+                    $('#tblfee tfoot').append(payamountRow);
+                    $('#tblfee tfoot').append(balanceRow);
+
+                    updateTotal_rowwise(selectedMonths.length);
+                }
+
+            }
+            else {
+
+                FormSuccessError1("Please enter correct Reg No.", "Error", "errorBlock", "div_Scroll");
+                $('#txtRegNo').focus();
+                return false;
+
+            }
+        },
+        error: function (error) {
+            console.error(error);
+            //FormSuccessError(error, "Error", "errorBlock");
+            return false;
+        }
+    });
+
+
+
+
+
+
+});
+
+        $(document).on('click', '#btnsearch', function () {
+        hideAlert();
+        var _RegNo = $('#txtRegNo').val();
+        if (_RegNo == '') {
+            FormSuccessError1("Please enter Reg No.", "Error", "errorBlock", "div_Scroll");
+            $('#txtRegNo').focus();
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetStudentFee_Auto", "Transaction")',
+            data: JSON.stringify({ SR_No: _RegNo, OptedMonth: "" }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $("#hdId").val(data[0][0].SR_ID);
+                    $('#txtRegNo').val(data[0][0].SR_RegNo);
+                    $('#txtName').val(data[0][0].SR_StudentName);
+                    $('#txtclassName').val(data[0][0].ClassName);
+                    $('#txtrollno').val(data[0][0].SR_CurrentRollNo);
+                    $('#txtSectionName').val(data[0][0].SectionName);
+                    $('#txtStreamName').val(data[0][0].StreamName);
+                    $('#txtPhNo').val(data[0][0].SR_PhNo);
+                    $('#tblfee tbody').empty();
+
+                    BindMonth(data[0][0].Session_ActiveMonth, data[0][0].PayMonth);
+
+                } else {
+                    FormSuccessError1("Please enter correct Reg No.", "Error", "errorBlock", "div_Scroll");
+                    $('#txtRegNo').focus();
+                    return false;
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                //FormSuccessError(error, "Error", "errorBlock");
+                return false;
+            }
+        });
+
+
+        });
+
+        $(document).on('click', '.clsconfPrint', function () {
+                var selectedMonths = [];
+
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+
+                Print(selectedMonths);
+            });
+            //save
+        $(document).on('click', '#btnSubmitPrint', function () {
+            hideAlert();
+            var selectedMonths = [];
+
+            var rowCount = $('#tblfee tbody tr').length;
+
+            // Get all checked checkboxes with name 'months' that are not disabled
+            $('input[name="months"]:checked:not(:disabled)').each(function () {
+                selectedMonths.push($(this).val());
+            });
+
+            if (selectedMonths.length == 0) {
+                alert('Please select month !'); return false;
+            }
+            if (rowCount == 0) {
+                alert('Please add fee details !'); return false;
+            }
+
+            if ($('#txtgrossamountRow').val() <= 0) {
+                var netAmount = parseFloat($('#txtnetamountRow').val()) || 0;
+                var previousAdvance = parseFloat($("#dueamounts").attr("dueamt")) || 0;
+                if (netAmount == 0 && previousAdvance > 0) {
+                    // Allow save
+                }
+                else {
+                    alert("Gross Amount should be greater than zero.");
+                    return false;
+                }
+            }
+
+
+                // Calculate Advance Adjusted
+                var advanceAdjustedAmount = 0;
+                var previousBalance = parseFloat($("#dueamounts").attr("dueamt")) || 0;
+                var totalFee = parseFloat($('#totalAmount').text()) || 0;
+                var paymentAmount = parseFloat($('#txtpayamountRow').val()) || 0;
+
+                if (previousBalance > 0) {
+                    advanceAdjustedAmount = Math.min(previousBalance, totalFee);
+                }
+
+                // Calculate Closing Balance
+                var closingBalance = previousBalance + paymentAmount - totalFee;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveStudentFeesCollection_Auto", "Transaction")',
+                data: JSON.stringify({
+                    SR_ID: $("#hdId").val(), TotalFeeAmount: $('#totalAmount').text(), TotalNetPayable: $('#txtpayamountRow').val(), TotalDueAmount: $('#txtlessormoreRow').val(),
+                    TotalNetAmount: $('#txtnetamountRow').val(), TotalDiscount: $('#txtdiscountamountRow').val(), TotalLateFee: $('#txtlateamountRow').val(),
+                    GrossPaymentAmount: $('#txtgrossamountRow').val(), OtherAmount: 0, AdvanceAdjustedAmount: advanceAdjustedAmount, ClosingBalance: closingBalance,
+                    PayMode: $('#ddlPayMode').val(), PayMonth: selectedMonths.join(','),
+                    TransactionNo: $('#txtTransactionno').val(), TransactionDate: $('#txtTransactiondate').val(), Remarks: $('#txtRemarks').val()
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+
+                    if (!response.success) {
+                        alert(response.message);
+                        return;
+                    }
+
+                    $(".clsReceiptno").text('Receipt No. : ' + response.receiptNo);
+                    $("#hdnReceiptId").val(response.outId); 
+                    $("#conModel").modal('show');
+
+                    //if (data != '') {
+
+                    //    if (data.indexOf("-1|") === 0) {
+                    //        alert(data.split('|')[1]);
+                    //        return;
+                    //    }
+
+                    //    $(".clsReceiptno").text('Receipt No. : ' + data);
+                    //    $("#conModel").modal();
+
+                    //}
+                },
+                error: function (error) {
+                    console.error(error);
+                    return false;
+                }
+            });
+
+        });
+
+        $(document).on('click', '#btncancel', function () {
+            location.reload();
+        });
+        $(document).on('click', '.clsconfClose', function () {
+            location.reload();
+        });
+
+        $(document).ready(function () {
+        $('.clsfeeamt').on('keypress', function (event) {
+            // Allow only numbers (0-9)
+            if (event.which < 48 || event.which > 57) {
+                event.preventDefault(); // Prevent non-numeric characters
+            }
+        });
+
+        $('.clsfeeamt').on('keyup', function () {
+            updateGrossTotal();
+        });
+    });
+        $(document).ready(function () {
+                $('#txtRegNo').autocomplete({
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: '@Url.Action("Auto_RegNo", "Transaction")',
+                            data: { SR_No: $("#txtRegNo").val() },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            cache: false,
+                            success: function (serverResponse) {
+                                var AutoComplete = [];
+                                console.log(serverResponse[0]);
+
+                                if ((serverResponse[0]).length > 0) {
+
+                                    $.each(serverResponse[0], function (index, item) {
+                                        AutoComplete.push({
+                                            label: item.SR_RegNo,
+                                            SR_ID: item.SR_ID
+                                        });
+                                    });
+
+                                    response(AutoComplete);
+                                }
+                            }
+                        });
+                    },
+                    select: function (e, i) {
+                        $('#hdId').val(i.item.SR_ID);
+
+                    },
+                    minLength: 1
+                }).click(function () {
+                    $(this).autocomplete('search', ($(this).val()));
+                });
+            });
+        $(document).on('click', '.chkMonth', function () {
+            //$('.chkMonth').click(function () {
+
+
+
+                var currentCheckbox = $(this);   // Get the current checkbox
+                var currentIndex = $('input.chkMonth').index(currentCheckbox); // Get index of the current checkbox
+
+                // If current checkbox is checked, ensure previous checkbox is checked
+                if (currentCheckbox.is(':checked') && currentIndex > 0) {
+                    var previousCheckbox = $('input.chkMonth').eq(currentIndex - 1);
+                    var previousLabel = previousCheckbox.closest('label').text(); // Get the text of the previous label
+
+                    // If the previous checkbox is not checked, uncheck the current one and alert the user
+                    if (!previousCheckbox.is(':checked')) {
+                        currentCheckbox.prop('checked', false); // Uncheck the current checkbox
+                        alert('Please select the previous month first : ' + previousLabel.trim());
+                    }
+                }
+
+                // Prevent deselecting if there's a checkbox after this one that is selected
+                if (!currentCheckbox.is(':checked')) {
+                    var nextCheckbox = $('input.chkMonth').slice(currentIndex + 1);
+
+                    // Check if any subsequent checkbox is checked
+                    var hasCheckedNext = nextCheckbox.is(':checked');
+
+                    if (hasCheckedNext) {
+                        currentCheckbox.prop('checked', true); // Recheck the checkbox
+                        alert('You cannot unselect this month because a later month is selected.');
+                    }
+                }
+
+
+
+                //return false;
+                //-------------------------------------------------------------------------------------------------------------
+                var selectedMonths = [];
+
+                // Get all checked checkboxes with name 'months' that are not disabled
+                $('input[name="months"]:checked:not(:disabled)').each(function () {
+                    selectedMonths.push($(this).val());
+                });
+
+
+            jQuery("#btnGenerateFee").trigger("click");
+
+            //if (selectedMonths.length > 0) {
+            //    updateTotal(selectedMonths.length);
+            //}
+                // Display the selected months in the paragraph
+                //$('#selectedMonths').text("Selected months: " + selectedMonths.join(", "));
+            //});
+        });
+        $(document).on('keyup', '.clsfeesamt', function () {
+            updateGrossTotal_rowwise();
+        });
+        function updateTotal(CntMonth) {
+            var total = 0;
+            // Calculate total amount by summing up all amounts in the table
+            $('#tblfee tbody tr').each(function () {
+                var amount = parseFloat($(this).find('.amount').text());
+                var tamount = amount;// * CntMonth;
+                total += tamount;
+            });
+
+            // Update total in the footer
+            $('#totalAmount, #txtNetAmount').text(total.toFixed(2));
+
+            $('#txtNetAmount').val(total.toFixed(2));
+
+            updateGrossTotal();
+        }
+        function updateGrossTotal() {
+        var netAmt = $('#txtNetAmount').val() == "" ? 0.00 : parseFloat($('#txtNetAmount').val());
+        var letAmt = $('#txtLateFee').val() == "" ? 0.00 : parseFloat($('#txtLateFee').val());
+        var disAmt = $('#txtDiscount').val() == "" ? 0.00 : parseFloat($('#txtDiscount').val());
+        var otherAmt = $('#txtOtherAmount').val() == "" ? 0.00 : parseFloat($('#txtOtherAmount').val());
+
+            var tAmt = parseFloat(netAmt) + parseFloat(letAmt) + parseFloat(otherAmt);
+        $('#txtGrossAmt').val((tAmt - disAmt).toFixed(2));
+            }
+        function updateTotal_rowwise(CntMonth) {
+            var total = 0;
+            $('#tblfee tbody tr').each(function () {
+                var amount = parseFloat($(this).find('.amount').text());
+                var tamount = amount;// * CntMonth;
+                total += tamount;
+            });
+
+            $('#totalAmount').text(total.toFixed(2));
+            $('#txtpayamountRow, #txtnetamountRow, #txtgrossamountRow').val(total.toFixed(2));
+
+            updateGrossTotal_rowwise();
+        }
+        function updateGrossTotal_rowwise1() {
+                var totalmonthfees = $('#totalAmount').text() == "" ? 0.00 : parseFloat($('#totalAmount').text());
+                var payAmt = $('#txtpayamountRow').val() == "" ? 0.00 : parseFloat($('#txtpayamountRow').val());
+                var lessmoreAmt = $('#txtlessormoreRow').val() == "" ? 0.00 : parseFloat($('#txtlessormoreRow').val());
+
+            var netAmt = $('#txtnetamountRow').val() == "" ? 0.00 : parseFloat($('#txtnetamountRow').val());
+            var letAmt = $('#txtlateamountRow').val() == "" ? 0.00 : parseFloat($('#txtlateamountRow').val());
+            var disAmt = $('#txtdiscountamountRow').val() == "" ? 0.00 : parseFloat($('#txtdiscountamountRow').val());
+                // var otherAmt = $('#txtOtherAmount').val() == "" ? 0.00 : parseFloat($('#txtOtherAmount').val());
+
+                if (totalmonthfees >= payAmt)
+                    $('#txtlessormoreRow').val((totalmonthfees - payAmt) == 0 ? 0 : ('- ' + (totalmonthfees - payAmt)));
+                else
+                    $('#txtlessormoreRow').val('+ ' + (payAmt - totalmonthfees));
+
+                var amount = parseFloat(payAmt) || 0;
+                $('#txtnetamountRow').val(amount.toFixed(2));
+
+                var tAmt = parseFloat($('#txtnetamountRow').val()) + parseFloat($('#txtlateamountRow').val()); // + parseFloat(otherAmt);
+            $('#txtgrossamountRow').val((tAmt - disAmt).toFixed(2));
+            }
+        function updateGrossTotal_rowwise222() {
+                var dueAmount = parseFloat($("#dueamounts").attr("dueamt")) || 0;
+                var totalmonthfees = parseFloat($('#totalAmount').text()) || 0;
+                var payAmt = parseFloat($('#txtpayamountRow').val()) || 0;
+                var lateAmt = parseFloat($('#txtlateamountRow').val()) || 0;
+                var disAmt = parseFloat($('#txtdiscountamountRow').val()) || 0;
+
+                // Less / More Amount
+                if (payAmt < totalmonthfees) {
+                    $('#txtlessormoreRow').val('-' + (totalmonthfees - (payAmt + dueAmount)).toFixed(2));
+                }
+                else if (payAmt > totalmonthfees) {
+                    $('#txtlessormoreRow').val('+' + ((payAmt + dueAmount) - totalmonthfees).toFixed(2));
+                }
+                else {
+                    $('#txtlessormoreRow').val('0.00');
+                }
+
+                // Net Amount
+                $('#txtnetamountRow').val((payAmt + dueAmount).toFixed(2));
+
+                // Gross Amount
+                var grossAmt = (payAmt + dueAmount) + lateAmt - disAmt;
+                $('#txtgrossamountRow').val(grossAmt.toFixed(2));
+            }
+        function updateGrossTotal_rowwise() {
+
+                var balance = parseFloat($("#dueamounts").attr("dueamt")) || 0;
+
+                var totalMonthFees = parseFloat($('#totalAmount').text()) || 0;
+                var payAmt = parseFloat($('#txtpayamountRow').val()) || 0;
+                var lateAmt = parseFloat($('#txtlateamountRow').val()) || 0;
+                var disAmt = parseFloat($('#txtdiscountamountRow').val()) || 0;
+
+                // Net Amount
+                var netAmount = totalMonthFees;
+
+                if (balance < 0) {
+                    netAmount += Math.abs(balance);   // Previous Due
+                }
+                else if (balance > 0) {
+                    netAmount -= balance;             // Previous Advance
+                }
+
+                $('#txtnetamountRow').val(netAmount.toFixed(2));
+
+                // Gross Amount (Final Payable)
+                var grossAmt = netAmount + lateAmt - disAmt;
+
+                $('#txtgrossamountRow').val(grossAmt.toFixed(2));
+
+                // Less / Exceeded should compare against Gross Amount
+                var difference = payAmt - grossAmt;
+
+                if (difference > 0) {
+                    $('#txtlessormoreRow').val('+' + difference.toFixed(2));
+                }
+                else if (difference < 0) {
+                    $('#txtlessormoreRow').val(difference.toFixed(2));
+                }
+                else {
+                    $('#txtlessormoreRow').val('0.00');
+                }
+            }
+        function BindMonth(Session_ActiveMonth, PayMonth) {
+
+                var array = PayMonth.split(',');
+
+            $('#monthlst').empty();
+            if (Session_ActiveMonth == "1") {
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="1" />January</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="2" />February</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="3" />March</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="4" />April</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="5" />May</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="6" />June</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="7" />July</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="8" />August</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="9" />September</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="10" />October</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="11" />November</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="12" />December</label>');
+
+
+            }
+            else {
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="4" />April</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="5" />May</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="6" />June</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="7" />July</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="8" />August</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="9" />September</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="10" />October</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="11" />November</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="12" />December</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="1" />January</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="2" />February</label>');
+                $('#monthlst').append('<label class="checkbox-inline" style="font-size:17px;"> <input type="checkbox" name="months" class="chkMonth" value="3" />March</label>');
+                }
+
+                // Disable checkboxes whose values are in the array
+                $('#monthlst input[type="checkbox"]').each(function () {
+                    var checkboxValue = $(this).val();
+                    if (array.includes(checkboxValue)) {
+                        $(this).prop('checked', true);
+                        $(this).prop('disabled', true);  // Disable the checkbox if its value is in the array
+                    }
+                });
+
+            }
+        function Print(selectedMonths) {
+
+                var final = {}; var master = []; var detail = [];
+
+                master.push({
+                    ReportName: "FeeCollection_Auto.rpt",
+                    FileName: "FeeCollection",
+                    AppID: ""
+                });
+
+                //detail.push({
+            //    Class: "", //$('#ddlClassList').val(),
+            //    Section: "", // $('#ddlSectionList').val(),
+            //    RegNo: $('#txtRegNo').val(),  // $('#hdId').val(i.item.SR_ID);
+            //    PayMonth: selectedMonths.join(','),
+            //    AppID: "" // 18
+            //});
+
+            detail.push({
+                Receipt_Id: $('#hdnReceiptId').val(),
+                SR_Id: $('#hdId').val(),
+                AppID: ""
+            });
+
+            final = {
+                    Master: master,
+                    Detail: detail
+                }
+
+                var left = ($(window).width() / 2) - (950 / 2),
+                    top = ($(window).height() / 2) - (650 / 2),
+                    popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+                popup.focus();
+            }
+    });
+
+
+
+    </script>
+
+    <style>
+        .ui-autocomplete {
+            max-height: 150px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1000;
+        }
+    </style>
+}
+
