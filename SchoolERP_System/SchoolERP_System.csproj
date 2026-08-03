@@ -1338,6 +1338,7 @@
     <Content Include="Views\Transaction\StudentFeesCollection_Bengali.cshtml" />
     <Content Include="Views\Transaction\StudentFeesCollectionList_Bengali.cshtml" />
     <Content Include="Views\Messaging\ManualSMS.cshtml" />
+    <Content Include="Views\Transaction\StudentFeesCollection_Automapper.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

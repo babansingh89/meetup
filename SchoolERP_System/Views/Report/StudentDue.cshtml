@@ -16,35 +16,31 @@
                     <div class="panel-body">
                         @Html.Partial("~/Views/Shared/SuccessError.cshtml")
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Class:<span style="color:red;">*</span></label>
+                                    <label>Class<span style="color:red;"></span></label>
                                     @Html.DropDownList("ddlClassList", (IList<SelectListItem>)ViewBag.ClassList, new { @class = "form-control" })
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Section:<span style="color:red;">*</span></label>
-                                    <select id="ddlSectionList" class="form-control"> </select>
-                                </div>
-                            </div>
-                            @*<div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="control-label">From:<span style="color:red;">*</span></label>
-                                    <input type="text" class="form-control dateFormat" id="txtFrom">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label class="control-label">To:<span style="color:red;">*</span></label>
-                                    <input type="text" class="form-control dateFormat" id="txtTo">
+                                    <label>Section<span style="color:red;"></span></label>
+                                    <select id="ddlSectionList" class="form-control"> </select>
                                 </div>
-                            </div>*@
-
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <button class="btn btn-primary pull-right" style="margin-top: 20px;" id="btnSave">Generate</button>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Student Name</label>
+                                    <select id="ddlStudentList" class="form-control"> </select>
+                                    @*<select class="form-control" id="ddlStudentList">
+            <option value="0">Select</option>
+        </select>*@
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" style="margin-top: 22px;" id="btnPrint">Generate</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,6 +64,9 @@
                 placeholder: "Select"
             });
             $("#ddlSectionList").select2({
+                placeholder: "Select"
+            });
+            $("#ddlStudentList").select2({
                 placeholder: "Select"
             });
         });
@@ -101,11 +100,37 @@
                 }
             });
         });
-        $(document).on("click", "#btnSave", function () {
+        $("#ddlSectionList").change(function () {
             var _ddlClassList = $('#ddlClassList').val();
             var _ddlSectionList = $('#ddlSectionList').val();
-            //var _From = $('#txtFrom').val();
-            //var _To = $('#txtTo').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("viewStudentForAttendance", "Report")',
+                data: JSON.stringify({ ClassID: _ddlClassList, SectionID: _ddlSectionList }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (response) {
+                    $("#ddlStudentList").empty().append('<option selected="selected" value="0">Select</option>');
+                    if (response.Output === "success" && response.Data && response.Data.length > 0) {
+                        $.each(response.Data, function () {
+                            $("#ddlStudentList").append(
+                                $("<option/>").val(this.SR_ID).text(this.SR_StudentName)
+                            );
+                        });
+
+                    } else if (response.Output === "error") {
+                        alert("Error: " + response.Message);
+                    } else {
+                        console.log(response.Message);
+                    }
+                }
+            });
+        });
+        $(document).on("click", "#btnPrint", function () {
+            var _ddlClassList = $('#ddlClassList').val();
+            var _ddlSectionList = $('#ddlSectionList').val();
             //if (_ddlClassList == '' || _ddlClassList <= 0) {
             //    FormSuccessError1("Please select Class.", "Error", "errorBlock", "div_Scroll");
             //    return false;
@@ -114,17 +139,9 @@
             //    FormSuccessError1("Please select Section.", "Error", "errorBlock", "div_Scroll");
             //    return false;
             //}
-            //if (_From == '') {
-            //    FormSuccessError1("Please enter From Date.", "Error", "errorBlock", "div_Scroll");
-            //    return false;
-            //}
-            //if (_To == '') {
-            //    FormSuccessError1("Please enter To Date.", "Error", "errorBlock", "div_Scroll");
-            //    return false;
-            //}
 
-
-            $.ajax({
+            Print();
+            @*$.ajax({
                 type: "POST",
                 url: '@Url.Action("StudentDueWise", "Report")',
                 data: JSON.stringify({ Class: _ddlClassList, Section: _ddlSectionList }),
@@ -145,8 +162,41 @@
                     //alert("Error! Try again later.");
                     window.location.href = "/Error";
                 }
-            });
+            });*@
         });
+
+        function Print() {
+
+            var classVal = $('#ddlClassList').val();
+            var sectionVal = $('#ddlSectionList').val();
+            var studentVal = $('#ddlStudentList').val();
+
+            var final = {}; var master = []; var detail = [];
+
+            master.push({
+                ReportName: "FeeCollection_DueReport.rpt",
+                FileName: "Due_Report",
+                AppID: ""
+            });
+
+            detail.push({
+                ClassID: (!classVal || classVal == -1 || classVal == 0) ? 0 : parseInt(classVal, 10),
+                SectionID: (!sectionVal || sectionVal == -1 || sectionVal == 0) ? 0 : parseInt(sectionVal, 10),
+                SR_ID: (!studentVal || studentVal == -1 || studentVal == 0) ? 0 : parseInt(studentVal, 10),
+                AppID: ""
+            });
+
+            final = {
+                Master: master,
+                Detail: detail
+            }
+
+            var left = ($(window).width() / 2) - (950 / 2),
+                top = ($(window).height() / 2) - (650 / 2),
+                popup = window.open("/OpenReport/OpenReports.aspx?ReportName=" + JSON.stringify(final), "popup", "width=950, height=650, top=" + top + ", left=" + left);
+            popup.focus();
+        }
+
     </script>
 }
 
